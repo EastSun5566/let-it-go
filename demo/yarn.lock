@@ -2900,6 +2900,11 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
   integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
 
+let-it-go@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/let-it-go/-/let-it-go-0.0.1.tgz#cd81bc27644d5be8e52569b30894001f0a7c8857"
+  integrity sha512-YxTBhJnztJAC6lTcLPpsIDsEWBamPdk1STIkvkjHmiRRvujhb4Ca0h2Zg+ESPt0+B8yrZ35/A1nfXoGKmcyDxw==
+
 levn@~0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.3.0.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee"

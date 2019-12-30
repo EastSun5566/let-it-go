@@ -33,7 +33,7 @@ export class LetItGo {
     number = window.innerWidth,
     velocityXRange: [minVX, maxVX] = [-3, 3],
     velocityYRange: [minVY, maxVY] = [1, 5],
-    radiusRange: [minR, maxR] = [0.3, 0.5],
+    radiusRange: [minR, maxR] = [0.5, 1],
     color = '#fff',
     alphaRange: [minA, maxA] = [0.8, 1],
     fps = 30,
