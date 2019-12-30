@@ -121,7 +121,7 @@ export class LetItGo {
     this._init();
   }
 
-  clearCanvas(): void {
+  clear(): void {
     this.letItStop();
     document.body.removeChild(this.canvas);
   }

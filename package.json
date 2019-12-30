@@ -1,7 +1,7 @@
 {
   "name": "let-it-go",
   "version": "0.0.0",
-  "description": "",
+  "description": "❄️ Make your website snow instantly",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "files": [
@@ -18,7 +18,8 @@
   },
   "keywords": [
     "let-it-go",
-    "snow"
+    "snow",
+    "canvas"
   ],
   "author": "汪東陽 EastSun5566",
   "license": "MIT",
