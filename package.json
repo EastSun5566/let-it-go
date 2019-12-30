@@ -14,7 +14,8 @@
     "build:js": "rollup -c",
     "build": "npm run build:types && npm run build:js",
     "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src/",
-    "release": "yarn build && npm version patch && git push --follow-tags && npm publish"
+    "release": "yarn build && npm version patch && git push --follow-tags && npm publish",
+    "deploy": "sh bin/deploy.sh"
   },
   "keywords": [
     "let-it-go",
