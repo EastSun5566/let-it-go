@@ -93,7 +93,9 @@ export class LetItGo {
     );
   }
 
-  private _update = (): void => this.snowflakes.forEach((snowflake) => snowflake.update(this.canvas));
+  private _update = (): void => this.snowflakes.forEach(
+    (snowflake) => snowflake.update(this.canvas),
+  );
 
   private _draw = (): void => {
     const { width, height } = this.canvas;
