@@ -58,8 +58,10 @@ export class LetItGo {
 
   private _mountCanvas(): void {
     const resizeCanvas = (): void => {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
+      const { innerWidth, innerHeight } = window;
+
+      this.canvas.width = innerWidth;
+      this.canvas.height = innerHeight;
     };
 
     resizeCanvas();
@@ -113,10 +115,11 @@ export class LetItGo {
   }
 
   letItStop(): void {
-    if (!this.intervalID || !this.requestID) return;
+    const { intervalID, requestID } = this;
+    if (!intervalID || !requestID) return;
 
-    clearInterval(this.intervalID);
-    cancelAnimationFrame(this.requestID);
+    clearInterval(intervalID);
+    cancelAnimationFrame(requestID);
   }
 
   letItGoAgain(): void {

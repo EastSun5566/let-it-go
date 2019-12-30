@@ -1,3 +1,4 @@
 import { LetItGo } from 'let-it-go';
 
-const snow = new LetItGo();
+// eslint-disable-next-line no-new
+new LetItGo();
