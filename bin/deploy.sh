@@ -3,7 +3,7 @@
 cd demo/
 
 # make sure pkg is latest version
-yarn add get-some-cool-emojis
+yarn add let-it-go
 
 # build
 yarn build
