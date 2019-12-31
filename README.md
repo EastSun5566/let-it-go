@@ -20,7 +20,7 @@ npm i let-it-go
 import { LetItGo } from "let-it-go";
 
 // Just snow!
-const snow = LetItGo();
+const snow = new LetItGo();
 
 // Just stop
 snow.letItStop();
