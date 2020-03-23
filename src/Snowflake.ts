@@ -1,5 +1,11 @@
 import { Vector2D } from './Vector';
 
+/**
+ * Snowflake
+ *
+ * @export
+ * @class Snowflake
+ */
 export class Snowflake {
   p: Vector2D;
 
@@ -28,6 +34,8 @@ export class Snowflake {
   update({ width = window.innerWidth, height = window.innerHeight } = {}): void {
     const { p, r, v } = this;
 
+    this.p.add(v);
+
     if (p.y + r > height) {
       this.p.y = 0;
     }
@@ -39,13 +47,14 @@ export class Snowflake {
     if (p.x - r < 0) {
       this.p.x = width;
     }
-
-    this.p = this.p.add(v);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
     const {
-      p, r, color, alpha,
+      p,
+      r,
+      color,
+      alpha,
     } = this;
 
     ctx.save();

@@ -20,6 +20,7 @@
   "keywords": [
     "let-it-go",
     "snow",
+    "snowfall",
     "canvas"
   ],
   "author": "汪東陽 EastSun5566",
@@ -28,6 +29,7 @@
     "type": "git",
     "url": "https://github.com/EastSun5566/let-it-go"
   },
+  "homepage": "https://eastsun5566.github.io/let-it-go/",
   "husky": {
     "hooks": {
       "pre-commit": "yarn lint"
