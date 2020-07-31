@@ -12,7 +12,8 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.7.7",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.26.10"
   },
   "dependencies": {
     "let-it-go": "^0.0.2"
