@@ -3114,10 +3114,10 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-let-it-go@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/let-it-go/-/let-it-go-0.0.2.tgz#183889d4bc657f8c57ebd473e5536f13f34e7c4e"
-  integrity sha512-kKsDFFKJULEgq5F6ChJod49QAvIoYCY79wDFlLxRjmf7tS+WpVbui9fHuT3GCnvKFUPDx5ODb4C867kTwp7b0Q==
+let-it-go@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/let-it-go/-/let-it-go-0.0.3.tgz#d6d206798a30420dd39ed63417147479dfca55e5"
+  integrity sha512-4pdhgdf/zv4mlbHBNynAntWDrtd11RahkvcUNYYPaD8O85ly1FdJcmmNrSXenLQPykzNtA/AajPEdnRbnovVlQ==
 
 leven@^3.1.0:
   version "3.1.0"
