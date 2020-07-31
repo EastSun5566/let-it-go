@@ -1,5 +1,5 @@
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json';
@@ -14,10 +14,11 @@ export default {
     format: 'umd',
   },
   plugins: [
-    resolve({ extensions }),
+    nodeResolve({ extensions }),
     babel({
       extensions,
       include: 'src/**/*',
+      babelHelpers: 'bundled',
     }),
     terser(),
   ],

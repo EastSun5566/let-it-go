@@ -1,16 +1,14 @@
-
 /**
  * 2D vector
  *
  * @export
- * @class Vector2D
+ * @class Vec2D
  */
-export class Vector2D {
+export class Vec2D {
   /**
-   * Creates an instance of Vector2D.
+   * Creates an instance of Vec2D.
    * @param {number} [x=0]
    * @param {number} [y=0]
-   * @memberof Vector2D
    */
   // eslint-disable-next-line no-useless-constructor
   constructor(
@@ -21,11 +19,10 @@ export class Vector2D {
   /**
    * add operator
    *
-   * @param {Vector2D} { x = 0, y = 0 }
-   * @returns {Vector2D}
-   * @memberof Vector2D
+   * @param {Vec2D} { x = 0, y = 0 }
+   * @returns {Vec2D}
    */
-  add({ x = 0, y = 0 }: Vector2D): Vector2D {
+  add({ x = 0, y = 0 }: Vec2D): Vec2D {
     this.x += x;
     this.y += y;
 
@@ -33,4 +30,4 @@ export class Vector2D {
   }
 }
 
-export default Vector2D;
+export default Vec2D;

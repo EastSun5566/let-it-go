@@ -1,8 +1,14 @@
 /* eslint-disable no-underscore-dangle */
-import { Vector2D } from './Vector';
+import { Vec2D } from './Vector';
 import { Snowflake } from './Snowflake';
 
-const getRandomNumber = (min: number, max: number): number => Math.random() * (max - min) + min;
+const getRandomNumber = (
+  min: number,
+  max: number,
+): number => {
+  const randNumber = Math.random() * (max - min) + min;
+  return randNumber || getRandomNumber(min, max);
+};
 
 export class LetItGo {
   number: number;
@@ -80,11 +86,11 @@ export class LetItGo {
     this.snowflakes = Array.from(
       { length: this.number },
       () => new Snowflake({
-        p: new Vector2D(
+        p: new Vec2D(
           getRandomNumber(0, canvas.width),
           getRandomNumber(0, -canvas.height),
         ),
-        v: new Vector2D(
+        v: new Vec2D(
           getRandomNumber(minVX, maxVX),
           getRandomNumber(minVY, maxVY),
         ),
