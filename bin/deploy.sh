@@ -1,12 +1,20 @@
 #!/bin/sh
 
-# check out & sync master
-git checkout master
-git pull
+cd demo
 
-# Update & tag version
-npm version patch
+# make sure pkg is latest version
+yarn add let-it-go
 
-# push update
-git push --follow-tags
-git checkout -
+# build
+yarn build
+
+# navigate into the build output directory
+cd dist
+
+git init
+git add -A
+git commit -m 'deploy let-it-go demo'
+
+git push -f git@github.com:EastSun5566/let-it-go.git master:gh-pages
+
+cd --
