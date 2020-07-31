@@ -16,6 +16,6 @@
     "sass": "^1.26.10"
   },
   "dependencies": {
-    "let-it-go": "^0.0.2"
+    "let-it-go": "^0.0.3"
   }
 }

@@ -17,7 +17,8 @@ export default {
     nodeResolve({ extensions }),
     babel({
       extensions,
-      include: 'src/**/*',
+      presets: ['@babel/env', '@babel/typescript'],
+      plugins: ['@babel/proposal-class-properties'],
       babelHelpers: 'bundled',
     }),
     terser(),
