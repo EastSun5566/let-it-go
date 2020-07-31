@@ -13,7 +13,7 @@ cd dist
 
 git init
 git add -A
-git commit -m 'Deploy demo'
+git commit -m 'deploy let-it-go demo'
 
 git push -f git@github.com:EastSun5566/let-it-go.git master:gh-pages
 

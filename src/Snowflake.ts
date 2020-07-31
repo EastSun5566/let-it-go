@@ -1,4 +1,4 @@
-import { Vector2D } from './Vector';
+import { Vec2D } from './Vector';
 
 /**
  * Snowflake
@@ -7,9 +7,9 @@ import { Vector2D } from './Vector';
  * @class Snowflake
  */
 export class Snowflake {
-  p: Vector2D;
+  p: Vec2D;
 
-  v: Vector2D;
+  v: Vec2D;
 
   r: number;
 
@@ -18,8 +18,8 @@ export class Snowflake {
   alpha: number;
 
   constructor({
-    p = new Vector2D(),
-    v = new Vector2D(),
+    p = new Vec2D(),
+    v = new Vec2D(),
     r = 0.5,
     color = '#fff',
     alpha = 1,
@@ -34,19 +34,19 @@ export class Snowflake {
   update({ width = window.innerWidth, height = window.innerHeight } = {}): void {
     const { p, r, v } = this;
 
+    if (p.y - r > height) {
+      this.p.y = 0 - r;
+    }
+
+    if (p.x - r > width) {
+      this.p.x = 0 - r;
+    }
+
+    if (p.x + r < 0) {
+      this.p.x = width + r;
+    }
+
     this.p.add(v);
-
-    if (p.y + r > height) {
-      this.p.y = 0;
-    }
-
-    if (p.x + r > width) {
-      this.p.x = 0;
-    }
-
-    if (p.x - r < 0) {
-      this.p.x = width;
-    }
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
