@@ -1,6 +1,6 @@
 {
   "name": "let-it-go",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "❄️ Make your website snow instantly",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
