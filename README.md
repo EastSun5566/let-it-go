@@ -6,7 +6,7 @@
 
 🔗 <https://eastsun5566.github.io/let-it-go/>
 
-## ✨ Install
+## ✨ Installation
 
 ```sh
 npm i let-it-go
@@ -23,7 +23,7 @@ import { LetItGo } from "let-it-go";
 const snow = new LetItGo();
 ```
 
-### Others
+### More
 
 ```js
 // Just stop
