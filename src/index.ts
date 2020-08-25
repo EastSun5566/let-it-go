@@ -5,10 +5,7 @@ import { Snowflake } from './Snowflake';
 const getRandomNumber = (
   min: number,
   max: number,
-): number => {
-  const randNumber = Math.random() * (max - min) + min;
-  return randNumber || getRandomNumber(min, max);
-};
+): number => (Math.random() * (max - min) + min) || getRandomNumber(min, max);
 
 export class LetItGo {
   number: number;
