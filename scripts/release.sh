@@ -4,6 +4,8 @@
 git checkout master
 git pull
 
+npm run build
+
 # Update & tag version
 npm version patch
 
@@ -11,4 +13,4 @@ npm version patch
 git push --follow-tags
 git checkout -
 
-npm pulish
+npm publish
