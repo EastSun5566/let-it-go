@@ -1,6 +1,16 @@
 body {
+  height: 100vh;
   margin: 0;
   background-color: black;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 60%;
+  height: 60%;
 }
 
 /* The switch - the box around the slider */

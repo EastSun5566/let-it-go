@@ -2,15 +2,15 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
-import pkg from './package.json';
+import { name, main } from './package.json';
 
 const extensions = ['.js', '.ts'];
 
 export default {
   input: 'src/index.ts',
   output: {
-    name: pkg.name,
-    file: pkg.main,
+    name,
+    file: main,
     format: 'umd',
   },
   plugins: [

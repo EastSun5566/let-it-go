@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd demo/
+cd demo
 
 # make sure pkg is latest version
 yarn add let-it-go

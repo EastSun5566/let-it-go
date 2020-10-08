@@ -1,16 +1,14 @@
 /* eslint-disable no-underscore-dangle */
-import { Vec2D } from './Vector';
-import { Snowflake } from './Snowflake';
-
-const getRandomNumber = (
-  min: number,
-  max: number,
-): number => {
-  const randNumber = Math.random() * (max - min) + min;
-  return randNumber || getRandomNumber(min, max);
-};
+import {
+  Vec2D,
+  Snowflake,
+  getRandomNumber,
+  debounce,
+} from './utils';
 
 export class LetItGo {
+  root: HTMLElement;
+
   number: number;
 
   velocityXRange: [number, number];
@@ -36,6 +34,7 @@ export class LetItGo {
   private requestID: number | null = null;
 
   constructor({
+    root = document.body,
     number = window.innerWidth,
     velocityXRange: [minVX, maxVX] = [-3, 3],
     velocityYRange: [minVY, maxVY] = [1, 5],
@@ -44,6 +43,7 @@ export class LetItGo {
     alphaRange: [minA, maxA] = [0.8, 1],
     fps = 30,
   } = {}) {
+    this.root = root;
     this.number = number;
     this.velocityXRange = [minVX, maxVX];
     this.velocityYRange = [minVY, maxVY];
@@ -62,18 +62,26 @@ export class LetItGo {
     this._init();
   }
 
+  private _resizeCanvas(): void {
+    const { clientWidth, clientHeight } = this.root;
+
+    this.canvas.width = clientWidth;
+    this.canvas.height = clientHeight;
+  }
+
   private _mountCanvas(): void {
-    const resizeCanvas = (): void => {
-      const { innerWidth, innerHeight } = window;
+    this.root.style.position = 'relative';
 
-      this.canvas.width = innerWidth;
-      this.canvas.height = innerHeight;
-    };
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.top = '0';
+    this.canvas.style.left = '0';
+    this.canvas.style.zIndex = '-1';
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    this._resizeCanvas();
 
-    document.body.appendChild(this.canvas);
+    window.addEventListener('resize', debounce(() => this._resizeCanvas()));
+
+    this.root.appendChild(this.canvas);
   }
 
   private _createSnowflakes(): void {
@@ -91,12 +99,12 @@ export class LetItGo {
           getRandomNumber(0, -canvas.height),
         ),
         v: new Vec2D(
-          getRandomNumber(minVX, maxVX),
-          getRandomNumber(minVY, maxVY),
+          getRandomNumber(minVX, maxVX) || Number.MIN_VALUE,
+          getRandomNumber(minVY, maxVY) || Number.MIN_VALUE,
         ),
-        r: getRandomNumber(minR, maxR),
+        r: getRandomNumber(minR, maxR) || Number.MIN_VALUE,
         color,
-        alpha: getRandomNumber(minA, maxA),
+        alpha: getRandomNumber(minA, maxA) || Number.MIN_VALUE,
       }),
     );
   }
@@ -134,7 +142,10 @@ export class LetItGo {
 
   clear(): void {
     this.letItStop();
-    document.body.removeChild(this.canvas);
+
+    this.root.removeChild(this.canvas);
+
+    window.removeEventListener('resize', this._resizeCanvas);
   }
 }
 
