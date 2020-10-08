@@ -4,6 +4,8 @@
 git checkout master
 git pull
 
+npm run build
+
 # Update & tag version
 npm version patch
 
