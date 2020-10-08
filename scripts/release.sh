@@ -11,4 +11,4 @@ npm version patch
 git push --follow-tags
 git checkout -
 
-npm pulish
+npm publish
