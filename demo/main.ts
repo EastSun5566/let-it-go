@@ -1,4 +1,6 @@
-import { LetItGo } from 'let-it-go';
+// import { LetItGo } from 'let-it-go';
+
+import { LetItGo } from '../src';
 
 const snow = new LetItGo();
 

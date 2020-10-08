@@ -1,13 +1,9 @@
 /* eslint-disable no-underscore-dangle */
-import { Vec2D } from './Vector';
-import { Snowflake } from './Snowflake';
-
-const getRandomNumber = (
-  min: number,
-  max: number,
-): number => (Math.random() * (max - min) + min) || getRandomNumber(min, max);
+import { Vec2D, Snowflake, getRandomNumber } from './utils';
 
 export class LetItGo {
+  root: HTMLElement;
+
   number: number;
 
   velocityXRange: [number, number];
@@ -33,6 +29,7 @@ export class LetItGo {
   private requestID: number | null = null;
 
   constructor({
+    root = document.body,
     number = window.innerWidth,
     velocityXRange: [minVX, maxVX] = [-3, 3],
     velocityYRange: [minVY, maxVY] = [1, 5],
@@ -41,6 +38,7 @@ export class LetItGo {
     alphaRange: [minA, maxA] = [0.8, 1],
     fps = 30,
   } = {}) {
+    this.root = root;
     this.number = number;
     this.velocityXRange = [minVX, maxVX];
     this.velocityYRange = [minVY, maxVY];
@@ -61,16 +59,18 @@ export class LetItGo {
 
   private _mountCanvas(): void {
     const resizeCanvas = (): void => {
-      const { innerWidth, innerHeight } = window;
+      const { root } = this;
 
-      this.canvas.width = innerWidth;
-      this.canvas.height = innerHeight;
+      const isBody = (el: HTMLElement): boolean => el === document.body;
+
+      this.canvas.width = isBody(root) ? window.innerWidth : root.clientWidth;
+      this.canvas.height = isBody(root) ? window.innerHeight : root.clientWidth;
     };
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    document.body.appendChild(this.canvas);
+    this.root.prepend(this.canvas);
   }
 
   private _createSnowflakes(): void {
@@ -88,12 +88,12 @@ export class LetItGo {
           getRandomNumber(0, -canvas.height),
         ),
         v: new Vec2D(
-          getRandomNumber(minVX, maxVX),
-          getRandomNumber(minVY, maxVY),
+          getRandomNumber(minVX, maxVX) || Number.MIN_VALUE,
+          getRandomNumber(minVY, maxVY) || Number.MIN_VALUE,
         ),
-        r: getRandomNumber(minR, maxR),
+        r: getRandomNumber(minR, maxR) || Number.MIN_VALUE,
         color,
-        alpha: getRandomNumber(minA, maxA),
+        alpha: getRandomNumber(minA, maxA) || Number.MIN_VALUE,
       }),
     );
   }
@@ -131,7 +131,7 @@ export class LetItGo {
 
   clear(): void {
     this.letItStop();
-    document.body.removeChild(this.canvas);
+    this.root.removeChild(this.canvas);
   }
 }
 

@@ -1,11 +1,24 @@
-import { Vec2D } from './Vector';
+/* eslint-disable max-classes-per-file */
+export const getRandomNumber = (
+  min: number,
+  max: number,
+): number => Math.random() * (max - min) + min;
 
-/**
- * Snowflake
- *
- * @export
- * @class Snowflake
- */
+export class Vec2D {
+  // eslint-disable-next-line no-useless-constructor
+  constructor(
+    public x: number = 0,
+    public y: number = 0,
+  ) {}
+
+  add({ x = 0, y = 0 }: Vec2D): Vec2D {
+    this.x += x;
+    this.y += y;
+
+    return this;
+  }
+}
+
 export class Snowflake {
   p: Vec2D;
 
@@ -70,5 +83,3 @@ export class Snowflake {
     ctx.restore();
   }
 }
-
-export default Snowflake;
