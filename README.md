@@ -24,16 +24,24 @@ import { LetItGo } from "let-it-go";
 // Just snow!
 const snow = new LetItGo();
 
-// With options
+// With some options
 const snow = new LetItGo({
+  /** root container */
   root: document.body,
+  /** snow flake number */
   number: window.innerWidth,
+  /** x of velocity range */
   velocityXRange: [-3, 3],
+  /** y of velocity range */
   velocityYRange: [1, 5],
+  /** snow flake radius range */
   radiusRange: [0.5, 1],
-  color: '#fff',
+  /** snow flake color */
+  color: "#fff",
+  /** snow flake opacity range */
   alphaRange: [0.8, 1],
-  fps = 30,
+  /** FPS */
+  fps: 30,
 });
 ```
 
