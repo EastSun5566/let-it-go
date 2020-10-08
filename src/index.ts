@@ -4,7 +4,6 @@ import {
   Snowflake,
   getRandomNumber,
   debounce,
-  isBody,
 } from './utils';
 
 export class LetItGo {
@@ -64,20 +63,23 @@ export class LetItGo {
   }
 
   private _resizeCanvas(): void {
-    const { root } = this;
+    const { clientWidth, clientHeight } = this.root;
 
-    this.canvas.width = isBody(root) ? window.innerWidth : root.clientWidth;
-    this.canvas.height = isBody(root) ? window.innerHeight : root.clientWidth;
+    this.canvas.width = clientWidth;
+    this.canvas.height = clientHeight;
   }
 
   private _mountCanvas(): void {
-    const { root } = this;
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.top = '0';
+    this.canvas.style.left = '0';
+    this.canvas.style.zIndex = '-1';
 
     this._resizeCanvas();
 
-    if (isBody(root)) window.addEventListener('resize', debounce<UIEvent>(this._resizeCanvas));
+    window.addEventListener('resize', debounce<(e: UIEvent) => void>(() => this._resizeCanvas()));
 
-    root.prepend(this.canvas);
+    this.root.appendChild(this.canvas);
   }
 
   private _createSnowflakes(): void {
@@ -137,12 +139,11 @@ export class LetItGo {
   }
 
   clear(): void {
-    const { root, canvas } = this;
-
     this.letItStop();
 
-    root.removeChild(canvas);
-    if (isBody(root)) window.removeEventListener('resize', this._resizeCanvas);
+    this.root.removeChild(this.canvas);
+
+    window.removeEventListener('resize', this._resizeCanvas);
   }
 }
 

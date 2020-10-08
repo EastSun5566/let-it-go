@@ -4,10 +4,10 @@ export const getRandomNumber = (
   max: number,
 ): number => Math.random() * (max - min) + min;
 
-export const debounce = <T>(
-  fn: (...args: T[]) => any,
+export const debounce = <F extends (...args: any[]) => any>(
+  fn: F,
   ms = 250,
-): (...arg: T[]) => void => {
+): (...args: Parameters<F>) => void => {
   let timeoutID: NodeJS.Timeout;
 
   return (...args): void => {
@@ -16,8 +16,6 @@ export const debounce = <T>(
     timeoutID = setTimeout(() => fn(...args), ms);
   };
 };
-
-export const isBody = (el: HTMLElement): boolean => el === document.body;
 
 export class Vec2D {
   // eslint-disable-next-line no-useless-constructor
