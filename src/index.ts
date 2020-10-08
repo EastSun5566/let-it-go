@@ -1,5 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-import { Vec2D, Snowflake, getRandomNumber } from './utils';
+import {
+  Vec2D,
+  Snowflake,
+  getRandomNumber,
+  debounce,
+  isBody,
+} from './utils';
 
 export class LetItGo {
   root: HTMLElement;
@@ -57,20 +63,21 @@ export class LetItGo {
     this._init();
   }
 
+  private _resizeCanvas(): void {
+    const { root } = this;
+
+    this.canvas.width = isBody(root) ? window.innerWidth : root.clientWidth;
+    this.canvas.height = isBody(root) ? window.innerHeight : root.clientWidth;
+  }
+
   private _mountCanvas(): void {
-    const resizeCanvas = (): void => {
-      const { root } = this;
+    const { root } = this;
 
-      const isBody = (el: HTMLElement): boolean => el === document.body;
+    this._resizeCanvas();
 
-      this.canvas.width = isBody(root) ? window.innerWidth : root.clientWidth;
-      this.canvas.height = isBody(root) ? window.innerHeight : root.clientWidth;
-    };
+    if (isBody(root)) window.addEventListener('resize', debounce<UIEvent>(this._resizeCanvas));
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    this.root.prepend(this.canvas);
+    root.prepend(this.canvas);
   }
 
   private _createSnowflakes(): void {
@@ -130,8 +137,12 @@ export class LetItGo {
   }
 
   clear(): void {
+    const { root, canvas } = this;
+
     this.letItStop();
-    this.root.removeChild(this.canvas);
+
+    root.removeChild(canvas);
+    if (isBody(root)) window.removeEventListener('resize', this._resizeCanvas);
   }
 }
 

@@ -4,6 +4,21 @@ export const getRandomNumber = (
   max: number,
 ): number => Math.random() * (max - min) + min;
 
+export const debounce = <T>(
+  fn: (...args: T[]) => any,
+  ms = 250,
+): (...arg: T[]) => void => {
+  let timeoutID: NodeJS.Timeout;
+
+  return (...args): void => {
+    clearTimeout(timeoutID);
+
+    timeoutID = setTimeout(() => fn(...args), ms);
+  };
+};
+
+export const isBody = (el: HTMLElement): boolean => el === document.body;
+
 export class Vec2D {
   // eslint-disable-next-line no-useless-constructor
   constructor(
