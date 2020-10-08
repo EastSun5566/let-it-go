@@ -70,6 +70,8 @@ export class LetItGo {
   }
 
   private _mountCanvas(): void {
+    this.root.style.position = 'relative';
+
     this.canvas.style.position = 'absolute';
     this.canvas.style.top = '0';
     this.canvas.style.left = '0';
@@ -77,7 +79,7 @@ export class LetItGo {
 
     this._resizeCanvas();
 
-    window.addEventListener('resize', debounce<(e: UIEvent) => void>(() => this._resizeCanvas()));
+    window.addEventListener('resize', debounce(() => this._resizeCanvas()));
 
     this.root.appendChild(this.canvas);
   }

@@ -2,11 +2,17 @@
 
 import { LetItGo } from '../src';
 
-const snow = new LetItGo();
+const snow = new LetItGo({
+  root: document.getElementById('root'),
+});
 
 document
   .querySelector<HTMLInputElement>('#switch-input')
   .addEventListener('change', ({ target }) => {
-    if ((target as HTMLInputElement).checked) snow.letItGoAgain();
-    else snow.letItStop();
+    if (!(target as HTMLInputElement).checked) {
+      snow.letItStop();
+      return;
+    }
+
+    snow.letItGoAgain();
   });
