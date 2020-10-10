@@ -21,39 +21,31 @@ npm i let-it-go
 ```js
 import { LetItGo } from "let-it-go";
 
-// Just snow!
+// just snow!
 const snow = new LetItGo();
-
-// With some options
-const snow = new LetItGo({
-  /** root container */
-  root: document.body,
-  /** snow flake number */
-  number: window.innerWidth,
-  /** x of velocity range */
-  velocityXRange: [-3, 3],
-  /** y of velocity range */
-  velocityYRange: [1, 5],
-  /** snow flake radius range */
-  radiusRange: [0.5, 1],
-  /** snow flake color */
-  color: "#fff",
-  /** snow flake opacity range */
-  alphaRange: [0.8, 1],
-  /** FPS */
-  fps: 30,
-});
 ```
 
 ### More
 
 ```js
-// Just stop
+// with some options
+const snow = new LetItGo({
+  root: document.getElementById("root"), // root container, default is document.body
+  number: 1000, // snow flake number, default is window.innerWidth
+  velocityXRange: [-3, 3], // x of velocity range, default is [-3, 3]
+  velocityYRange: [1, 5], // y of velocity range, default is [1, 5]
+  radiusRange: [0.5, 1], // snow flake radius range, default is [0.5, 1]
+  color: "#fff", // snow flake color, default is #fff
+  alphaRange: [0.8, 1], // snow flake opacity range, default is [0.8, 1]
+  fps: 30, // FPS, default is 30
+});
+
+// just stop
 snow.letItStop();
 
-// And snow again!
+// and snow again!
 snow.letItGoAgain();
 
-// Clear canvas
+// stop & remove mounted canvas
 snow.clear();
 ```
