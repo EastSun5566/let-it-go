@@ -6,10 +6,30 @@ import {
   debounce,
 } from './utils';
 
+interface Options {
+  root?: HTMLElement;
+  number?: number;
+  velocityXRange?: [number, number];
+  velocityYRange?: [number, number];
+  radiusRange?: [number, number];
+  color?: string;
+  alphaRange?: [number, number];
+  fps?: number;
+}
+
 export class LetItGo {
   root: HTMLElement;
 
-  number: number;
+  private _number: number;
+
+  get number(): number {
+    return this._number;
+  }
+
+  set number(number: number) {
+    this._number = number;
+    this._createSnowflakes();
+  }
 
   velocityXRange: [number, number];
 
@@ -17,7 +37,17 @@ export class LetItGo {
 
   radiusRange: [number, number];
 
-  color: string;
+  private _color: string;
+
+  get color(): string {
+    return this._color;
+  }
+
+  set color(color: string) {
+    this._color = color;
+    // eslint-disable-next-line no-param-reassign
+    this.snowflakes.forEach((snowflake) => { snowflake.color = color; });
+  }
 
   alphaRange: [number, number];
 
@@ -42,13 +72,13 @@ export class LetItGo {
     color = '#fff',
     alphaRange: [minA, maxA] = [0.8, 1],
     fps = 30,
-  } = {}) {
+  }: Options = {}) {
     this.root = root;
-    this.number = number;
+    this._number = number;
     this.velocityXRange = [minVX, maxVX];
     this.velocityYRange = [minVY, maxVY];
     this.radiusRange = [minR, maxR];
-    this.color = color;
+    this._color = color;
     this.alphaRange = [minA, maxA];
     this.fps = fps;
 
@@ -85,14 +115,14 @@ export class LetItGo {
   }
 
   private _createSnowflakes(): void {
-    const { color, canvas } = this;
+    const { number, color, canvas } = this;
     const [minVX, maxVX] = this.velocityXRange;
     const [minVY, maxVY] = this.velocityYRange;
     const [minR, maxR] = this.radiusRange;
     const [minA, maxA] = this.alphaRange;
 
     this.snowflakes = Array.from(
-      { length: this.number },
+      { length: number },
       () => new Snowflake({
         p: new Vec2D(
           getRandomNumber(0, canvas.width),

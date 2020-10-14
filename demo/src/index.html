@@ -9,18 +9,30 @@
   </head>
   <body>
     <div id="root" class="container"></div>
-    <label for="is-snow">Let It Stop</label>
-    <input type="checkbox" id="is-snow" checked />
-    <br />
-    <label></label>
-    <input
-      type="range"
-      min="1"
-      max="100"
-      value="50"
-      class="slider"
-      id="myRange"
-    />
+
+    <div class="options">
+      <label for="is-snow">Let It Stop</label>
+      <input type="checkbox" id="is-snow" />
+
+      <br />
+
+      <label for="number">Number</label>
+      <input type="number" id="number" />
+
+      <br />
+
+      <label for="color">Color</label>
+      <input type="color" id="color" />
+
+      <!-- <input
+        type="range"
+        min="1"
+        max="100"
+        value="50"
+        class="slider"
+        id="myRange"
+      /> -->
+    </div>
 
     <script src="./main.ts"></script>
   </body>
