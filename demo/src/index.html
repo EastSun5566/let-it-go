@@ -8,12 +8,19 @@
     <link rel="stylesheet" href="style.scss" />
   </head>
   <body>
-    <div id="root" class="container">
-      <label class="switch" title="Let it go">
-        <input type="checkbox" id="switch-input" checked />
-        <span class="slider round"></span>
-      </label>
-    </div>
+    <div id="root" class="container"></div>
+    <label for="is-snow">Let It Stop</label>
+    <input type="checkbox" id="is-snow" checked />
+    <br />
+    <label></label>
+    <input
+      type="range"
+      min="1"
+      max="100"
+      value="50"
+      class="slider"
+      id="myRange"
+    />
 
     <script src="./main.ts"></script>
   </body>
