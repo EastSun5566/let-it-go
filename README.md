@@ -30,14 +30,14 @@ const snow = new LetItGo();
 ```js
 // with some options
 const snow = new LetItGo({
-  root: document.getElementById("root"), // root container, default is document.body
-  number: 1000, // snow flake number, default is window.innerWidth
-  velocityXRange: [-3, 3], // x of velocity range, default is [-3, 3]
-  velocityYRange: [1, 5], // y of velocity range, default is [1, 5]
-  radiusRange: [0.5, 1], // snow flake radius range, default is [0.5, 1]
-  color: "#fff", // snow flake color, default is #fff
-  alphaRange: [0.8, 1], // snow flake opacity range, default is [0.8, 1]
-  fps: 30, // FPS, default is 30
+  root: document.getElementById("root"), // root container, defaults to document.body
+  number: 1000, // snow flake number, defaults to window.innerWidth
+  velocityXRange: [-3, 3], // x of velocity range, defaults to [-3, 3]
+  velocityYRange: [1, 5], // y of velocity range, defaults to [1, 5]
+  radiusRange: [0.5, 1], // snow flake radius range, defaults to [0.5, 1]
+  color: "#fff", // snow flake color, defaults to #fff
+  alphaRange: [0.8, 1], // snow flake opacity range, defaults to [0.8, 1]
+  fps: 30, // FPS, defaults to 30
 });
 
 // just stop
