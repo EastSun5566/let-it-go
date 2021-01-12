@@ -72,7 +72,7 @@ export class LetItGo {
     color = '#fff',
     alphaRange: [minA, maxA] = [0.8, 1],
     fps = 30,
-  }: Options = {}) {
+  }: Readonly<Options> = {}) {
     this.root = root;
     this._number = number;
     this.velocityXRange = [minVX, maxVX];
@@ -83,7 +83,7 @@ export class LetItGo {
     this.fps = fps;
 
     const ctx = this.canvas.getContext('2d');
-    if (!ctx) throw new Error('The 2d context canvas is not supported.');
+    if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
 
     this.ctx = ctx;
 
@@ -108,7 +108,6 @@ export class LetItGo {
     this.canvas.style.zIndex = '-1';
 
     this._resizeCanvas();
-
     window.addEventListener('resize', debounce(() => this._resizeCanvas()));
 
     this.root.appendChild(this.canvas);
@@ -147,7 +146,6 @@ export class LetItGo {
     const { width, height } = this.canvas;
 
     this.ctx.clearRect(0, 0, width, height);
-
     this.snowflakes.forEach((snowflake) => snowflake.draw(this.ctx));
 
     requestAnimationFrame(this._draw);

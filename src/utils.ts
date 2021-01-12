@@ -4,8 +4,7 @@ export const getRandomNumber = (
   max: number,
 ): number => Math.random() * (max - min) + min;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const debounce = <F extends (...args: any[]) => any>(
+export const debounce = <F extends (...args: unknown[]) => unknown>(
   fn: F,
   ms = 250,
 ): (...args: Parameters<F>) => void => {
@@ -13,7 +12,6 @@ export const debounce = <F extends (...args: any[]) => any>(
 
   return (...args): void => {
     clearTimeout(timeoutID);
-
     timeoutID = setTimeout(() => fn(...args), ms);
   };
 };
@@ -64,11 +62,9 @@ export class Snowflake {
     if (p.y - r > height) {
       this.p.y = 0 - r;
     }
-
     if (p.x - r > width) {
       this.p.x = 0 - r;
     }
-
     if (p.x + r < 0) {
       this.p.x = width + r;
     }
