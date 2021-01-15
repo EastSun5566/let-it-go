@@ -12,6 +12,7 @@ export const debounce = <F extends (...args: unknown[]) => unknown>(
 
   return (...args): void => {
     clearTimeout(timeoutID);
+
     timeoutID = setTimeout(() => fn(...args), ms);
   };
 };
