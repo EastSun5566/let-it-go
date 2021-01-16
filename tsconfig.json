@@ -5,12 +5,10 @@
     "strict": true,
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "declarationDir": "dist/types",
     "declaration": true
   },
-  "lib": ["esnext"],
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }

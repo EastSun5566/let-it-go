@@ -63,9 +63,11 @@ export class Snowflake {
     if (p.y - r > height) {
       this.p.y = 0 - r;
     }
+
     if (p.x - r > width) {
       this.p.x = 0 - r;
     }
+
     if (p.x + r < 0) {
       this.p.x = width + r;
     }
