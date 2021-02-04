@@ -1,8 +1,8 @@
 {
-  "name": "demo",
+  "name": "let-it-go-demo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Demo site for let-it-go",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "parcel -p 8000 watch src/index.html --open",
     "build": "parcel build src/index.html --public-url /let-it-go/"

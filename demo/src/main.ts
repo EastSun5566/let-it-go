@@ -16,11 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const switchInput = document.querySelector<HTMLInputElement>('#is-snow');
   switchInput.checked = INIT_OPTIONS.init;
-
   switchInput.addEventListener('change', ({ target }) => {
     const switchLabel = document.querySelector('[for="is-snow"]');
 
-    if (target.checked) {
+    if ((target as HTMLInputElement).checked) {
       snow.letItGoAgain();
       switchLabel.textContent = 'Let It Stop!';
       return;
@@ -32,15 +31,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const numberInput = document.querySelector<HTMLInputElement>('#number');
   numberInput.value = `${INIT_OPTIONS.number}`;
-
   numberInput.addEventListener('input', ({ target }) => {
-    snow.number = +target.value;
+    snow.number = +(target as HTMLInputElement).value;
   });
 
   const colorInput = document.querySelector<HTMLInputElement>('#color');
   colorInput.value = INIT_OPTIONS.color;
-
   colorInput.addEventListener('input', ({ target }) => {
-    snow.color = target.value;
+    snow.color = (target as HTMLInputElement).value;
+  });
+
+  const rangeInput = document.querySelector<HTMLInputElement>('#x-range-1');
+  rangeInput.addEventListener('change', ({ target }) => {
+    console.log((target as HTMLInputElement).value);
   });
 });

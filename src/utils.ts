@@ -57,17 +57,18 @@ export class Snowflake {
     this.alpha = alpha;
   }
 
-  update({ width = window.innerWidth, height = window.innerHeight } = {}): void {
+  update({
+    width = window.innerWidth,
+    height = window.innerHeight,
+  } = {}): void {
     const { p, r, v } = this;
 
     if (p.y - r > height) {
       this.p.y = 0 - r;
     }
-
     if (p.x - r > width) {
       this.p.x = 0 - r;
     }
-
     if (p.x + r < 0) {
       this.p.x = width + r;
     }

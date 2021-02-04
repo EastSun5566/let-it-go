@@ -6,11 +6,11 @@ body {
 }
 
 .container {
-  width: 60%;
-  height: 60%;
-  margin: 100px auto 8px auto;
+  height: 100%;
 }
 
 .options {
-  text-align: center;
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
 }
