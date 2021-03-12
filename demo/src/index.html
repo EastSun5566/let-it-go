@@ -11,20 +11,53 @@
     <div id="root" class="container"></div>
 
     <div class="options">
-      <label for="is-snow">Let It Stop</label>
-      <input type="checkbox" id="is-snow" />
+      <div class="custom-control custom-switch">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          id="is-snow"
+          checked
+        />
+        <label class="custom-control-label" for="is-snow">Let It Stop</label>
+      </div>
 
       <br />
 
-      <input type="number" id="number" />
+      <div class="form-group">
+        <input
+          type="number"
+          class="form-control"
+          id="number"
+          placeholder="number of snowflake"
+        />
+      </div>
 
       <br />
 
-      <input type="color" id="color" />
+      <div class="form-group">
+        <input
+          type="color"
+          class="form-control"
+          id="color"
+          placeholder="color of snowflake"
+        />
+      </div>
 
       <br />
 
-      <input type="range" min="-100" max="100" id="x-range-1" />
+      <fieldset class="form-group">
+        <input
+          type="range"
+          class="custom-range"
+          min="-100"
+          max="100"
+          value="0"
+          id="x-range-1"
+        />
+      </fieldset>
+
+      <br />
+
       <input type="range" min="-100" max="100" id="x-range-2" />
     </div>
 

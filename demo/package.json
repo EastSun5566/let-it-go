@@ -16,6 +16,7 @@
     "sass": "^1.26.10"
   },
   "dependencies": {
+    "bootswatch": "^4.6.0",
     "let-it-go": "^0.0.4"
   }
 }
