@@ -4,7 +4,7 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
 [![License](https://img.shields.io/github/license/EastSun5566/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
 
-> ❄️ Make your website snow instantly
+> ❄️ Let your website snow instantly
 
 🔗 <https://eastsun5566.github.io/let-it-go/>
 
@@ -42,14 +42,14 @@ const snow = new LetItGo({
   fps: 30, // FPS, defaults to 30
 });
 
-// you can use static prop DEFAULT_OPTIONS get all the default options
+// you can use static prop DEFAULT_OPTIONS to get all the default options
 const allTheDefaultOptions = LetItGo.DEFAULT_OPTIONS;
 ```
 
 #### Dynamic update options
 
 ```js
-// you can directly update instance prop and will reflect those change in canvas
+// you can directly update instance prop and it will reflect those change in canvas
 snow.number = 5566;
 snow.color: "#333333"
 snow.velocityXRange = [-10, 50]; // must be tuple [number, number]
@@ -58,10 +58,10 @@ snow.velocityXRange = [-10, 50]; // must be tuple [number, number]
 #### Some additional methods
 
 ```js
-// just stop, will stop animation
+// just stop animation
 snow.letItStop();
 
-// and snow again! resume animation
+// and snow again!
 snow.letItGoAgain();
 
 // stop animation & remove mounted canvas

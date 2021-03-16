@@ -7,6 +7,7 @@ import {
   bindSwitch,
   bindRangeInputs,
   bindResetBtn,
+  setupToggle,
 } from './utils';
 
 const rangeOptions: RangeOption[] = [
@@ -30,13 +31,15 @@ const rangeOptions: RangeOption[] = [
     max: 1,
   }];
 
-createRangeInputs(
-  document.getElementById('ranges-container'),
-  rangeOptions,
-);
-
 document.addEventListener('DOMContentLoaded', () => {
+  createRangeInputs(
+    document.getElementById('ranges-container'),
+    rangeOptions,
+  );
+
   const snow = new LetItGo({ root: document.getElementById('let-it-go') });
+
+  setupToggle();
 
   bindResetBtn(snow);
   bindSwitch(snow);
