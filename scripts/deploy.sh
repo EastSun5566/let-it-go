@@ -1,22 +1,17 @@
 #!/bin/sh
 
-# abort on errors
 set -e
 
 cd demo
 
-# make sure pkg is latest version
-yarn add let-it-go
-
-# build
+yarn add let-it-go@latest
 yarn build
 
-# navigate into the build output directory
 cd dist
 
 git init
 git add -A
-git commit -m 'deploy let-it-go demo'
+git commit -m 'chore(deploy): deploy demo'
 
 git push -f git@github.com:EastSun5566/let-it-go.git master:gh-pages
 

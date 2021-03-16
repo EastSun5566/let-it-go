@@ -1,37 +1,6 @@
-/* eslint-disable max-classes-per-file */
-export const getRandomNumber = (
-  min: number,
-  max: number,
-): number => Math.random() * (max - min) + min;
+import { Vec2D } from './Vector';
 
-export const debounce = <F extends (...args: unknown[]) => unknown>(
-  fn: F,
-  ms = 250,
-): (...args: Parameters<F>) => void => {
-  let timeoutID: NodeJS.Timeout;
-
-  return (...args): void => {
-    clearTimeout(timeoutID);
-
-    timeoutID = setTimeout(() => fn(...args), ms);
-  };
-};
-
-export class Vec2D {
-  // eslint-disable-next-line no-useless-constructor
-  constructor(
-    public x: number = 0,
-    public y: number = 0,
-  ) {}
-
-  add({ x = 0, y = 0 }: Vec2D): Vec2D {
-    this.x += x;
-    this.y += y;
-
-    return this;
-  }
-}
-
+// eslint-disable-next-line import/prefer-default-export
 export class Snowflake {
   p: Vec2D;
 
@@ -57,18 +26,17 @@ export class Snowflake {
     this.alpha = alpha;
   }
 
-  update({
-    width = window.innerWidth,
-    height = window.innerHeight,
-  } = {}): void {
+  update({ width = 0, height = 0 } = {}): void {
     const { p, r, v } = this;
 
     if (p.y - r > height) {
       this.p.y = 0 - r;
     }
+
     if (p.x - r > width) {
       this.p.x = 0 - r;
     }
+
     if (p.x + r < 0) {
       this.p.x = width + r;
     }
