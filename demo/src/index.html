@@ -10,9 +10,9 @@
   </head>
   <body>
     <div id="let-it-go" class="container">
-      <div class="text-center pt-5">
-        <h3 class="text-white">❄️ Welcome to Let it go</h3>
-        <h5 class="text-white">Make your website snow instantly ⛄️</h5>
+      <main class="main text-center">
+        <h3 class="text-white">❄️ Welcome to LET IT GO</h3>
+        <h5 class="text-white">Let your website snow instantly ⛄️</h5>
 
         <small class="d-block mt-3">
           Made with ❤️ By
@@ -24,12 +24,12 @@
             EastSun5566
           </a>
         </small>
-      </div>
+      </main>
     </div>
 
-    <div class="options">
-      <div class="form-group">
-        <div class="custom-control custom-switch text-center">
+    <div class="options" id="option">
+      <div class="form-group d-flex justify-content-between align-items-center">
+        <div class="custom-control custom-switch">
           <input
             type="checkbox"
             class="custom-control-input"
@@ -39,15 +39,16 @@
           <label class="custom-control-label" for="is-snow"></label>
         </div>
 
-        <div class="text-right">
-          <button type="button" class="btn btn-secondary btn-xs" id="reset">
+        <div>
+          <button type="button" class="btn btn-secondary btn-sm" id="reset">
             RESET ⛷
           </button>
+          <button type="button" class="btn btn-sm" id="toggle"></button>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="number">❄️ number</label>
+        <label for="number">❄️ NUMBER</label>
         <input
           type="number"
           class="form-control"
@@ -57,7 +58,7 @@
       </div>
 
       <div class="form-group">
-        <label for="number">❄️ color</label>
+        <label for="number">❄️ COLOR</label>
         <input
           type="color"
           class="form-control"

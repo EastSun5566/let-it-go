@@ -3,37 +3,60 @@ import { LetItGo } from 'let-it-go';
 
 const { DEFAULT_OPTIONS } = LetItGo;
 
-export const bindResetBtn = (snow: LetItGo): void => {
-  const resetBtn = document.querySelector<HTMLInputElement>('#reset');
-  resetBtn.addEventListener('click', () => {
-    snow.letItGoAgain();
+export const setupToggle = (): void => {
+  const DOWN = '👇';
+  const UP = '☝️';
 
-    snow.number = DEFAULT_OPTIONS.number;
-    snow.color = DEFAULT_OPTIONS.color;
-    snow.velocityXRange = DEFAULT_OPTIONS.velocityXRange;
-    snow.velocityYRange = DEFAULT_OPTIONS.velocityYRange;
-    snow.radiusRange = DEFAULT_OPTIONS.radiusRange;
-    snow.alphaRange = DEFAULT_OPTIONS.alphaRange;
+  let isDown = false;
+  const toggle = document.getElementById('toggle');
+  const option = document.getElementById('option');
+  toggle.textContent = DOWN;
+  toggle.addEventListener('click', () => {
+    if (isDown) {
+      option.style.bottom = '16px';
+      toggle.textContent = DOWN;
+      isDown = false;
+      return;
+    }
+
+    option.style.bottom = `${-option.offsetHeight + toggle.offsetHeight + 24}px`;
+    toggle.textContent = UP;
+    isDown = true;
   });
 };
 
+export const bindResetBtn = (snow: LetItGo): void => {
+  document
+    .querySelector<HTMLInputElement>('#reset')
+    .addEventListener('click', () => {
+      snow.letItGoAgain();
+
+      snow.number = DEFAULT_OPTIONS.number;
+      snow.color = DEFAULT_OPTIONS.color;
+      snow.velocityXRange = DEFAULT_OPTIONS.velocityXRange;
+      snow.velocityYRange = DEFAULT_OPTIONS.velocityYRange;
+      snow.radiusRange = DEFAULT_OPTIONS.radiusRange;
+      snow.alphaRange = DEFAULT_OPTIONS.alphaRange;
+    });
+};
+
 export const bindSwitch = (snow: LetItGo): void => {
-  const stop = 'Let It Stop ⛄️';
-  const go = 'Let It Go ☃️';
+  const STOP = '⛄️';
+  const GO = '☃️';
 
   const switchInput = document.querySelector<HTMLInputElement>('#is-snow');
   const switchLabel = document.querySelector('[for="is-snow"]');
   switchInput.checked = true;
-  switchLabel.textContent = stop;
+  switchLabel.textContent = STOP;
   switchInput.addEventListener('change', ({ target }) => {
     if ((target as HTMLInputElement).checked) {
       snow.letItGoAgain();
-      switchLabel.textContent = stop;
+      switchLabel.textContent = STOP;
       return;
     }
 
     snow.letItStop();
-    switchLabel.textContent = go;
+    switchLabel.textContent = GO;
   });
 };
 
@@ -97,7 +120,7 @@ export const createRangeInputs = (
 ): void => {
   const template = ({ type, min, max }: RangeOption) => `
   <fieldset class="form-group">
-      <label id="${type}-range-label">❄️ ${type} range ()</label>
+      <label id="${type}-range-label">❄️ ${type.toUpperCase()} RANGE ()</label>
 
       <input
         type="range"

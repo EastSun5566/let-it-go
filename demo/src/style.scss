@@ -4,22 +4,54 @@ body {
   height: 100vh;
   background-color: black;
   color: #eee;
+  overflow: hidden;
 }
 
 .container {
   height: 100%;
+
+  .main {
+    padding-top: 88px;
+  }
 }
+
+$options-bg: rgba(white, 0.3);
 
 .options {
   position: absolute;
   left: 16px;
   bottom: 16px;
 
-  background-color: rgba(white, 0.2);
+  background-color: $options-bg;
   padding: 16px;
-  border-radius: 4px;
-  height: 50vh;
-  overflow: scroll;
+  height: 40vh;
+  overflow-y: scroll;
+
+  @media screen and (max-width: 720px) {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .github-corner:hover .octo-arm {
