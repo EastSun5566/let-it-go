@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "bootswatch": "^4.6.0",
-    "let-it-go": "^0.0.4"
+    "let-it-go": "^0.0.5"
   }
 }

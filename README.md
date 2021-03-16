@@ -27,7 +27,7 @@ const snow = new LetItGo();
 
 ### More
 
-### Initial options
+#### Initial options
 
 ```js
 // with some options
@@ -46,7 +46,7 @@ const snow = new LetItGo({
 const allTheDefaultOptions = LetItGo.DEFAULT_OPTIONS;
 ```
 
-### Dynamic update options
+#### Dynamic update options
 
 ```js
 // you can directly update instance prop and will reflect those change in canvas
