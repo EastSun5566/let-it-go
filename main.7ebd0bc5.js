@@ -434,7 +434,7 @@ n(v, "DEFAULT_OPTIONS", c);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createRangeInputs = exports.bindRangeInputs = exports.bindColorInput = exports.bindNumberInput = exports.bindSwitch = exports.bindResetBtn = void 0;
+exports.createRangeInputs = exports.bindRangeInputs = exports.bindColorInput = exports.bindNumberInput = exports.bindSwitch = exports.bindResetBtn = exports.setupToggle = void 0;
 
 var _letItGo = require("let-it-go");
 
@@ -452,9 +452,31 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var DEFAULT_OPTIONS = _letItGo.LetItGo.DEFAULT_OPTIONS;
 
+var setupToggle = function setupToggle() {
+  var DOWN = '👇';
+  var UP = '☝️';
+  var isDown = false;
+  var toggle = document.getElementById('toggle');
+  var option = document.getElementById('option');
+  toggle.textContent = DOWN;
+  toggle.addEventListener('click', function () {
+    if (isDown) {
+      option.style.bottom = '16px';
+      toggle.textContent = DOWN;
+      isDown = false;
+      return;
+    }
+
+    option.style.bottom = "".concat(-option.offsetHeight + toggle.offsetHeight + 24, "px");
+    toggle.textContent = UP;
+    isDown = true;
+  });
+};
+
+exports.setupToggle = setupToggle;
+
 var bindResetBtn = function bindResetBtn(snow) {
-  var resetBtn = document.querySelector('#reset');
-  resetBtn.addEventListener('click', function () {
+  document.querySelector('#reset').addEventListener('click', function () {
     snow.letItGoAgain();
     snow.number = DEFAULT_OPTIONS.number;
     snow.color = DEFAULT_OPTIONS.color;
@@ -468,23 +490,23 @@ var bindResetBtn = function bindResetBtn(snow) {
 exports.bindResetBtn = bindResetBtn;
 
 var bindSwitch = function bindSwitch(snow) {
-  var stop = 'Let It Stop ⛄️';
-  var go = 'Let It Go ☃️';
+  var STOP = '⛄️';
+  var GO = '☃️';
   var switchInput = document.querySelector('#is-snow');
   var switchLabel = document.querySelector('[for="is-snow"]');
   switchInput.checked = true;
-  switchLabel.textContent = stop;
+  switchLabel.textContent = STOP;
   switchInput.addEventListener('change', function (_ref) {
     var target = _ref.target;
 
     if (target.checked) {
       snow.letItGoAgain();
-      switchLabel.textContent = stop;
+      switchLabel.textContent = STOP;
       return;
     }
 
     snow.letItStop();
-    switchLabel.textContent = go;
+    switchLabel.textContent = GO;
   });
 };
 
@@ -554,7 +576,7 @@ var createRangeInputs = function createRangeInputs(container, rangeOptions) {
     var type = _ref7.type,
         min = _ref7.min,
         max = _ref7.max;
-    return "\n  <fieldset class=\"form-group\">\n      <label id=\"".concat(type, "-range-label\">\u2744\uFE0F ").concat(type, " range ()</label>\n\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-1\"\n      />\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-2\"\n      />\n    </fieldset>\n  ");
+    return "\n  <fieldset class=\"form-group\">\n      <label id=\"".concat(type, "-range-label\">\u2744\uFE0F ").concat(type.toUpperCase(), " RANGE ()</label>\n\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-1\"\n      />\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-2\"\n      />\n    </fieldset>\n  ");
   };
 
   container.innerHTML = rangeOptions.map(function (option) {
@@ -587,11 +609,12 @@ var rangeOptions = [{
   min: 0,
   max: 1
 }];
-(0, _utils.createRangeInputs)(document.getElementById('ranges-container'), rangeOptions);
 document.addEventListener('DOMContentLoaded', function () {
+  (0, _utils.createRangeInputs)(document.getElementById('ranges-container'), rangeOptions);
   var snow = new _letItGo.LetItGo({
     root: document.getElementById('let-it-go')
   });
+  (0, _utils.setupToggle)();
   (0, _utils.bindResetBtn)(snow);
   (0, _utils.bindSwitch)(snow);
   (0, _utils.bindNumberInput)(snow);
@@ -626,7 +649,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57456" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60014" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
