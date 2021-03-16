@@ -389,6 +389,7 @@ var LetItGo = /*#__PURE__*/function () {
 
     _classCallCheck(this, LetItGo);
 
+    this.isGo = false;
     this.canvas = document.createElement('canvas');
     this.snowflakes = [];
     this.intervalID = null;
@@ -489,8 +490,10 @@ var LetItGo = /*#__PURE__*/function () {
   }, {
     key: "_init",
     value: function _init() {
+      if (this.isGo) return;
       this.intervalID = setInterval(this._update, 1000 / this.fps);
       this.requestID = requestAnimationFrame(this._draw);
+      this.isGo = true;
     }
   }, {
     key: "letItStop",
@@ -500,6 +503,7 @@ var LetItGo = /*#__PURE__*/function () {
       if (!intervalID || !requestID) return;
       clearInterval(intervalID);
       cancelAnimationFrame(requestID);
+      this.isGo = false;
     }
   }, {
     key: "letItGoAgain",
@@ -617,10 +621,15 @@ Object.keys(_LetItGo).forEach(function (key) {
     }
   });
 });
-},{"./LetItGo":"../../src/LetItGo.ts"}],"main.ts":[function(require,module,exports) {
+},{"./LetItGo":"../../src/LetItGo.ts"}],"js/utils.ts":[function(require,module,exports) {
 "use strict";
 
-var _src = require("../../src");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createRangeInputs = exports.bindRangeInputs = exports.bindColorInput = exports.bindNumberInput = exports.bindSwitch = exports.bindResetBtn = void 0;
+
+var _src = require("../../../src");
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -635,84 +644,155 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var DEFAULT_OPTIONS = _src.LetItGo.DEFAULT_OPTIONS;
-document.addEventListener('DOMContentLoaded', function () {
-  var snow = new _src.LetItGo({
-    root: document.getElementById('root')
+
+var bindResetBtn = function bindResetBtn(snow) {
+  var resetBtn = document.querySelector('#reset');
+  resetBtn.addEventListener('click', function () {
+    snow.letItGoAgain();
+    snow.number = DEFAULT_OPTIONS.number;
+    snow.color = DEFAULT_OPTIONS.color;
+    snow.velocityXRange = DEFAULT_OPTIONS.velocityXRange;
+    snow.velocityYRange = DEFAULT_OPTIONS.velocityYRange;
+    snow.radiusRange = DEFAULT_OPTIONS.radiusRange;
+    snow.alphaRange = DEFAULT_OPTIONS.alphaRange;
   });
+};
+
+exports.bindResetBtn = bindResetBtn;
+
+var bindSwitch = function bindSwitch(snow) {
+  var stop = 'Let It Stop ⛄️';
+  var go = 'Let It Go ☃️';
   var switchInput = document.querySelector('#is-snow');
+  var switchLabel = document.querySelector('[for="is-snow"]');
   switchInput.checked = true;
+  switchLabel.textContent = stop;
   switchInput.addEventListener('change', function (_ref) {
     var target = _ref.target;
-    var switchLabel = document.querySelector('[for="is-snow"]');
 
     if (target.checked) {
       snow.letItGoAgain();
-      switchLabel.textContent = 'Let It Stop!';
+      switchLabel.textContent = stop;
       return;
     }
 
     snow.letItStop();
-    switchLabel.textContent = 'Let It Go!';
+    switchLabel.textContent = go;
   });
+};
+
+exports.bindSwitch = bindSwitch;
+
+var bindNumberInput = function bindNumberInput(snow) {
   var numberInput = document.querySelector('#number');
   numberInput.value = "".concat(DEFAULT_OPTIONS.number);
   numberInput.addEventListener('input', function (_ref2) {
     var target = _ref2.target;
     snow.number = +target.value;
   });
+};
+
+exports.bindNumberInput = bindNumberInput;
+
+var bindColorInput = function bindColorInput(snow) {
   var colorInput = document.querySelector('#color');
   colorInput.value = DEFAULT_OPTIONS.color;
   colorInput.addEventListener('input', function (_ref3) {
     var target = _ref3.target;
     snow.color = target.value;
   });
+};
 
-  var _DEFAULT_OPTIONS$velo = _slicedToArray(DEFAULT_OPTIONS.velocityXRange, 2),
-      x1 = _DEFAULT_OPTIONS$velo[0],
-      x2 = _DEFAULT_OPTIONS$velo[1];
+exports.bindColorInput = bindColorInput;
 
-  var updateXLabelContent = function updateXLabelContent() {
-    var xLabel = document.querySelector('#x-range');
-    xLabel.textContent = xLabel.textContent.replace(/\(.*\)/, "(".concat([x1, x2].sort().join(' to '), ")"));
+var bindRangeInputs = function bindRangeInputs(snow, rangeOptions) {
+  rangeOptions.forEach(function (_ref4) {
+    var type = _ref4.type;
+
+    var _DEFAULT_OPTIONS$ = _slicedToArray(DEFAULT_OPTIONS["".concat(type, "Range")], 2),
+        v1 = _DEFAULT_OPTIONS$[0],
+        v2 = _DEFAULT_OPTIONS$[1];
+
+    var updateLabel = function updateLabel() {
+      var label = document.querySelector("#".concat(type, "-range-label"));
+      label.textContent = label.textContent.replace(/\(.*\)/, "(".concat([v1, v2].sort().join(' to '), ")"));
+    };
+
+    var v1Input = document.querySelector("#".concat(type, "-range-value-1"));
+    v1Input.value = "".concat(v1);
+    v1Input.addEventListener('change', function (_ref5) {
+      var target = _ref5.target;
+      var value = target.value;
+      v1 = +value;
+      snow["".concat(type, "Range")] = [v1, v2];
+      updateLabel();
+    });
+    var v2Input = document.querySelector("#".concat(type, "-range-value-2"));
+    v2Input.value = "".concat(v2);
+    v2Input.addEventListener('change', function (_ref6) {
+      var target = _ref6.target;
+      var value = target.value;
+      v2 = +value;
+      snow["".concat(type, "Range")] = [v1, v2];
+      updateLabel();
+    });
+    updateLabel();
+  });
+};
+
+exports.bindRangeInputs = bindRangeInputs;
+
+var createRangeInputs = function createRangeInputs(container, rangeOptions) {
+  var template = function template(_ref7) {
+    var type = _ref7.type,
+        min = _ref7.min,
+        max = _ref7.max;
+    return "\n  <fieldset class=\"form-group\">\n      <label id=\"".concat(type, "-range-label\">\u2744\uFE0F ").concat(type, " range ()</label>\n\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-1\"\n      />\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-2\"\n      />\n    </fieldset>\n  ");
   };
 
-  updateXLabelContent();
-  var x1Input = document.querySelector('#x-range-value-1');
-  x1Input.value = "".concat(x1);
-  x1Input.addEventListener('change', function (_ref4) {
-    var target = _ref4.target;
-    var value = target.value;
-    x1 = +value;
-    snow.velocityXRange = [x1, x2];
-    updateXLabelContent();
+  container.innerHTML = rangeOptions.map(function (option) {
+    return template(option);
+  }).join();
+};
+
+exports.createRangeInputs = createRangeInputs;
+},{"../../../src":"../../src/index.ts"}],"js/main.ts":[function(require,module,exports) {
+"use strict";
+
+var _src = require("../../../src");
+
+var _utils = require("./utils");
+
+// import { LetItGo } from 'let-it-go';
+var rangeOptions = [{
+  type: 'velocityX',
+  min: -100,
+  max: 100
+}, {
+  type: 'velocityY',
+  min: -100,
+  max: 100
+}, {
+  type: 'radius',
+  min: 0,
+  max: 50
+}, {
+  type: 'alpha',
+  min: 0,
+  max: 1
+}];
+(0, _utils.createRangeInputs)(document.getElementById('ranges-container'), rangeOptions);
+document.addEventListener('DOMContentLoaded', function () {
+  var snow = new _src.LetItGo({
+    root: document.getElementById('let-it-go')
   });
-  var x2Input = document.querySelector('#x-range-value-2');
-  x2Input.value = "".concat(x2);
-  x2Input.addEventListener('change', function (_ref5) {
-    var target = _ref5.target;
-    var value = target.value;
-    x2 = +value;
-    snow.velocityXRange = [x1, x2];
-    updateXLabelContent();
-  }); // const [y1, y2] = DEFAULT_OPTIONS.velocityYRange;
-  // const y1Input = document.querySelector<HTMLInputElement>('#y-range-value-1');
-  // y1Input.value = `${y1}`;
-  // y1Input.addEventListener('change', ({ target }) => {
-  //   const { value } = target as HTMLInputElement;
-  //   y1 = +value;
-  //   snow.velocityXRange = [y1, y2];
-  //   updateXLabelContent();
-  // });
-  // const y2Input = document.querySelector<HTMLInputElement>('#y-range-value-2');
-  // y2Input.value = `${y2}`;
-  // y2Input.addEventListener('change', ({ target }) => {
-  //   const { value } = target as HTMLInputElement;
-  //   y2 = +value;
-  //   snow.velocityXRange = [y1, y2];
-  //   updateXLabelContent();
-  // });
+  (0, _utils.bindResetBtn)(snow);
+  (0, _utils.bindSwitch)(snow);
+  (0, _utils.bindNumberInput)(snow);
+  (0, _utils.bindColorInput)(snow);
+  (0, _utils.bindRangeInputs)(snow, rangeOptions);
 });
-},{"../../src":"../../src/index.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../../src":"../../src/index.ts","./utils":"js/utils.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -916,5 +996,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.ts"], null)
-//# sourceMappingURL=/main.c39d6dcf.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/main.ts"], null)
+//# sourceMappingURL=/main.7ebd0bc5.js.map
