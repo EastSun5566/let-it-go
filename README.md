@@ -4,7 +4,7 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
 [![License](https://img.shields.io/github/license/EastSun5566/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
 
-> ❄️ let your website snow instantly
+> ❄️ Let your website snow instantly
 
 🔗 <https://eastsun5566.github.io/let-it-go/>
 
