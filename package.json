@@ -2,18 +2,21 @@
   "name": "let-it-go",
   "version": "0.0.4",
   "description": "❄️ Make your website snow instantly",
-  "main": "dist/index.js",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "type-check": "tsc --noEmit",
-    "type-check:watch": "npm run type-check --watch",
+    "type-check:watch": "yarn type-check --watch",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
-    "build": "npm run build:types && npm run build:js",
-    "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src/",
+    "build": "yarn build:types && yarn build:js",
+    "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src",
+    "prepublishOnly": "yarn build",
     "release": "sh scripts/release.sh",
     "deploy:demo": "sh scripts/deploy.sh"
   },
@@ -36,20 +39,20 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/preset-env": "^7.6.3",
-    "@babel/preset-typescript": "^7.7.2",
-    "@rollup/plugin-babel": "^5.1.0",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@typescript-eslint/eslint-plugin": "^2.5.0",
-    "@typescript-eslint/parser": "^2.5.0",
-    "eslint": "^6.5.1",
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "husky": "^3.1.0",
-    "rollup": "^1.25.2",
-    "rollup-plugin-terser": "^5.1.2",
-    "typescript": "^3.7.4"
+    "husky": "^4.3.0",
+    "rollup": "^2.34.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.1.2"
   }
 }

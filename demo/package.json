@@ -1,11 +1,11 @@
 {
-  "name": "demo",
+  "name": "let-it-go-demo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Demo site for let-it-go",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "parcel index.html",
-    "build": "parcel build index.html --public-url /let-it-go/"
+    "dev": "parcel -p 8000 watch src/index.html --open",
+    "build": "parcel build src/index.html --public-url /let-it-go/"
   },
   "keywords": [],
   "author": "汪東陽",
@@ -16,6 +16,7 @@
     "sass": "^1.26.10"
   },
   "dependencies": {
+    "bootswatch": "^4.6.0",
     "let-it-go": "^0.0.4"
   }
 }

@@ -1,0 +1,54 @@
+@import "../node_modules/bootswatch/dist/lux/bootstrap.min.css";
+
+body {
+  height: 100vh;
+  background-color: black;
+  color: #eee;
+}
+
+.container {
+  height: 100%;
+}
+
+.options {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+
+  background-color: rgba(white, 0.2);
+  padding: 16px;
+  border-radius: 4px;
+  height: 50vh;
+  overflow: scroll;
+}
+
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+
+  20%,
+  60% {
+    transform: rotate(-25deg);
+  }
+
+  40%,
+  80% {
+    transform: rotate(10deg);
+  }
+}
+
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none;
+  }
+
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+  }
+}

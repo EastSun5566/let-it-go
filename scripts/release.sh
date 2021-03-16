@@ -4,13 +4,10 @@
 git checkout master
 git pull
 
-npm run build
-
 # Update & tag version
-npm version patch
-
-# push update
+yarn version
 git push --follow-tags
-git checkout -
 
-npm publish
+yarn publish
+
+git checkout -
