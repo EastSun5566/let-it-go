@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { LetItGo } from '../../../src';
+import { LetItGo } from 'let-it-go';
 
 const { DEFAULT_OPTIONS } = LetItGo;
 
