@@ -27,6 +27,16 @@ export const assertRange = (range: Range): void | never => {
   assert(range.every((value) => typeof value === 'number'), 'range value must be number');
 };
 
+export const assertRadiusRange = (range: Range): void | never => {
+  assertRange(range);
+  assert(range.every((value) => value >= 1), 'radius range value must be positive');
+};
+
+export const assertAlphaRange = (range: Range): void | never => {
+  assertRange(range);
+  assert(range.every((value) => value >= 0 || value <= 1), 'alpha range value must be from 0 to 1');
+};
+
 const DEFAULT_OPTIONS: Readonly<Required<Options>> = {
   root: document.body,
   number: window.innerWidth,
@@ -87,7 +97,7 @@ export class LetItGo {
   }
 
   set radiusRange(range: Range) {
-    assertRange(range);
+    assertRadiusRange(range);
 
     this._radiusRange = range.sort();
     this.snowflakes.forEach((snowflake) => { snowflake.r = getRandom(...this._radiusRange); });
@@ -111,7 +121,7 @@ export class LetItGo {
   }
 
   set alphaRange(range: Range) {
-    assertRange(range);
+    assertAlphaRange(range);
 
     this._alphaRange = range.sort();
     this.snowflakes.forEach((snowflake) => { snowflake.alpha = getRandom(...this.alphaRange); });
@@ -143,8 +153,8 @@ export class LetItGo {
   }: Readonly<Options> = {}) {
     assertRange(velocityXRange);
     assertRange(velocityYRange);
-    assertRange(radiusRange);
-    assertRange(alphaRange);
+    assertRadiusRange(radiusRange);
+    assertAlphaRange(alphaRange);
 
     this.root = root;
     this._number = number;
@@ -239,10 +249,16 @@ export class LetItGo {
 
   letItStop(): void {
     const { intervalID, requestID } = this;
-    if (!intervalID || !requestID) return;
 
-    clearInterval(intervalID);
-    cancelAnimationFrame(requestID);
+    if (intervalID) {
+      clearInterval(intervalID);
+      this.intervalID = null;
+    }
+
+    if (requestID) {
+      cancelAnimationFrame(requestID);
+      this.requestID = null;
+    }
 
     this.isGo = false;
   }
