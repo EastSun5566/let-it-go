@@ -1,5 +1,13 @@
 import { Vec2D } from './Vector';
 
+interface Options {
+  p?: Vec2D;
+  v?: Vec2D;
+  r?: number;
+  color?: CanvasFillStrokeStyles['fillStyle'];
+  alpha?: number;
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export class Snowflake {
   p: Vec2D;
@@ -8,7 +16,7 @@ export class Snowflake {
 
   r: number;
 
-  color: string;
+  color: CanvasFillStrokeStyles['fillStyle'];
 
   alpha: number;
 
@@ -16,9 +24,9 @@ export class Snowflake {
     p = new Vec2D(),
     v = new Vec2D(),
     r = 0.5,
-    color = '#fff',
+    color = '#ffffff',
     alpha = 1,
-  } = {}) {
+  }: Options = {}) {
     this.p = p;
     this.v = v;
     this.r = r;
