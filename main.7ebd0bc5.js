@@ -117,318 +117,539 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../node_modules/let-it-go/dist/index.esm.js":[function(require,module,exports) {
+})({"../../src/utils/Vector.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.assertRange = exports.LetItGo = void 0;
+exports.Vec2D = void 0;
 
-function t(t, e) {
-  if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function");
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function e(t, e) {
-  for (var i = 0; i < e.length; i++) {
-    var n = e[i];
-    n.enumerable = n.enumerable || !1, n.configurable = !0, "value" in n && (n.writable = !0), Object.defineProperty(t, n.key, n);
-  }
-}
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function i(t, i, n) {
-  return i && e(t.prototype, i), n && e(t, n), t;
-}
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function n(t, e, i) {
-  return e in t ? Object.defineProperty(t, e, {
-    value: i,
-    enumerable: !0,
-    configurable: !0,
-    writable: !0
-  }) : t[e] = i, t;
-}
+// eslint-disable-next-line import/prefer-default-export
+var Vec2D = /*#__PURE__*/function () {
+  // eslint-disable-next-line no-useless-constructor
+  function Vec2D() {
+    var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+    var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-function o(t) {
-  return function (t) {
-    if (Array.isArray(t)) return a(t);
-  }(t) || function (t) {
-    if ("undefined" != typeof Symbol && Symbol.iterator in Object(t)) return Array.from(t);
-  }(t) || function (t, e) {
-    if (!t) return;
-    if ("string" == typeof t) return a(t, e);
-    var i = Object.prototype.toString.call(t).slice(8, -1);
-    "Object" === i && t.constructor && (i = t.constructor.name);
-    if ("Map" === i || "Set" === i) return Array.from(t);
-    if ("Arguments" === i || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(i)) return a(t, e);
-  }(t) || function () {
-    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-  }();
-}
+    _classCallCheck(this, Vec2D);
 
-function a(t, e) {
-  (null == e || e > t.length) && (e = t.length);
-
-  for (var i = 0, n = new Array(e); i < e; i++) n[i] = t[i];
-
-  return n;
-}
-
-var r = function () {
-  function e() {
-    var i = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 0,
-        n = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0;
-    t(this, e), this.x = i, this.y = n;
+    this.x = x;
+    this.y = y;
   }
 
-  return i(e, [{
+  _createClass(Vec2D, [{
     key: "add",
-    value: function (t) {
-      var e = t.x,
-          i = void 0 === e ? 0 : e,
-          n = t.y,
-          o = void 0 === n ? 0 : n;
-      return this.x += i, this.y += o, this;
+    value: function add(_ref) {
+      var _ref$x = _ref.x,
+          x = _ref$x === void 0 ? 0 : _ref$x,
+          _ref$y = _ref.y,
+          y = _ref$y === void 0 ? 0 : _ref$y;
+      this.x += x;
+      this.y += y;
+      return this;
     }
-  }]), e;
-}(),
-    s = function () {
-  function e() {
-    var i = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
-        o = i.p,
-        a = void 0 === o ? new r() : o,
-        s = i.v,
-        h = void 0 === s ? new r() : s,
-        l = i.r,
-        u = void 0 === l ? .5 : l,
-        c = i.color,
-        v = void 0 === c ? "#fff" : c,
-        f = i.alpha,
-        d = void 0 === f ? 1 : f;
-    t(this, e), n(this, "p", void 0), n(this, "v", void 0), n(this, "r", void 0), n(this, "color", void 0), n(this, "alpha", void 0), this.p = a, this.v = h, this.r = u, this.color = v, this.alpha = d;
+  }]);
+
+  return Vec2D;
+}();
+
+exports.Vec2D = Vec2D;
+},{}],"../../src/utils/Snowflake.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Snowflake = void 0;
+
+var _Vector = require("./Vector");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+// eslint-disable-next-line import/prefer-default-export
+var Snowflake = /*#__PURE__*/function () {
+  function Snowflake() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref$p = _ref.p,
+        p = _ref$p === void 0 ? new _Vector.Vec2D() : _ref$p,
+        _ref$v = _ref.v,
+        v = _ref$v === void 0 ? new _Vector.Vec2D() : _ref$v,
+        _ref$r = _ref.r,
+        r = _ref$r === void 0 ? 0.5 : _ref$r,
+        _ref$color = _ref.color,
+        color = _ref$color === void 0 ? '#ffffff' : _ref$color,
+        _ref$alpha = _ref.alpha,
+        alpha = _ref$alpha === void 0 ? 1 : _ref$alpha;
+
+    _classCallCheck(this, Snowflake);
+
+    this.p = p;
+    this.v = v;
+    this.r = r;
+    this.color = color;
+    this.alpha = alpha;
   }
 
-  return i(e, [{
+  _createClass(Snowflake, [{
     key: "update",
-    value: function () {
-      var t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
-          e = t.width,
-          i = void 0 === e ? 0 : e,
-          n = t.height,
-          o = void 0 === n ? 0 : n,
-          a = this.p,
+    value: function update() {
+      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref2$width = _ref2.width,
+          width = _ref2$width === void 0 ? 0 : _ref2$width,
+          _ref2$height = _ref2.height,
+          height = _ref2$height === void 0 ? 0 : _ref2$height;
+
+      var p = this.p,
           r = this.r,
-          s = this.v;
-      a.y - r > o && (this.p.y = 0 - r), a.x - r > i && (this.p.x = 0 - r), a.x + r < 0 && (this.p.x = i + r), this.p.add(s);
+          v = this.v;
+
+      if (p.y - r > height) {
+        this.p.y = 0 - r;
+      }
+
+      if (p.x - r > width) {
+        this.p.x = 0 - r;
+      }
+
+      if (p.x + r < 0) {
+        this.p.x = width + r;
+      }
+
+      this.p.add(v);
     }
   }, {
     key: "draw",
-    value: function (t) {
-      var e = this.p,
-          i = this.r,
-          n = this.color,
-          o = this.alpha;
-      t.save(), t.beginPath(), t.arc(e.x, e.y, i, 0, 2 * Math.PI), t.closePath(), t.fillStyle = n, t.globalAlpha = o, t.fill(), t.restore();
+    value: function draw(ctx) {
+      var p = this.p,
+          r = this.r,
+          color = this.color,
+          alpha = this.alpha;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      ctx.restore();
     }
-  }]), e;
-}(),
-    h = function (t, e) {
-  if (!t) throw Error("[let-it-go] ".concat(e));
-},
-    l = function (t, e) {
-  return Math.random() * (e - t) + t;
-},
-    u = function (t) {
-  h(Array.isArray(t), "range must be array"), h(2 === t.length, "range size must be 2"), h(t.every(function (t) {
-    return "number" == typeof t;
-  }), "range value must be number");
-},
-    c = {
+  }]);
+
+  return Snowflake;
+}();
+
+exports.Snowflake = Snowflake;
+},{"./Vector":"../../src/utils/Vector.ts"}],"../../src/utils/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _exportNames = {
+  assert: true,
+  getRandom: true,
+  debounce: true
+};
+exports.debounce = exports.getRandom = exports.assert = void 0;
+
+var _Vector = require("./Vector");
+
+Object.keys(_Vector).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _Vector[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _Vector[key];
+    }
+  });
+});
+
+var _Snowflake = require("./Snowflake");
+
+Object.keys(_Snowflake).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _Snowflake[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _Snowflake[key];
+    }
+  });
+});
+
+var assert = function assert(condition, message) {
+  if (!condition) throw Error("[let-it-go] ".concat(message));
+};
+
+exports.assert = assert;
+
+var getRandom = function getRandom(min, max) {
+  return Math.random() * (max - min) + min;
+};
+
+exports.getRandom = getRandom;
+
+var debounce = function debounce(fn) {
+  var ms = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 250;
+  var timeoutID;
+  return function () {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(function () {
+      return fn.apply(void 0, args);
+    }, ms);
+  };
+};
+
+exports.debounce = debounce;
+},{"./Vector":"../../src/utils/Vector.ts","./Snowflake":"../../src/utils/Snowflake.ts"}],"../../src/LetItGo.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.LetItGo = exports.DEFAULT_OPTIONS = exports.assertAlphaRange = exports.assertRadiusRange = exports.assertRange = void 0;
+
+var _utils = require("./utils");
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var assertRange = function assertRange(range) {
+  (0, _utils.assert)(Array.isArray(range), 'range must be array');
+  (0, _utils.assert)(range.length === 2, 'range size must be 2');
+  (0, _utils.assert)(range.every(function (value) {
+    return typeof value === 'number';
+  }), 'range value must be number');
+};
+
+exports.assertRange = assertRange;
+
+var assertRadiusRange = function assertRadiusRange(range) {
+  assertRange(range);
+  (0, _utils.assert)(range.every(function (value) {
+    return value >= 0;
+  }), 'radius range value must be positive');
+};
+
+exports.assertRadiusRange = assertRadiusRange;
+
+var assertAlphaRange = function assertAlphaRange(range) {
+  assertRange(range);
+  (0, _utils.assert)(range.every(function (value) {
+    return value >= 0 && value <= 1;
+  }), 'alpha range value must be from 0 to 1');
+};
+
+exports.assertAlphaRange = assertAlphaRange;
+var DEFAULT_OPTIONS = {
   root: document.body,
   number: window.innerWidth,
   velocityXRange: [-3, 3],
   velocityYRange: [1, 5],
-  radiusRange: [.5, 1],
-  color: "#ffffff",
-  alphaRange: [.8, 1],
+  radiusRange: [0.5, 1],
+  color: '#ffffff',
+  alphaRange: [0.8, 1],
   fps: 30
-},
-    v = function () {
-  function e() {
-    var i = this,
-        o = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
-        a = o.root,
-        r = void 0 === a ? c.root : a,
-        s = o.number,
-        h = void 0 === s ? c.number : s,
-        l = o.velocityXRange,
-        v = void 0 === l ? c.velocityXRange : l,
-        f = o.velocityYRange,
-        d = void 0 === f ? c.velocityYRange : f,
-        y = o.radiusRange,
-        p = void 0 === y ? c.radiusRange : y,
-        g = o.color,
-        m = void 0 === g ? c.color : g,
-        _ = o.alphaRange,
-        w = void 0 === _ ? c.alphaRange : _,
-        b = o.fps,
-        R = void 0 === b ? c.fps : b;
-    t(this, e), n(this, "root", void 0), n(this, "isGo", !1), n(this, "_number", void 0), n(this, "_velocityXRange", void 0), n(this, "_velocityYRange", void 0), n(this, "_radiusRange", void 0), n(this, "_color", void 0), n(this, "_alphaRange", void 0), n(this, "fps", void 0), n(this, "canvas", document.createElement("canvas")), n(this, "ctx", void 0), n(this, "snowflakes", []), n(this, "intervalID", null), n(this, "requestID", null), n(this, "_update", function () {
-      return i.snowflakes.forEach(function (t) {
-        return t.update(i.canvas);
+};
+exports.DEFAULT_OPTIONS = DEFAULT_OPTIONS;
+
+var LetItGo = /*#__PURE__*/function () {
+  function LetItGo() {
+    var _this = this;
+
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+        _ref$root = _ref.root,
+        root = _ref$root === void 0 ? DEFAULT_OPTIONS.root : _ref$root,
+        _ref$number = _ref.number,
+        number = _ref$number === void 0 ? DEFAULT_OPTIONS.number : _ref$number,
+        _ref$velocityXRange = _ref.velocityXRange,
+        velocityXRange = _ref$velocityXRange === void 0 ? DEFAULT_OPTIONS.velocityXRange : _ref$velocityXRange,
+        _ref$velocityYRange = _ref.velocityYRange,
+        velocityYRange = _ref$velocityYRange === void 0 ? DEFAULT_OPTIONS.velocityYRange : _ref$velocityYRange,
+        _ref$radiusRange = _ref.radiusRange,
+        radiusRange = _ref$radiusRange === void 0 ? DEFAULT_OPTIONS.radiusRange : _ref$radiusRange,
+        _ref$color = _ref.color,
+        color = _ref$color === void 0 ? DEFAULT_OPTIONS.color : _ref$color,
+        _ref$alphaRange = _ref.alphaRange,
+        alphaRange = _ref$alphaRange === void 0 ? DEFAULT_OPTIONS.alphaRange : _ref$alphaRange,
+        _ref$fps = _ref.fps,
+        fps = _ref$fps === void 0 ? DEFAULT_OPTIONS.fps : _ref$fps;
+
+    _classCallCheck(this, LetItGo);
+
+    this.isGo = false;
+    this.canvas = document.createElement('canvas');
+    this.snowflakes = [];
+    this.intervalID = null;
+    this.requestID = null;
+
+    this.update = function () {
+      return _this.snowflakes.forEach(function (snowflake) {
+        return snowflake.update(_this.canvas);
       });
-    }), n(this, "_draw", function () {
-      var t = i.canvas,
-          e = t.width,
-          n = t.height;
-      i.ctx.clearRect(0, 0, e, n), i.snowflakes.forEach(function (t) {
-        return t.draw(i.ctx);
-      }), requestAnimationFrame(i._draw);
-    }), u(v), u(d), u(p), u(w), this.root = r, this._number = h, this._velocityXRange = v.sort(), this._velocityYRange = d.sort(), this._radiusRange = p.sort(), this._color = m, this._alphaRange = w.sort(), this.fps = R;
-    var k = this.canvas.getContext("2d");
-    if (!k) throw new Error("[let-it-go] The 2d context canvas is not supported.");
-    this.ctx = k, this._mountCanvas(), this._createSnowflakes(), this._init();
+    };
+
+    this.draw = function () {
+      var _this$canvas = _this.canvas,
+          width = _this$canvas.width,
+          height = _this$canvas.height;
+
+      _this.ctx.clearRect(0, 0, width, height);
+
+      _this.snowflakes.forEach(function (snowflake) {
+        return snowflake.draw(_this.ctx);
+      });
+
+      requestAnimationFrame(_this.draw);
+    };
+
+    assertRange(velocityXRange);
+    assertRange(velocityYRange);
+    assertRadiusRange(radiusRange);
+    assertAlphaRange(alphaRange);
+    this.root = root;
+    this._number = number;
+    this._velocityXRange = velocityXRange.sort();
+    this._velocityYRange = velocityYRange.sort();
+    this._radiusRange = radiusRange.sort();
+    this._color = color;
+    this._alphaRange = alphaRange.sort();
+    this.fps = fps;
+    var ctx = this.canvas.getContext('2d');
+    if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
+    this.ctx = ctx;
+    this.mountCanvas();
+    this.createSnowflakes();
+    this.init();
   }
 
-  return i(e, [{
+  _createClass(LetItGo, [{
     key: "number",
-    get: function () {
+    get: function get() {
       return this._number;
     },
-    set: function (t) {
-      this._number = t, this._createSnowflakes();
+    set: function set(number) {
+      this._number = number;
+      this.createSnowflakes();
     }
   }, {
     key: "velocityXRange",
-    get: function () {
+    get: function get() {
       return this._velocityXRange;
     },
-    set: function (t) {
-      var e = this;
-      u(t), this._velocityXRange = t.sort(), this.snowflakes.forEach(function (t) {
-        t.v.x = l.apply(void 0, o(e._velocityXRange));
+    set: function set(range) {
+      assertRange(range);
+
+      var _range = range.sort();
+
+      this._velocityXRange = _range;
+      this.snowflakes.forEach(function (snowflake) {
+        snowflake.v.x = _utils.getRandom.apply(void 0, _toConsumableArray(_range));
       });
     }
   }, {
     key: "velocityYRange",
-    get: function () {
+    get: function get() {
       return this._velocityYRange;
     },
-    set: function (t) {
-      var e = this;
-      u(t), this._velocityYRange = t.sort(), this.snowflakes.forEach(function (t) {
-        t.v.y = l.apply(void 0, o(e._velocityYRange));
+    set: function set(range) {
+      assertRange(range);
+
+      var _range = range.sort();
+
+      this._velocityYRange = _range;
+      this.snowflakes.forEach(function (snowflake) {
+        snowflake.v.y = _utils.getRandom.apply(void 0, _toConsumableArray(_range));
       });
     }
   }, {
     key: "radiusRange",
-    get: function () {
+    get: function get() {
       return this._radiusRange;
     },
-    set: function (t) {
-      var e = this;
-      u(t), this._radiusRange = t.sort(), this.snowflakes.forEach(function (t) {
-        t.r = l.apply(void 0, o(e._radiusRange));
+    set: function set(range) {
+      assertRadiusRange(range);
+
+      var _range = range.sort();
+
+      this._radiusRange = _range;
+      this.snowflakes.forEach(function (snowflake) {
+        snowflake.r = _utils.getRandom.apply(void 0, _toConsumableArray(_range));
       });
     }
   }, {
     key: "color",
-    get: function () {
+    get: function get() {
       return this._color;
     },
-    set: function (t) {
-      this._color = t, this.snowflakes.forEach(function (e) {
-        e.color = t;
+    set: function set(color) {
+      this._color = color;
+      this.snowflakes.forEach(function (snowflake) {
+        snowflake.color = color;
       });
     }
   }, {
     key: "alphaRange",
-    get: function () {
+    get: function get() {
       return this._alphaRange;
     },
-    set: function (t) {
-      var e = this;
-      u(t), this._alphaRange = t.sort(), this.snowflakes.forEach(function (t) {
-        t.alpha = l.apply(void 0, o(e.alphaRange));
+    set: function set(range) {
+      assertAlphaRange(range);
+
+      var _range = range.sort();
+
+      this._alphaRange = _range;
+      this.snowflakes.forEach(function (snowflake) {
+        snowflake.alpha = _utils.getRandom.apply(void 0, _toConsumableArray(_range));
       });
     }
-  }]), i(e, [{
-    key: "_resizeCanvas",
-    value: function () {
-      var t = this.root,
-          e = t.clientWidth,
-          i = t.clientHeight;
-      this.canvas.width = e, this.canvas.height = i;
+  }, {
+    key: "resizeCanvas",
+    value: function resizeCanvas() {
+      var _this$root = this.root,
+          clientWidth = _this$root.clientWidth,
+          clientHeight = _this$root.clientHeight;
+      this.canvas.width = clientWidth;
+      this.canvas.height = clientHeight;
     }
   }, {
-    key: "_mountCanvas",
-    value: function () {
-      var t = this;
-      this.root.style.position = "relative", this.canvas.style.position = "absolute", this.canvas.style.top = "0", this.canvas.style.left = "0", this.canvas.style.zIndex = "-1", this._resizeCanvas(), window.addEventListener("resize", function (t) {
-        var e,
-            i = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 250;
-        return function () {
-          for (var n = arguments.length, o = new Array(n), a = 0; a < n; a++) o[a] = arguments[a];
+    key: "mountCanvas",
+    value: function mountCanvas() {
+      var _this2 = this;
 
-          clearTimeout(e), e = setTimeout(function () {
-            return t.apply(void 0, o);
-          }, i);
-        };
-      }(function () {
-        return t._resizeCanvas();
-      })), this.root.appendChild(this.canvas);
+      this.root.style.position = 'relative';
+      this.canvas.style.position = 'absolute';
+      this.canvas.style.top = '0';
+      this.canvas.style.left = '0';
+      this.canvas.style.zIndex = '-1';
+      this.resizeCanvas();
+      window.addEventListener('resize', (0, _utils.debounce)(function () {
+        return _this2.resizeCanvas();
+      }));
+      this.root.appendChild(this.canvas);
     }
   }, {
-    key: "_createSnowflakes",
-    value: function () {
-      var t = this.number,
-          e = this.color,
-          i = this.canvas,
-          n = this.velocityXRange,
-          a = this.velocityYRange,
-          h = this.radiusRange,
-          u = this.alphaRange;
+    key: "createSnowflakes",
+    value: function createSnowflakes() {
+      var _number = this._number,
+          _color = this._color,
+          canvas = this.canvas,
+          _velocityXRange = this._velocityXRange,
+          _velocityYRange = this._velocityYRange,
+          _radiusRange = this._radiusRange,
+          _alphaRange = this._alphaRange;
       this.snowflakes = Array.from({
-        length: t
+        length: _number
       }, function () {
-        return new s({
-          p: new r(l(0, i.width), l(0, -i.height)),
-          v: new r(l.apply(void 0, o(n)) || Number.MIN_VALUE, l.apply(void 0, o(a)) || Number.MIN_VALUE),
-          r: l.apply(void 0, o(h)) || Number.MIN_VALUE,
-          color: e,
-          alpha: l.apply(void 0, o(u)) || Number.MIN_VALUE
+        return new _utils.Snowflake({
+          p: new _utils.Vec2D((0, _utils.getRandom)(0, canvas.width), (0, _utils.getRandom)(0, -canvas.height)),
+          v: new _utils.Vec2D(_utils.getRandom.apply(void 0, _toConsumableArray(_velocityXRange)) || Number.MIN_VALUE, _utils.getRandom.apply(void 0, _toConsumableArray(_velocityYRange)) || Number.MIN_VALUE),
+          r: _utils.getRandom.apply(void 0, _toConsumableArray(_radiusRange)) || Number.MIN_VALUE,
+          color: _color,
+          alpha: _utils.getRandom.apply(void 0, _toConsumableArray(_alphaRange)) || Number.MIN_VALUE
         });
       });
     }
   }, {
-    key: "_init",
-    value: function () {
-      this.isGo || (this.intervalID = setInterval(this._update, 1e3 / this.fps), this.requestID = requestAnimationFrame(this._draw), this.isGo = !0);
+    key: "init",
+    value: function init() {
+      if (this.isGo) return;
+      this.intervalID = setInterval(this.update, 1000 / this.fps);
+      this.requestID = requestAnimationFrame(this.draw);
+      this.isGo = true;
     }
   }, {
     key: "letItStop",
-    value: function () {
-      var t = this.intervalID,
-          e = this.requestID;
-      t && e && (clearInterval(t), cancelAnimationFrame(e), this.isGo = !1);
+    value: function letItStop() {
+      var intervalID = this.intervalID,
+          requestID = this.requestID;
+
+      if (intervalID) {
+        clearInterval(intervalID);
+        this.intervalID = null;
+      }
+
+      if (requestID) {
+        cancelAnimationFrame(requestID);
+        this.requestID = null;
+      }
+
+      this.isGo = false;
     }
   }, {
     key: "letItGoAgain",
-    value: function () {
-      this._init();
+    value: function letItGoAgain() {
+      this.init();
     }
   }, {
     key: "clear",
-    value: function () {
-      this.letItStop(), this.root.removeChild(this.canvas), window.removeEventListener("resize", this._resizeCanvas);
+    value: function clear() {
+      this.letItStop();
+      this.root.removeChild(this.canvas);
+      window.removeEventListener('resize', this.resizeCanvas);
     }
-  }]), e;
+  }]);
+
+  return LetItGo;
 }();
 
-exports.LetItGo = v;
-exports.assertRange = u;
-n(v, "DEFAULT_OPTIONS", c);
-},{}],"js/utils.ts":[function(require,module,exports) {
+exports.LetItGo = LetItGo;
+LetItGo.DEFAULT_OPTIONS = DEFAULT_OPTIONS;
+var _default = LetItGo;
+exports.default = _default;
+},{"./utils":"../../src/utils/index.ts"}],"../../src/index.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _LetItGo = require("./LetItGo");
+
+Object.keys(_LetItGo).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (key in exports && exports[key] === _LetItGo[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function () {
+      return _LetItGo[key];
+    }
+  });
+});
+},{"./LetItGo":"../../src/LetItGo.ts"}],"js/utils.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -436,7 +657,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createRangeInputs = exports.bindRangeInputs = exports.bindColorInput = exports.bindNumberInput = exports.bindSwitch = exports.bindResetBtn = exports.setupToggle = void 0;
 
-var _letItGo = require("let-it-go");
+var _src = require("../../../src");
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
@@ -450,7 +671,7 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var DEFAULT_OPTIONS = _letItGo.LetItGo.DEFAULT_OPTIONS;
+var DEFAULT_OPTIONS = _src.LetItGo.DEFAULT_OPTIONS;
 
 var setupToggle = function setupToggle() {
   var DOWN = '👇';
@@ -575,8 +796,9 @@ var createRangeInputs = function createRangeInputs(container, rangeOptions) {
   var template = function template(_ref7) {
     var type = _ref7.type,
         min = _ref7.min,
-        max = _ref7.max;
-    return "\n  <fieldset class=\"form-group\">\n      <label id=\"".concat(type, "-range-label\">\u2744\uFE0F ").concat(type.toUpperCase(), " RANGE ()</label>\n\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-1\"\n      />\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        value=\"0\"\n        id=\"").concat(type, "-range-value-2\"\n      />\n    </fieldset>\n  ");
+        max = _ref7.max,
+        step = _ref7.step;
+    return "\n  <fieldset class=\"form-group\">\n      <label id=\"".concat(type, "-range-label\">\u2744\uFE0F ").concat(type.toUpperCase(), " RANGE ()</label>\n\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        ").concat(step && "step=\"".concat(step, "\""), "\n        value=\"0\"\n        id=\"").concat(type, "-range-value-1\"\n      />\n      <input\n        type=\"range\"\n        class=\"custom-range\"\n        min=\"").concat(min, "\"\n        max=\"").concat(max, "\"\n        ").concat(step && "step=\"".concat(step, "\""), "\n        value=\"0\"\n        id=\"").concat(type, "-range-value-2\"\n      />\n    </fieldset>\n  ");
   };
 
   container.innerHTML = rangeOptions.map(function (option) {
@@ -585,13 +807,14 @@ var createRangeInputs = function createRangeInputs(container, rangeOptions) {
 };
 
 exports.createRangeInputs = createRangeInputs;
-},{"let-it-go":"../node_modules/let-it-go/dist/index.esm.js"}],"js/main.ts":[function(require,module,exports) {
+},{"../../../src":"../../src/index.ts"}],"js/main.ts":[function(require,module,exports) {
 "use strict";
 
-var _letItGo = require("let-it-go");
+var _src = require("../../../src");
 
 var _utils = require("./utils");
 
+// import { LetItGo } from 'let-it-go';
 var rangeOptions = [{
   type: 'velocityX',
   min: -100,
@@ -607,11 +830,12 @@ var rangeOptions = [{
 }, {
   type: 'alpha',
   min: 0,
-  max: 1
+  max: 1,
+  step: 0.1
 }];
 document.addEventListener('DOMContentLoaded', function () {
   (0, _utils.createRangeInputs)(document.getElementById('ranges-container'), rangeOptions);
-  var snow = new _letItGo.LetItGo({
+  var snow = new _src.LetItGo({
     root: document.getElementById('let-it-go')
   });
   (0, _utils.setupToggle)();
@@ -621,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function () {
   (0, _utils.bindColorInput)(snow);
   (0, _utils.bindRangeInputs)(snow, rangeOptions);
 });
-},{"let-it-go":"../node_modules/let-it-go/dist/index.esm.js","./utils":"js/utils.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../../../src":"../../src/index.ts","./utils":"js/utils.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -649,7 +873,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60014" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52434" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
