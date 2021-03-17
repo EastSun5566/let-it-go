@@ -1,4 +1,5 @@
-import { LetItGo } from 'let-it-go';
+// import { LetItGo } from 'let-it-go';
+import { LetItGo } from '../../../src';
 import {
   RangeOption,
   createRangeInputs,
@@ -29,6 +30,7 @@ const rangeOptions: RangeOption[] = [
     type: 'alpha',
     min: 0,
     max: 1,
+    step: 0.1,
   }];
 
 document.addEventListener('DOMContentLoaded', () => {
