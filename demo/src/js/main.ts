@@ -1,5 +1,5 @@
-// import { LetItGo } from 'let-it-go';
-import { LetItGo } from '../../../src';
+import { LetItGo } from 'let-it-go';
+
 import {
   RangeOption,
   createRangeInputs,
