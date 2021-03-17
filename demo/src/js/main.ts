@@ -29,6 +29,7 @@ const rangeOptions: RangeOption[] = [
     type: 'alpha',
     min: 0,
     max: 1,
+    step: 0.1,
   }];
 
 document.addEventListener('DOMContentLoaded', () => {

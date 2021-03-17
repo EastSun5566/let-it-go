@@ -80,6 +80,8 @@ export interface RangeOption {
   type: string;
   min: number;
   max: number;
+
+  step?: number
 }
 
 export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): void => {
@@ -118,7 +120,9 @@ export const createRangeInputs = (
   container: HTMLElement,
   rangeOptions: RangeOption[],
 ): void => {
-  const template = ({ type, min, max }: RangeOption) => `
+  const template = ({
+    type, min, max, step,
+  }: RangeOption) => `
   <fieldset class="form-group">
       <label id="${type}-range-label">❄️ ${type.toUpperCase()} RANGE ()</label>
 
@@ -127,6 +131,7 @@ export const createRangeInputs = (
         class="custom-range"
         min="${min}"
         max="${max}"
+        ${step && `step="${step}"`}
         value="0"
         id="${type}-range-value-1"
       />
@@ -135,6 +140,7 @@ export const createRangeInputs = (
         class="custom-range"
         min="${min}"
         max="${max}"
+        ${step && `step="${step}"`}
         value="0"
         id="${type}-range-value-2"
       />
