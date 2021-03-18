@@ -4,24 +4,24 @@ import { LetItGo } from 'let-it-go';
 const { DEFAULT_OPTIONS } = LetItGo;
 
 export const setupToggle = (): void => {
-  const DOWN = '👇';
-  const UP = '☝️';
+  const getWord = (isDown: boolean) => (isDown ? '☝️' : '👇');
 
-  let isDown = false;
   const toggle = document.getElementById('toggle');
   const option = document.getElementById('option');
-  toggle.textContent = DOWN;
+
+  let isDown = false;
+  toggle.textContent = getWord(isDown);
   toggle.addEventListener('click', () => {
     if (isDown) {
       option.style.bottom = '16px';
-      toggle.textContent = DOWN;
       isDown = false;
+      toggle.textContent = getWord(isDown);
       return;
     }
 
     option.style.bottom = `${-option.offsetHeight + toggle.offsetHeight + 24}px`;
-    toggle.textContent = UP;
     isDown = true;
+    toggle.textContent = getWord(isDown);
   });
 };
 
@@ -41,27 +41,29 @@ export const bindResetBtn = (snow: LetItGo): void => {
 };
 
 export const bindSwitch = (snow: LetItGo): void => {
-  const STOP = '⛄️';
-  const GO = '☃️';
+  const getWord = (isChecked: boolean) => (isChecked ? '⛄️' : '☃️');
 
   const switchInput = document.querySelector<HTMLInputElement>('#is-snow');
   const switchLabel = document.querySelector('[for="is-snow"]');
+
   switchInput.checked = true;
-  switchLabel.textContent = STOP;
+  switchLabel.textContent = getWord(true);
   switchInput.addEventListener('change', ({ target }) => {
-    if ((target as HTMLInputElement).checked) {
+    const isChecked = (target as HTMLInputElement).checked;
+    if (isChecked) {
       snow.letItGoAgain();
-      switchLabel.textContent = STOP;
+      switchLabel.textContent = getWord(isChecked);
       return;
     }
 
     snow.letItStop();
-    switchLabel.textContent = GO;
+    switchLabel.textContent = getWord(isChecked);
   });
 };
 
 export const bindNumberInput = (snow: LetItGo): void => {
   const numberInput = document.querySelector<HTMLInputElement>('#number');
+
   numberInput.value = `${DEFAULT_OPTIONS.number}`;
   numberInput.addEventListener('input', ({ target }) => {
     snow.number = +(target as HTMLInputElement).value;
@@ -70,6 +72,7 @@ export const bindNumberInput = (snow: LetItGo): void => {
 
 export const bindColorInput = (snow: LetItGo): void => {
   const colorInput = document.querySelector<HTMLInputElement>('#color');
+
   colorInput.value = DEFAULT_OPTIONS.color;
   colorInput.addEventListener('input', ({ target }) => {
     snow.color = (target as HTMLInputElement).value;
@@ -93,6 +96,7 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
     };
 
     const v1Input = document.querySelector<HTMLInputElement>(`#${type}-range-value-1`);
+
     v1Input.value = `${v1}`;
     v1Input.addEventListener('change', ({ target }) => {
       const { value } = target as HTMLInputElement;
@@ -103,6 +107,7 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
     });
 
     const v2Input = document.querySelector<HTMLInputElement>(`#${type}-range-value-2`);
+
     v2Input.value = `${v2}`;
     v2Input.addEventListener('change', ({ target }) => {
       const { value } = target as HTMLInputElement;
