@@ -22,19 +22,19 @@ export interface Options {
 }
 
 export const assertRange = (range: Range): void | never => {
-  assert(Array.isArray(range), 'range must be array');
-  assert(range.length === 2, 'range size must be 2');
-  assert(range.every((value) => typeof value === 'number'), 'range value must be number');
+  assert(Array.isArray(range), 'Range must be an array.');
+  assert(range.length === 2, 'Range size must be 2.');
+  assert(range.every((value) => typeof value === 'number'), 'Range value must be a number.');
 };
 
 export const assertRadiusRange = (range: Range): void | never => {
   assertRange(range);
-  assert(range.every((value) => value >= 0), 'radius range value must be positive');
+  assert(range.every((value) => value >= 0), 'Radius range value must be positive.');
 };
 
 export const assertAlphaRange = (range: Range): void | never => {
   assertRange(range);
-  assert(range.every((value) => value >= 0 && value <= 1), 'alpha range value must be from 0 to 1');
+  assert(range.every((value) => value >= 0 && value <= 1), 'Alpha range value must be from 0 to 1.');
 };
 
 export const DEFAULT_OPTIONS: Required<Omit<Options, 'color'> & { color: string }> = {
