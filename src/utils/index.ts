@@ -1,7 +1,7 @@
 export * from './Vector';
 export * from './Snowflake';
 
-export const assert = <C>(condition: C, message: string): void | never => {
+export const assert = <C = unknown>(condition: C, message: string): void | never => {
   if (!condition) throw Error(`[let-it-go] ${message}`);
 };
 
