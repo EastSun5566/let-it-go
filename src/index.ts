@@ -1,1 +1,1 @@
-export * from './LetItGo';
+export * from './core';

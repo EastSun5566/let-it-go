@@ -5,7 +5,7 @@ import {
   Snowflake,
   assert,
   getRandom,
-  debounce,
+  // debounce,
 } from './utils';
 
 type Range = [number, number];
@@ -169,6 +169,9 @@ export class LetItGo {
     this._alphaRange = alphaRange.sort();
     this.fps = fps;
 
+    this.resizeCanvas();
+    // window.addEventListener('resize', debounce(() => this.resizeCanvas()));
+
     const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
     if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
 
@@ -193,9 +196,6 @@ export class LetItGo {
     this.canvas.style.top = '0';
     this.canvas.style.left = '0';
     this.canvas.style.zIndex = '-1';
-
-    this.resizeCanvas();
-    window.addEventListener('resize', debounce(() => this.resizeCanvas()));
 
     this.root.appendChild(this.canvas);
   }
@@ -276,7 +276,7 @@ export class LetItGo {
 
     this.root.removeChild(this.canvas);
 
-    window.removeEventListener('resize', this.resizeCanvas);
+    // window.removeEventListener('resize', this.resizeCanvas);
   }
 }
 
