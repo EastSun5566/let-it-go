@@ -52,7 +52,7 @@ export class Snowflake {
     this.p.add(v);
   }
 
-  draw(ctx: CanvasRenderingContext2D): void {
+  draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void {
     const {
       p,
       r,
