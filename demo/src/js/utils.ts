@@ -5,24 +5,24 @@ import { LetItGo } from '../../../src';
 const { DEFAULT_OPTIONS } = LetItGo;
 
 export const setupToggle = (): void => {
-  const getWord = (isDown: boolean) => (isDown ? '☝️' : '👇');
+  const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
 
   const toggle = document.getElementById('toggle');
   const option = document.getElementById('option');
 
-  let isDown = false;
-  toggle.textContent = getWord(isDown);
+  let isOpen = true;
+  toggle.textContent = getWord(isOpen);
   toggle.addEventListener('click', () => {
-    if (isDown) {
+    if (isOpen) {
       option.style.bottom = '16px';
-      isDown = false;
-      toggle.textContent = getWord(isDown);
+      isOpen = false;
+      toggle.textContent = getWord(isOpen);
       return;
     }
 
     option.style.bottom = `${-option.offsetHeight + toggle.offsetHeight + 24}px`;
-    isDown = true;
-    toggle.textContent = getWord(isDown);
+    isOpen = true;
+    toggle.textContent = getWord(isOpen);
   });
 };
 
