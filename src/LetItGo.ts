@@ -21,21 +21,21 @@ export interface Options {
   fps?: number;
 }
 
-export const assertRange = (range: Range): void | never => {
+function assertIsRange(range: Range): asserts range is Range {
   assert(Array.isArray(range), 'Range must be an array.');
   assert(range.length === 2, 'Range size must be 2.');
   assert(range.every((value) => typeof value === 'number'), 'Range value must be a number.');
-};
+}
 
-export const assertRadiusRange = (range: Range): void | never => {
-  assertRange(range);
+function assertIsRadiusRange(range: Range): asserts range is Range {
+  assertIsRange(range);
   assert(range.every((value) => value >= 0), 'Radius range value must be positive.');
-};
+}
 
-export const assertAlphaRange = (range: Range): void | never => {
-  assertRange(range);
+function assertIsAlphaRange(range: Range): asserts range is Range {
+  assertIsRange(range);
   assert(range.every((value) => value >= 0 && value <= 1), 'Alpha range value must be from 0 to 1.');
-};
+}
 
 export const DEFAULT_OPTIONS: Required<Omit<Options, 'color'> & { color: string }> = {
   root: document.body,
@@ -71,7 +71,7 @@ export class LetItGo {
   }
 
   set velocityXRange(range: Range) {
-    assertRange(range);
+    assertIsRange(range);
 
     const _range = range.sort();
     this._velocityXRange = _range;
@@ -85,7 +85,7 @@ export class LetItGo {
   }
 
   set velocityYRange(range: Range) {
-    assertRange(range);
+    assertIsRange(range);
 
     const _range = range.sort();
     this._velocityYRange = _range;
@@ -99,7 +99,7 @@ export class LetItGo {
   }
 
   set radiusRange(range: Range) {
-    assertRadiusRange(range);
+    assertIsRadiusRange(range);
 
     const _range = range.sort();
     this._radiusRange = _range;
@@ -124,7 +124,7 @@ export class LetItGo {
   }
 
   set alphaRange(range: Range) {
-    assertAlphaRange(range);
+    assertIsAlphaRange(range);
 
     const _range = range.sort();
     this._alphaRange = _range;
@@ -135,7 +135,7 @@ export class LetItGo {
 
   private readonly canvas = document.createElement('canvas');
 
-  private readonly ctx: CanvasRenderingContext2D;
+  private readonly ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
   private snowflakes: Snowflake[] = [];
 
@@ -155,10 +155,10 @@ export class LetItGo {
     alphaRange = DEFAULT_OPTIONS.alphaRange,
     fps = DEFAULT_OPTIONS.fps,
   }: Readonly<Options> = {}) {
-    assertRange(velocityXRange);
-    assertRange(velocityYRange);
-    assertRadiusRange(radiusRange);
-    assertAlphaRange(alphaRange);
+    assertIsRange(velocityXRange);
+    assertIsRange(velocityYRange);
+    assertIsRadiusRange(radiusRange);
+    assertIsAlphaRange(alphaRange);
 
     this.root = root;
     this._number = number;
@@ -169,7 +169,7 @@ export class LetItGo {
     this._alphaRange = alphaRange.sort();
     this.fps = fps;
 
-    const ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
     if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
 
     this.ctx = ctx;

@@ -1,24 +1,28 @@
 export * from './Vector';
 export * from './Snowflake';
 
-export const assert = <C = unknown>(condition: C, message: string): void | never => {
+export function assert<TCond = unknown>(condition: TCond, message = 'internal error.'): asserts condition {
   if (!condition) throw Error(`[let-it-go] ${message}`);
-};
+}
 
-export const getRandom = (
+export function getRandom(
   min: number,
   max: number,
-): number => Math.random() * (max - min) + min;
+): number {
+  return Math.random() * (max - min) + min;
+}
 
-export const debounce = <F extends (...args: unknown[]) => unknown>(
-  fn: F,
+type Fn<TParams extends unknown[] = unknown[], TReturn = unknown> = (...params: TParams) => TReturn;
+
+export function debounce<TFn extends Fn>(
+  fn: TFn,
   ms = 250,
-): (...args: Parameters<F>) => void => {
+): (...params: Parameters<TFn>) => void {
   let timeoutID: NodeJS.Timeout;
 
-  return (...args): void => {
+  return (...params): void => {
     clearTimeout(timeoutID);
 
-    timeoutID = setTimeout(() => fn(...args), ms);
+    timeoutID = setTimeout(() => fn(...params), ms);
   };
-};
+}
