@@ -26,3 +26,14 @@ export function debounce<TFn extends Fn>(
     timeoutID = setTimeout(() => fn(...params), ms);
   };
 }
+
+export function setStyleProps(
+  element: HTMLElement,
+  style: Partial<Record<keyof CSSStyleDeclaration, string | number>> = {},
+): void {
+  Object
+    .entries(style)
+    .forEach(([key, value]) => {
+      element.style.setProperty(key, value === undefined ? null : `${value}`);
+    });
+}

@@ -5,6 +5,7 @@ import {
   Snowflake,
   assert,
   getRandom,
+  setStyleProps,
   // debounce,
 } from './utils';
 
@@ -128,7 +129,9 @@ export class LetItGo {
 
     const _range = range.sort();
     this._alphaRange = _range;
-    this.snowflakes.forEach((snowflake) => { snowflake.alpha = getRandom(..._range); });
+    this.snowflakes.forEach((snowflake) => {
+      snowflake.alpha = getRandom(..._range);
+    });
   }
 
   readonly fps: number;
@@ -190,12 +193,15 @@ export class LetItGo {
   }
 
   private mountCanvas(): void {
-    this.root.style.position = 'relative';
+    setStyleProps(this.root, { position: 'relative' });
 
-    this.canvas.style.position = 'absolute';
-    this.canvas.style.top = '0';
-    this.canvas.style.left = '0';
-    this.canvas.style.zIndex = '-1';
+    setStyleProps(this.canvas, {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      // zIndex: -1,
+      pointerEvents: 'none',
+    });
 
     this.root.appendChild(this.canvas);
   }
