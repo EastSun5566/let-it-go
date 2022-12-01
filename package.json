@@ -19,7 +19,9 @@
     "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src",
     "prepublishOnly": "pnpm build",
     "release": "sh scripts/release.sh",
-    "deploy:demo": "sh scripts/deploy.sh"
+    "deploy": "sh scripts/deploy.sh",
+    "demo:dev": "pnpm -C demo dev",
+    "demo:build": "pnpm -C demo build"
   },
   "keywords": [
     "let-it-go",
