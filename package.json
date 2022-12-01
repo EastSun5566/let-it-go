@@ -10,15 +10,18 @@
     "src"
   ],
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "type-check": "tsc --noEmit",
-    "type-check:watch": "yarn type-check --watch",
+    "type-check:watch": "pnpm type-check --watch",
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
-    "build": "yarn build:types && yarn build:js",
+    "build": "pnpm build:types && pnpm build:js",
     "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src",
-    "prepublishOnly": "yarn build",
+    "prepublishOnly": "pnpm build",
     "release": "sh scripts/release.sh",
-    "deploy:demo": "sh scripts/deploy.sh"
+    "deploy": "sh scripts/deploy.sh",
+    "demo:dev": "pnpm -C demo dev",
+    "demo:build": "pnpm -C demo build"
   },
   "keywords": [
     "let-it-go",
@@ -35,7 +38,7 @@
   "homepage": "https://eastsun5566.github.io/let-it-go/",
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint"
+      "pre-commit": "pnpm lint"
     }
   },
   "devDependencies": {
@@ -51,7 +54,7 @@
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "husky": "^4.3.0",
+    "husky": "^8.0.2",
     "rollup": "^2.34.1",
     "rollup-plugin-filesize": "^9.1.1",
     "rollup-plugin-terser": "^7.0.2",
