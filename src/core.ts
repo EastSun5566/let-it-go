@@ -142,7 +142,7 @@ export class LetItGo {
 
   private snowflakes: Snowflake[] = [];
 
-  private intervalID: NodeJS.Timeout | null = null;
+  private intervalID: number | null = null;
 
   private requestID: number | null = null;
 

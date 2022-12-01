@@ -18,7 +18,7 @@ export function debounce<TFn extends Fn>(
   fn: TFn,
   ms = 250,
 ): (...params: Parameters<TFn>) => void {
-  let timeoutID: NodeJS.Timeout;
+  let timeoutID: number;
 
   return (...params): void => {
     clearTimeout(timeoutID);
