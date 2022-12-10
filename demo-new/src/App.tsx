@@ -3,8 +3,7 @@ import type { Component } from 'solid-js';
 import logo from './logo.svg';
 import styles from './App.module.css';
 
-const App: Component = () => {
-  return (
+const App: Component = () => (
     <div class={styles.App}>
       <header class={styles.header}>
         <img src={logo} class={styles.logo} alt="logo" />
@@ -21,7 +20,6 @@ const App: Component = () => {
         </a>
       </header>
     </div>
-  );
-};
+);
 
 export default App;
