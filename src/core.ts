@@ -3,148 +3,111 @@
 import {
   Vec2D,
   Snowflake,
-  assert,
+  assertIsAlphaRange,
+  assertIsRadiusRange,
+  assertIsRange,
   getRandom,
   setStyleProps,
   // debounce,
 } from './utils';
+import { DEFAULT_OPTIONS } from './constants';
 
-type Range = [number, number];
-
-export interface Options {
-  root?: HTMLElement;
-  number?: number;
-  velocityXRange?: Range;
-  velocityYRange?: Range;
-  radiusRange?: Range;
-  color?: CanvasFillStrokeStyles['fillStyle'];
-  alphaRange?: Range;
-  fps?: number;
-}
-
-function assertIsRange(range: Range): asserts range is Range {
-  assert(Array.isArray(range), 'Range must be an array.');
-  assert(range.length === 2, 'Range size must be 2.');
-  assert(range.every((value) => typeof value === 'number'), 'Range value must be a number.');
-}
-
-function assertIsRadiusRange(range: Range): asserts range is Range {
-  assertIsRange(range);
-  assert(range.every((value) => value >= 0), 'Radius range value must be positive.');
-}
-
-function assertIsAlphaRange(range: Range): asserts range is Range {
-  assertIsRange(range);
-  assert(range.every((value) => value >= 0 && value <= 1), 'Alpha range value must be from 0 to 1.');
-}
-
-export const DEFAULT_OPTIONS: Required<Omit<Options, 'color'> & { color: string }> = {
-  root: document.body,
-  number: window.innerWidth,
-  velocityXRange: [-3, 3],
-  velocityYRange: [1, 5],
-  radiusRange: [0.5, 1],
-  color: '#ffffff',
-  alphaRange: [0.8, 1],
-  fps: 30,
-};
+import type { Range, Options } from './types';
 
 export class LetItGo {
-  readonly root: HTMLElement;
+  readonly root: HTMLElement = document.body;
 
-  private isGo = false;
+  #isGo = false;
 
-  private _number: number;
+  #number = 0;
 
   get number(): number {
-    return this._number;
+    return this.#number;
   }
 
   set number(number: number) {
-    this._number = number;
-    this.createSnowflakes();
+    this.#number = number;
+    this.#createSnowflakes();
   }
 
-  private _velocityXRange: Range;
+  #velocityXRange: Range;
 
   get velocityXRange(): Range {
-    return this._velocityXRange;
+    return this.#velocityXRange;
   }
 
   set velocityXRange(range: Range) {
     assertIsRange(range);
 
     const _range = range.sort();
-    this._velocityXRange = _range;
-    this.snowflakes.forEach((snowflake) => { snowflake.v.x = getRandom(..._range); });
+    this.#velocityXRange = _range;
+    this.#snowflakes.forEach((snowflake) => { snowflake.v.x = getRandom(..._range); });
   }
 
-  private _velocityYRange: Range;
+  #velocityYRange: Range;
 
   get velocityYRange(): Range {
-    return this._velocityYRange;
+    return this.#velocityYRange;
   }
 
   set velocityYRange(range: Range) {
     assertIsRange(range);
 
-    const _range = range.sort();
-    this._velocityYRange = _range;
-    this.snowflakes.forEach((snowflake) => { snowflake.v.y = getRandom(..._range); });
+    const sortedRange = range.sort();
+    this.#velocityYRange = sortedRange;
+    this.#snowflakes.forEach((snowflake) => { snowflake.v.y = getRandom(...sortedRange); });
   }
 
-  private _radiusRange: Range;
+  #radiusRange: Range;
 
   get radiusRange(): Range {
-    return this._radiusRange;
+    return this.#radiusRange;
   }
 
   set radiusRange(range: Range) {
     assertIsRadiusRange(range);
 
     const _range = range.sort();
-    this._radiusRange = _range;
-    this.snowflakes.forEach((snowflake) => { snowflake.r = getRandom(..._range); });
+    this.#radiusRange = _range;
+    this.#snowflakes.forEach((snowflake) => { snowflake.r = getRandom(..._range); });
   }
 
-  private _color: CanvasFillStrokeStyles['fillStyle'];
+  #color: CanvasFillStrokeStyles['fillStyle'];
 
   get color(): CanvasFillStrokeStyles['fillStyle'] {
-    return this._color;
+    return this.#color;
   }
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
-    this._color = color;
-    this.snowflakes.forEach((snowflake) => { snowflake.color = color; });
+    this.#color = color;
+    this.#snowflakes.forEach((snowflake) => { snowflake.color = color; });
   }
 
-  private _alphaRange: Range;
+  #alphaRange: Range;
 
   get alphaRange(): Range {
-    return this._alphaRange;
+    return this.#alphaRange;
   }
 
   set alphaRange(range: Range) {
     assertIsAlphaRange(range);
 
-    const _range = range.sort();
-    this._alphaRange = _range;
-    this.snowflakes.forEach((snowflake) => {
-      snowflake.alpha = getRandom(..._range);
+    const sortedRange = range.sort();
+    this.#alphaRange = sortedRange;
+    this.#snowflakes.forEach((snowflake) => {
+      snowflake.alpha = getRandom(...sortedRange);
     });
   }
 
-  readonly fps: number;
+  readonly canvas = document.createElement('canvas');
 
-  private readonly canvas = document.createElement('canvas');
+  readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-  private readonly ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+  #snowflakes: Snowflake[] = [];
 
-  private snowflakes: Snowflake[] = [];
+  #intervalID: number | null = null;
 
-  private intervalID: number | null = null;
-
-  private requestID: number | null = null;
+  #requestID: number | null = null;
 
   static readonly DEFAULT_OPTIONS = DEFAULT_OPTIONS;
 
@@ -156,7 +119,6 @@ export class LetItGo {
     radiusRange = DEFAULT_OPTIONS.radiusRange,
     color = DEFAULT_OPTIONS.color,
     alphaRange = DEFAULT_OPTIONS.alphaRange,
-    fps = DEFAULT_OPTIONS.fps,
   }: Readonly<Options> = {}) {
     assertIsRange(velocityXRange);
     assertIsRange(velocityYRange);
@@ -164,37 +126,35 @@ export class LetItGo {
     assertIsAlphaRange(alphaRange);
 
     this.root = root;
-    this._number = number;
-    this._velocityXRange = velocityXRange.sort();
-    this._velocityYRange = velocityYRange.sort();
-    this._radiusRange = radiusRange.sort();
-    this._color = color;
-    this._alphaRange = alphaRange.sort();
-    this.fps = fps;
+    this.#number = number;
+    this.#velocityXRange = velocityXRange.sort();
+    this.#velocityYRange = velocityYRange.sort();
+    this.#radiusRange = radiusRange.sort();
+    this.#color = color;
+    this.#alphaRange = alphaRange.sort();
 
-    this.resizeCanvas();
+    this.#resizeCanvas();
     // window.addEventListener('resize', debounce(() => this.resizeCanvas()));
 
     const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
     if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
 
-    this.ctx = ctx;
+    this.#ctx = ctx;
 
-    this.mountCanvas();
-    this.createSnowflakes();
-    this.init();
+    this.#mountCanvas();
+    this.#createSnowflakes();
+    this.#startAnimate();
   }
 
-  private resizeCanvas(): void {
+  #resizeCanvas(): void {
     const { clientWidth, clientHeight } = this.root;
 
     this.canvas.width = clientWidth;
     this.canvas.height = clientHeight;
   }
 
-  private mountCanvas(): void {
+  #mountCanvas(): void {
     setStyleProps(this.root, { position: 'relative' });
-
     setStyleProps(this.canvas, {
       position: 'absolute',
       top: 0,
@@ -206,75 +166,65 @@ export class LetItGo {
     this.root.appendChild(this.canvas);
   }
 
-  private createSnowflakes(): void {
-    const {
-      _number,
-      _color,
-      canvas,
-      _velocityXRange,
-      _velocityYRange,
-      _radiusRange,
-      _alphaRange,
-    } = this;
+  #createSnowflakes(): void {
+    const { canvas } = this;
 
-    this.snowflakes = Array.from(
-      { length: _number },
+    this.#snowflakes = Array.from(
+      { length: this.#number },
       () => new Snowflake({
         p: new Vec2D(
           getRandom(0, canvas.width),
           getRandom(0, -canvas.height),
         ),
         v: new Vec2D(
-          getRandom(..._velocityXRange) || Number.MIN_VALUE,
-          getRandom(..._velocityYRange) || Number.MIN_VALUE,
+          getRandom(...this.#velocityXRange) || Number.MIN_VALUE,
+          getRandom(...this.#velocityYRange) || Number.MIN_VALUE,
         ),
-        r: getRandom(..._radiusRange) || Number.MIN_VALUE,
-        color: _color,
-        alpha: getRandom(..._alphaRange) || Number.MIN_VALUE,
+        r: getRandom(...this.#radiusRange) || Number.MIN_VALUE,
+        color: this.#color,
+        alpha: getRandom(...this.#alphaRange) || Number.MIN_VALUE,
       }),
     );
   }
 
-  private update = (): void => this.snowflakes.forEach(
+  #update = (): void => this.#snowflakes.forEach(
     (snowflake) => snowflake.update(this.canvas),
   );
 
-  private draw = (): void => {
+  #draw = (): void => {
     const { width, height } = this.canvas;
 
-    this.ctx.clearRect(0, 0, width, height);
-    this.snowflakes.forEach((snowflake) => snowflake.draw(this.ctx));
+    this.#ctx.clearRect(0, 0, width, height);
+    this.#snowflakes.forEach((snowflake) => snowflake.draw(this.#ctx));
 
-    requestAnimationFrame(this.draw);
+    requestAnimationFrame(this.#draw);
   };
 
-  private init(): void {
-    if (this.isGo) return;
+  #startAnimate(): void {
+    if (this.#isGo) return;
 
-    this.intervalID = setInterval(this.update, 1000 / this.fps);
-    this.requestID = requestAnimationFrame(this.draw);
+    this.#intervalID = setInterval(this.#update, 1000 / 30);
+    this.#requestID = requestAnimationFrame(this.#draw);
 
-    this.isGo = true;
+    this.#isGo = true;
   }
 
   letItStop(): void {
-    const { intervalID, requestID } = this;
-
-    if (intervalID) {
-      clearInterval(intervalID);
-      this.intervalID = null;
+    if (this.#intervalID) {
+      clearInterval(this.#intervalID);
+      this.#intervalID = null;
     }
 
-    if (requestID) {
-      cancelAnimationFrame(requestID);
-      this.requestID = null;
+    if (this.#requestID) {
+      cancelAnimationFrame(this.#requestID);
+      this.#requestID = null;
     }
 
-    this.isGo = false;
+    this.#isGo = false;
   }
 
   letItGoAgain(): void {
-    this.init();
+    this.#startAnimate();
   }
 
   clear(): void {
