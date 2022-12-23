@@ -39,7 +39,6 @@ const snow = new LetItGo({
   velocityYRange: [1, 5], // velocity y range of snowflake, defaults to [1, 5]
   radiusRange: [0.5, 1], // radius range of snowflake, defaults to [0.5, 1]
   alphaRange: [0.8, 1], // opacity range of snowflake, defaults to [0.8, 1]
-  fps: 30, // update FPS, defaults to 30
 });
 
 // you can use static prop DEFAULT_OPTIONS to get all the default options
