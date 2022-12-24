@@ -28,15 +28,15 @@
     </div>
 
     <div class="options" id="option">
-      <div class="form-group d-flex justify-content-between align-items-center">
-        <div class="custom-control custom-switch">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check form-switch">
           <input
             type="checkbox"
-            class="custom-control-input"
+            class="form-check-input"
             id="is-snow"
             checked
           />
-          <label class="custom-control-label" for="is-snow"></label>
+          <label class="form-check-label" for="is-snow"></label>
         </div>
 
         <div>
@@ -47,8 +47,8 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="number">❄️ NUMBER</label>
+      <div class="mb-3">
+        <label for="number" class="form-label">❄️ NUMBER</label>
         <input
           type="number"
           class="form-control"
@@ -57,11 +57,11 @@
         />
       </div>
 
-      <div class="form-group">
-        <label for="number">❄️ COLOR</label>
+      <div class="mb-3">
+        <label for="number" class="form-label">❄️ COLOR</label>
         <input
           type="color"
-          class="form-control"
+          class="form-control form-control-color mx-auto"
           id="color"
           placeholder="color of snowflake"
         />

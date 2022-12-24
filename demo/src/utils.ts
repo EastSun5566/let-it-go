@@ -142,29 +142,29 @@ export const createRangeInputs = (
   const template = ({
     type, min, max, step,
   }: RangeOption) => `
-  <fieldset class="form-group">
-      <label id="${type}-range-label">❄️ ${type.toUpperCase()} RANGE ()</label>
+    <fieldset>
+      <label id="${type}-range-label" class="form-label">❄️ ${type.toUpperCase()} RANGE ()</label>
 
       <input
         type="range"
-        class="custom-range"
+        class="form-range"
         min="${min}"
         max="${max}"
         ${step && `step="${step}"`}
         value="0"
         id="${type}-range-value-1"
-      />
+      >
       <input
         type="range"
-        class="custom-range"
+        class="form-range"
         min="${min}"
         max="${max}"
         ${step && `step="${step}"`}
         value="0"
         id="${type}-range-value-2"
-      />
+      >
     </fieldset>
   `;
 
-  container.innerHTML = rangeOptions.map((option) => template(option)).join();
+  container.innerHTML = rangeOptions.map((option) => template(option)).join('');
 };
