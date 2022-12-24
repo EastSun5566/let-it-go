@@ -18,7 +18,7 @@
     "build": "rimraf dist && pnpm build:types && pnpm build:js",
     "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src",
     "prepublishOnly": "pnpm build",
-    "release": "sh scripts/release.sh",
+    "release": "pnpx standard-version && git push --follow-tags && pnpm publish",
     "deploy": "sh scripts/deploy.sh",
     "demo:dev": "pnpm -C demo dev",
     "demo:build": "pnpm -C demo build"
