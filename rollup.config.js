@@ -1,17 +1,17 @@
 import { DEFAULT_EXTENSIONS } from '@babel/core';
 import { nodeResolve, DEFAULTS } from '@rollup/plugin-node-resolve';
 import { babel } from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import filesize from 'rollup-plugin-filesize';
 
 import { name, main, module } from './package.json';
 
 /**
- * @param {string} str
+ * @param {string} string
  */
-const camalize = (str) => str
+const camalize = (string) => string
   .toLowerCase()
-  .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase());
+  .replace(/[^a-zA-Z0-9]+(.)/g, (_, char) => char.toUpperCase());
 
 /**
  * @type {import('rollup').RollupOptions}
