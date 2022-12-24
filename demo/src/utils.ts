@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
-// import { LetItGo } from 'let-it-go';
-import { LetItGo } from '../../src';
+import { LetItGo } from 'let-it-go';
 
 export const setupToggle = (): void => {
   const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
@@ -50,18 +49,22 @@ export const bindSwitch = (snow: LetItGo): void => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const switchLabel = document.querySelector('[for="is-snow"]')!;
 
-  switchInput.checked = true;
+  let isSnow = true;
+  switchInput.checked = isSnow;
   switchLabel.textContent = getWord(true);
   switchInput.addEventListener('change', ({ target }) => {
-    const isChecked = (target as HTMLInputElement).checked;
-    if (isChecked) {
+    isSnow = !isSnow;
+
+    if (isSnow) {
       snow.letItGoAgain();
-      switchLabel.textContent = getWord(isChecked);
+      (target as HTMLInputElement).checked = isSnow;
+      switchLabel.textContent = getWord(isSnow);
       return;
     }
 
     snow.letItStop();
-    switchLabel.textContent = getWord(isChecked);
+    switchLabel.textContent = getWord(isSnow);
+    (target as HTMLInputElement).checked = isSnow;
   });
 };
 
