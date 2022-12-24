@@ -7,8 +7,10 @@ const { DEFAULT_OPTIONS } = LetItGo;
 export const setupToggle = (): void => {
   const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
 
-  const toggle = document.getElementById('toggle');
-  const option = document.getElementById('option');
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const toggle = document.getElementById('toggle')!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const option = document.getElementById('option')!;
 
   let isOpen = true;
   toggle.textContent = getWord(isOpen);
@@ -29,7 +31,7 @@ export const setupToggle = (): void => {
 export const bindResetBtn = (snow: LetItGo): void => {
   document
     .querySelector<HTMLInputElement>('#reset')
-    .addEventListener('click', () => {
+    ?.addEventListener('click', () => {
       snow.letItGoAgain();
 
       snow.number = DEFAULT_OPTIONS.number;
@@ -44,8 +46,10 @@ export const bindResetBtn = (snow: LetItGo): void => {
 export const bindSwitch = (snow: LetItGo): void => {
   const getWord = (isChecked: boolean) => (isChecked ? '⛄️' : '☃️');
 
-  const switchInput = document.querySelector<HTMLInputElement>('#is-snow');
-  const switchLabel = document.querySelector('[for="is-snow"]');
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const switchInput = document.querySelector<HTMLInputElement>('#is-snow')!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const switchLabel = document.querySelector('[for="is-snow"]')!;
 
   switchInput.checked = true;
   switchLabel.textContent = getWord(true);
@@ -63,7 +67,8 @@ export const bindSwitch = (snow: LetItGo): void => {
 };
 
 export const bindNumberInput = (snow: LetItGo): void => {
-  const numberInput = document.querySelector<HTMLInputElement>('#number');
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const numberInput = document.querySelector<HTMLInputElement>('#number')!;
 
   numberInput.value = `${DEFAULT_OPTIONS.number}`;
   numberInput.addEventListener('input', ({ target }) => {
@@ -72,9 +77,10 @@ export const bindNumberInput = (snow: LetItGo): void => {
 };
 
 export const bindColorInput = (snow: LetItGo): void => {
-  const colorInput = document.querySelector<HTMLInputElement>('#color');
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const colorInput = document.querySelector<HTMLInputElement>('#color')!;
 
-  colorInput.value = DEFAULT_OPTIONS.color;
+  colorInput.value = DEFAULT_OPTIONS.color as string;
   colorInput.addEventListener('input', ({ target }) => {
     snow.color = (target as HTMLInputElement).value;
   });
@@ -92,11 +98,13 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
   rangeOptions.forEach(({ type }) => {
     let [v1, v2] = DEFAULT_OPTIONS[`${type}Range`] as [number, number];
     const updateLabel = () => {
-      const label = document.querySelector<HTMLLabelElement>(`#${type}-range-label`);
-      label.textContent = label.textContent.replace(/\(.*\)/, `(${[v1, v2].sort().join(' to ')})`);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const label = document.querySelector<HTMLLabelElement>(`#${type}-range-label`)!;
+      label.textContent = label.textContent?.replace(/\(.*\)/, `(${[v1, v2].sort().join(' to ')})`) || '';
     };
 
-    const v1Input = document.querySelector<HTMLInputElement>(`#${type}-range-value-1`);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const v1Input = document.querySelector<HTMLInputElement>(`#${type}-range-value-1`)!;
 
     v1Input.value = `${v1}`;
     v1Input.addEventListener('change', ({ target }) => {
@@ -107,7 +115,8 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
       updateLabel();
     });
 
-    const v2Input = document.querySelector<HTMLInputElement>(`#${type}-range-value-2`);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const v2Input = document.querySelector<HTMLInputElement>(`#${type}-range-value-2`)!;
 
     v2Input.value = `${v2}`;
     v2Input.addEventListener('change', ({ target }) => {
