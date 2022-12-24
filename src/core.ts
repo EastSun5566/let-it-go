@@ -11,10 +11,10 @@ import {
 } from './utils';
 import { DEFAULT_OPTIONS } from './constants';
 
-import type { Range, Options } from './types';
+import type { Range, Options, Style } from './types';
 
 export class LetItGo {
-  readonly root: HTMLElement = document.body;
+  readonly root = document.body;
 
   #isGo = false;
 
@@ -100,6 +100,8 @@ export class LetItGo {
 
   backgroundColor: CanvasFillStrokeStyles['fillStyle'];
 
+  style: Style
+
   readonly canvas = document.createElement('canvas');
 
   readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
@@ -121,6 +123,7 @@ export class LetItGo {
     color = DEFAULT_OPTIONS.color,
     alphaRange = DEFAULT_OPTIONS.alphaRange,
     backgroundColor = DEFAULT_OPTIONS.backgroundColor,
+    style = DEFAULT_OPTIONS.style,
   }: Readonly<Options> = {}) {
     assertIsRange(velocityXRange);
     assertIsRange(velocityYRange);
@@ -135,6 +138,7 @@ export class LetItGo {
     this.#color = color;
     this.#alphaRange = alphaRange.sort();
     this.backgroundColor = backgroundColor;
+    this.style = style;
 
     // TODO: use OffscreenCanvas when is possible
     // const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
@@ -166,8 +170,7 @@ export class LetItGo {
       position: 'absolute',
       top: 0,
       left: 0,
-      zIndex: -1,
-      pointerEvents: 'none',
+      ...this.style,
     });
 
     this.root.appendChild(this.canvas);

@@ -1,4 +1,4 @@
-import { Range } from '../types';
+import { Range, Style } from '../types';
 
 export * from './Vector';
 export * from './Snowflake';
@@ -32,7 +32,7 @@ export function getRandom(
 
 export function setStyleProps(
   element: HTMLElement,
-  style: Partial<Record<keyof CSSStyleDeclaration, string | number>> = {},
+  style: Style = {},
 ): void {
   Object
     .entries(style)

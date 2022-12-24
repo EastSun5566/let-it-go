@@ -10,4 +10,8 @@ export const DEFAULT_OPTIONS: Required<Options> = {
   color: '#ffffff',
   alphaRange: [0.8, 1],
   backgroundColor: 'transparent',
+  style: {
+    zIndex: -1,
+    pointerEvents: 'none',
+  },
 };
