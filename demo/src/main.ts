@@ -2,7 +2,7 @@
 import { LetItGo } from '../../src';
 
 import {
-  RangeOption,
+  type RangeOption,
   createRangeInputs,
   bindColorInput,
   bindNumberInput,
