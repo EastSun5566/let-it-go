@@ -1,8 +1,5 @@
 /* eslint-disable no-param-reassign */
-// import { LetItGo } from 'let-it-go';
-import { LetItGo } from '../../../src';
-
-const { DEFAULT_OPTIONS } = LetItGo;
+import { LetItGo } from 'let-it-go';
 
 export const setupToggle = (): void => {
   const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
@@ -15,15 +12,15 @@ export const setupToggle = (): void => {
   let isOpen = true;
   toggle.textContent = getWord(isOpen);
   toggle.addEventListener('click', () => {
+    isOpen = !isOpen;
+
     if (isOpen) {
       option.style.bottom = '16px';
-      isOpen = false;
       toggle.textContent = getWord(isOpen);
       return;
     }
 
     option.style.bottom = `${-option.offsetHeight + toggle.offsetHeight + 24}px`;
-    isOpen = true;
     toggle.textContent = getWord(isOpen);
   });
 };
@@ -34,6 +31,7 @@ export const bindResetBtn = (snow: LetItGo): void => {
     ?.addEventListener('click', () => {
       snow.letItGoAgain();
 
+      const { DEFAULT_OPTIONS } = LetItGo;
       snow.number = DEFAULT_OPTIONS.number;
       snow.color = DEFAULT_OPTIONS.color;
       snow.velocityXRange = DEFAULT_OPTIONS.velocityXRange;
@@ -51,18 +49,22 @@ export const bindSwitch = (snow: LetItGo): void => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const switchLabel = document.querySelector('[for="is-snow"]')!;
 
-  switchInput.checked = true;
+  let isSnow = true;
+  switchInput.checked = isSnow;
   switchLabel.textContent = getWord(true);
   switchInput.addEventListener('change', ({ target }) => {
-    const isChecked = (target as HTMLInputElement).checked;
-    if (isChecked) {
+    isSnow = !isSnow;
+
+    if (isSnow) {
       snow.letItGoAgain();
-      switchLabel.textContent = getWord(isChecked);
+      (target as HTMLInputElement).checked = isSnow;
+      switchLabel.textContent = getWord(isSnow);
       return;
     }
 
     snow.letItStop();
-    switchLabel.textContent = getWord(isChecked);
+    switchLabel.textContent = getWord(isSnow);
+    (target as HTMLInputElement).checked = isSnow;
   });
 };
 
@@ -70,7 +72,7 @@ export const bindNumberInput = (snow: LetItGo): void => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const numberInput = document.querySelector<HTMLInputElement>('#number')!;
 
-  numberInput.value = `${DEFAULT_OPTIONS.number}`;
+  numberInput.value = `${LetItGo.DEFAULT_OPTIONS.number}`;
   numberInput.addEventListener('input', ({ target }) => {
     snow.number = +(target as HTMLInputElement).value;
   });
@@ -80,7 +82,7 @@ export const bindColorInput = (snow: LetItGo): void => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const colorInput = document.querySelector<HTMLInputElement>('#color')!;
 
-  colorInput.value = DEFAULT_OPTIONS.color as string;
+  colorInput.value = LetItGo.DEFAULT_OPTIONS.color as string;
   colorInput.addEventListener('input', ({ target }) => {
     snow.color = (target as HTMLInputElement).value;
   });
@@ -90,13 +92,14 @@ export interface RangeOption {
   type: string;
   min: number;
   max: number;
-
   step?: number
 }
 
 export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): void => {
   rangeOptions.forEach(({ type }) => {
-    let [v1, v2] = DEFAULT_OPTIONS[`${type}Range`] as [number, number];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    let [v1, v2] = LetItGo.DEFAULT_OPTIONS[`${type}Range`] as [number, number];
     const updateLabel = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const label = document.querySelector<HTMLLabelElement>(`#${type}-range-label`)!;
@@ -110,6 +113,8 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
     v1Input.addEventListener('change', ({ target }) => {
       const { value } = target as HTMLInputElement;
       v1 = +value;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       snow[`${type}Range`] = [v1, v2];
 
       updateLabel();
@@ -122,6 +127,8 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
     v2Input.addEventListener('change', ({ target }) => {
       const { value } = target as HTMLInputElement;
       v2 = +value;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       snow[`${type}Range`] = [v1, v2];
 
       updateLabel();
@@ -138,29 +145,29 @@ export const createRangeInputs = (
   const template = ({
     type, min, max, step,
   }: RangeOption) => `
-  <fieldset class="form-group">
-      <label id="${type}-range-label">❄️ ${type.toUpperCase()} RANGE ()</label>
+    <fieldset>
+      <label id="${type}-range-label" class="form-label">❄️ ${type.toUpperCase()} RANGE ()</label>
 
       <input
         type="range"
-        class="custom-range"
+        class="form-range"
         min="${min}"
         max="${max}"
         ${step && `step="${step}"`}
         value="0"
         id="${type}-range-value-1"
-      />
+      >
       <input
         type="range"
-        class="custom-range"
+        class="form-range"
         min="${min}"
         max="${max}"
         ${step && `step="${step}"`}
         value="0"
         id="${type}-range-value-2"
-      />
+      >
     </fieldset>
   `;
 
-  container.innerHTML = rangeOptions.map((option) => template(option)).join();
+  container.innerHTML = rangeOptions.map((option) => template(option)).join('');
 };

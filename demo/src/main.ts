@@ -1,8 +1,7 @@
-// import { LetItGo } from 'let-it-go';
-import { LetItGo } from '../../../src';
+import { LetItGo } from 'let-it-go';
 
 import {
-  RangeOption,
+  type RangeOption,
   createRangeInputs,
   bindColorInput,
   bindNumberInput,
@@ -11,6 +10,9 @@ import {
   bindResetBtn,
   setupToggle,
 } from './utils';
+
+import 'bootswatch/dist/lux/bootstrap.min.css';
+import './style.scss';
 
 const rangeOptions: RangeOption[] = [
   {
@@ -27,12 +29,14 @@ const rangeOptions: RangeOption[] = [
     type: 'radius',
     min: 0,
     max: 50,
-  }, {
+  },
+  {
     type: 'alpha',
     min: 0,
     max: 1,
     step: 0.1,
-  }];
+  },
+];
 
 document.addEventListener('DOMContentLoaded', () => {
   createRangeInputs(
