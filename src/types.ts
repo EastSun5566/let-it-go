@@ -8,4 +8,5 @@ export interface Options {
   radiusRange?: Range;
   color?: CanvasFillStrokeStyles['fillStyle'];
   alphaRange?: Range;
+  backgroundColor?: CanvasFillStrokeStyles['fillStyle'];
 }

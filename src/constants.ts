@@ -1,7 +1,7 @@
 import { Options } from './types';
 
 // eslint-disable-next-line import/prefer-default-export
-export const DEFAULT_OPTIONS: Required<Omit<Options, 'color'> & { color: string }> = {
+export const DEFAULT_OPTIONS: Required<Options> = {
   root: document.body,
   number: window.innerWidth,
   velocityXRange: [-3, 3],
@@ -9,4 +9,5 @@ export const DEFAULT_OPTIONS: Required<Omit<Options, 'color'> & { color: string 
   radiusRange: [0.5, 1],
   color: '#ffffff',
   alphaRange: [0.8, 1],
+  backgroundColor: 'transparent',
 };

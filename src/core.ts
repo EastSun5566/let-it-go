@@ -99,6 +99,8 @@ export class LetItGo {
     });
   }
 
+  backgroundColor: CanvasFillStrokeStyles['fillStyle'];
+
   readonly canvas = document.createElement('canvas');
 
   readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
@@ -119,6 +121,7 @@ export class LetItGo {
     radiusRange = DEFAULT_OPTIONS.radiusRange,
     color = DEFAULT_OPTIONS.color,
     alphaRange = DEFAULT_OPTIONS.alphaRange,
+    backgroundColor = DEFAULT_OPTIONS.backgroundColor,
   }: Readonly<Options> = {}) {
     assertIsRange(velocityXRange);
     assertIsRange(velocityYRange);
@@ -132,11 +135,11 @@ export class LetItGo {
     this.#radiusRange = radiusRange.sort();
     this.#color = color;
     this.#alphaRange = alphaRange.sort();
+    this.backgroundColor = backgroundColor;
 
-    this.#resizeCanvas();
-    // window.addEventListener('resize', debounce(() => this.resizeCanvas()));
-
-    const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
+    // TODO: use OffscreenCanvas when is possible
+    // const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
+    const ctx = this.canvas.getContext('2d');
     if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
 
     this.#ctx = ctx;
@@ -146,20 +149,25 @@ export class LetItGo {
     this.#startAnimate();
   }
 
-  #resizeCanvas(): void {
-    const { clientWidth, clientHeight } = this.root;
-
-    this.canvas.width = clientWidth;
-    this.canvas.height = clientHeight;
-  }
-
   #mountCanvas(): void {
+    const resizeObserver = new ResizeObserver((entries) => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const entry of entries) {
+        this.canvas.width = entry.contentRect.width;
+        this.canvas.height = entry.contentRect.height;
+      }
+    });
+    resizeObserver.observe(this.root);
+
+    this.canvas.width = this.root.clientWidth;
+    this.canvas.height = this.root.clientHeight;
+
     setStyleProps(this.root, { position: 'relative' });
     setStyleProps(this.canvas, {
       position: 'absolute',
       top: 0,
       left: 0,
-      // zIndex: -1,
+      zIndex: -1,
       pointerEvents: 'none',
     });
 
@@ -195,6 +203,8 @@ export class LetItGo {
     const { width, height } = this.canvas;
 
     this.#ctx.clearRect(0, 0, width, height);
+    this.#ctx.fillStyle = this.backgroundColor;
+    this.#ctx.fillRect(0, 0, width, height);
     this.#snowflakes.forEach((snowflake) => snowflake.draw(this.#ctx));
 
     requestAnimationFrame(this.#draw);
@@ -231,8 +241,6 @@ export class LetItGo {
     this.letItStop();
 
     this.root.removeChild(this.canvas);
-
-    // window.removeEventListener('resize', this.resizeCanvas);
   }
 }
 
