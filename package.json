@@ -19,9 +19,8 @@
     "lint": "eslint --fix --ignore-path .gitignore --ext .js,.ts src",
     "prepublishOnly": "pnpm build",
     "release": "pnpx standard-version && git push --follow-tags && pnpm publish",
-    "deploy": "sh scripts/deploy.sh",
     "demo:dev": "pnpm -C demo dev",
-    "demo:build": "pnpm -C demo build"
+    "demo:deploy": "pnpm -C demo deploy"
   },
   "keywords": [
     "let-it-go",
