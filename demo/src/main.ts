@@ -1,5 +1,5 @@
 // import { LetItGo } from 'let-it-go';
-import { LetItGo } from '../../../src';
+import { LetItGo } from '../../src';
 
 import {
   RangeOption,
@@ -11,6 +11,8 @@ import {
   bindResetBtn,
   setupToggle,
 } from './utils';
+
+import './style.scss';
 
 const rangeOptions: RangeOption[] = [
   {
