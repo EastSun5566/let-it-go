@@ -8,7 +8,6 @@ import {
   assertIsRange,
   getRandom,
   setStyleProps,
-  // debounce,
 } from './utils';
 import { DEFAULT_OPTIONS } from './constants';
 
