@@ -36,11 +36,15 @@ const rangeOptions: RangeOption[] = [
 
 document.addEventListener('DOMContentLoaded', () => {
   createRangeInputs(
-    document.getElementById('ranges-container'),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    document.getElementById('ranges-container')!,
     rangeOptions,
   );
 
-  const snow = new LetItGo({ root: document.getElementById('let-it-go') });
+  const snow = new LetItGo({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    root: document.getElementById('let-it-go')!,
+  });
 
   setupToggle();
 
