@@ -20,7 +20,7 @@
     "prepublishOnly": "pnpm build",
     "release": "pnpx standard-version && git push --follow-tags && pnpm publish",
     "demo:dev": "pnpm -C demo dev",
-    "demo:deploy": "pnpm -C demo deploy"
+    "demo:deploy": "pnpm -C demo run deploy"
   },
   "keywords": [
     "let-it-go",
