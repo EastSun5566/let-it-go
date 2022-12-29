@@ -23,10 +23,14 @@ const config = {
       name: camalize(name),
       file: main,
       format: 'umd',
-      sourcemap: true,
+      // sourcemap: true,
       exports: 'named',
     },
-    { file: module, format: 'es', sourcemap: true },
+    {
+      file: module,
+      format: 'es',
+      // sourcemap: true,
+    },
   ],
   plugins: [
     nodeResolve({ extensions: [...DEFAULTS.extensions, '.ts'] }),
