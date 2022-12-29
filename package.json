@@ -10,7 +10,6 @@
     "src"
   ],
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "type-check": "tsc --noEmit",
     "type-check:watch": "pnpm type-check --watch",
     "build:types": "tsc --emitDeclarationOnly",
