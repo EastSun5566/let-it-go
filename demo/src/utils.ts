@@ -1,28 +1,38 @@
 /* eslint-disable no-param-reassign */
 import { LetItGo } from 'let-it-go';
 
-export const setupToggle = (): void => {
-  const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
-
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const toggle = document.getElementById('toggle')!;
+const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
+export const setupToggle = ({
+  isShowPanel = false 
+}: { isShowPanel?: boolean } = {}): void => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const option = document.getElementById('option')!;
+  const hide = () => option.style.transform = `translateY(${option.offsetHeight - toggle.offsetHeight - 8}px)`;
+  const show = () => option.style.transform = 'translateY(0)';
 
-  let isOpen = true;
-  toggle.textContent = getWord(isOpen);
+  let isShow = isShowPanel;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const toggle = document.getElementById('toggle')!;
+  toggle.textContent = getWord(isShow);
+
   toggle.addEventListener('click', () => {
-    isOpen = !isOpen;
+    isShow = !isShow;
+    toggle.textContent = getWord(isShow);
 
-    if (isOpen) {
-      option.style.bottom = '16px';
-      toggle.textContent = getWord(isOpen);
+    if (isShow) {
+      show();
       return;
     }
 
-    option.style.bottom = `${-option.offsetHeight + toggle.offsetHeight + 24}px`;
-    toggle.textContent = getWord(isOpen);
+    hide();
   });
+
+  if(!isShow) {
+    hide();
+    return
+  }
+
+  show();
 };
 
 export const bindResetBtn = (snow: LetItGo): void => {
@@ -42,7 +52,7 @@ export const bindResetBtn = (snow: LetItGo): void => {
 };
 
 export const bindSwitch = (snow: LetItGo): void => {
-  const getWord = (isChecked: boolean) => (isChecked ? '⛄️' : '☃️');
+  const getWord = (isChecked: boolean) => (isChecked ? '☃️' : '⛄️');
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const switchInput = document.querySelector<HTMLInputElement>('#is-snow')!;
@@ -146,7 +156,7 @@ export const createRangeInputs = (
     type, min, max, step,
   }: RangeOption) => `
     <fieldset>
-      <label id="${type}-range-label" class="form-label">❄️ ${type.toUpperCase()} RANGE ()</label>
+      <label id="${type}-range-label" class="form-label">↔️ ${type} ()</label>
 
       <input
         type="range"

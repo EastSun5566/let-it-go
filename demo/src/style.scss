@@ -24,11 +24,16 @@ $options-bg: rgba(white, 0.3);
   padding: 16px;
   height: 40vh;
   overflow-y: scroll;
+  border-radius: 8px;
+  box-shadow: 0 0 16px rgba(black, 0.3);
+
+  transition: transform 0.3s ease-in-out;
 
   @media screen and (max-width: 720px) {
     left: 0;
     bottom: 0;
     width: 100%;
+    border-radius: 0;
   }
 }
 
@@ -39,12 +44,8 @@ $options-bg: rgba(white, 0.3);
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background-color: white;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background-color: #ececec;
+  background-color: #eee;
+  border-radius: 8px;
 }
 
 .github-corner:hover .octo-arm {
