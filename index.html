@@ -17,19 +17,49 @@
     </script>
 
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/let-it-go/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>❄️ Let it Go</title>
+
+    <title>Let it Go - snow instantly</title>
     <meta name="description" content="❄️ Let your website snow instantly" />
-    <script type="module" crossorigin src="/let-it-go/assets/index-bba67898.js"></script>
-    <link rel="stylesheet" href="/let-it-go/assets/index-0d66241e.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/let-it-go/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/let-it-go/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/let-it-go/favicon-16x16.png" />
+    <link rel="manifest" href="/let-it-go/site.webmanifest" />
+    <link rel="mask-icon" href="/let-it-go/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <meta property="og:title" content="Let it Go - snow instantly" />
+    <meta
+      property="og:description"
+      content="❄️ Let your website snow instantly"
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/EastSun5566/let-it-go/main/logo.jpg"
+    />
+    <meta property="og:url" content="https://eastsun5566.github.io/let-it-go" />
+    <meta property="og:type" content="website" />
+    <script type="module" crossorigin src="/let-it-go/assets/index-703a05aa.js"></script>
+    <link rel="stylesheet" href="/let-it-go/assets/index-43ab7056.css">
   </head>
 
   <body>
     <div id="let-it-go" class="container">
       <main class="main text-center">
-        <h3 class="text-white">❄️ Welcome to LET IT GO</h3>
-        <h5 class="text-white">Let your website snow instantly ⛄️</h5>
+        <h1>
+          <img
+            src="https://raw.githubusercontent.com/EastSun5566/let-it-go/main/logo.jpg"
+            alt="Logo"
+            width="80"
+            height="80"
+            style="border-radius: 50%"
+          />
+        </h1>
+        <br />
+        <h3 class="text-white">❄️ Welcome to LET IT GO ❄️</h3>
+        <h5 class="text-white">Let your website snow instantly</h5>
 
         <small class="d-block mt-3">
           Made with ❤️ By
@@ -49,36 +79,40 @@
         <div class="form-check form-switch">
           <input
             type="checkbox"
-            class="form-check-input"
+            class="form-check-input rounded-pill"
             id="is-snow"
             checked
           />
-          <label class="form-check-label" for="is-snow"></label>
+          <label class="form-check-label" for="is-snow">⛄️</label>
         </div>
 
         <div>
-          <button type="button" class="btn btn-secondary btn-sm" id="reset">
+          <button
+            type="button"
+            class="btn btn-dark btn-sm rounded-pill"
+            id="reset"
+          >
             RESET
           </button>
-          <button type="button" class="btn btn-sm" id="toggle"></button>
+          <button type="button" class="btn btn-sm" id="toggle">👇</button>
         </div>
       </div>
 
       <div class="mb-3">
-        <label for="number" class="form-label">❄️ NUMBER</label>
+        <label for="number" class="form-label">❄️</label>
         <input
           type="number"
-          class="form-control"
+          class="form-control rounded-pill"
           id="number"
           placeholder="number of snowflake"
         />
       </div>
 
       <div class="mb-3">
-        <label for="number" class="form-label">❄️ COLOR</label>
+        <label for="number" class="form-label">🌈</label>
         <input
           type="color"
-          class="form-control form-control-color mx-auto"
+          class="form-control form-control-color rounded-pill"
           id="color"
           placeholder="color of snowflake"
         />
