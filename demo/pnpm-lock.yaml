@@ -9,8 +9,8 @@ dependencies:
     specifier: ^5.3.1
     version: 5.3.1
   let-it-go:
-    specifier: ^0.0.7
-    version: 0.0.7
+    specifier: ^0.0.9
+    version: 0.0.9
 
 devDependencies:
   sass:
@@ -342,9 +342,8 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: true
 
-  /let-it-go@0.0.7:
-    resolution: {integrity: sha512-r7QOi35GtMeErwLub9mLSQLB18cXHLyUdW0fIetAEZ1ax1BroeBScXVCIAFgJrJNT0T6sjTRn7GqL42YQ78uqw==}
-    requiresBuild: true
+  /let-it-go@0.0.9:
+    resolution: {integrity: sha512-Y9gySqhl+5bJ0NQpyHxxMfFp1Y0erXkb32ITWk9EGsL1ItbaN1zrX2Ug28slwAlDXO4RP4xJBgHhFmHRqG+zhw==}
     dev: false
 
   /nanoid@3.3.6:
@@ -383,8 +382,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /rollup@3.27.1:
-    resolution: {integrity: sha512-tXNDFwOkN6C2w5Blj1g6ForKeFw6c1mDu5jxoeDO3/pmYjgt+8yvIFjKzH5FQUq70OKZBkOt0zzv0THXL7vwzQ==}
+  /rollup@3.27.2:
+    resolution: {integrity: sha512-YGwmHf7h2oUHkVBT248x0yt6vZkYQ3/rvE5iQuVBh3WO8GcJ6BNeOkpoX1yMHIiBm18EMLjBPIoUDkhgnyxGOQ==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -449,7 +448,7 @@ packages:
     dependencies:
       esbuild: 0.18.17
       postcss: 8.4.27
-      rollup: 3.27.1
+      rollup: 3.27.2
       sass: 1.64.2
     optionalDependencies:
       fsevents: 2.3.2

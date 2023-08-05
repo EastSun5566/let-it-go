@@ -1,19 +1,23 @@
 /* eslint-disable no-param-reassign */
-import { LetItGo } from 'let-it-go';
+import { LetItGo } from '../../src';
 
 const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
 export const setupToggle = ({
-  isShowPanel = false 
+  isShowPanel = false,
 }: { isShowPanel?: boolean } = {}): void => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const option = document.getElementById('option')!;
-  const hide = () => option.style.transform = `translateY(${option.offsetHeight - toggle.offsetHeight - 8}px)`;
-  const show = () => option.style.transform = 'translateY(0)';
 
   let isShow = isShowPanel;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const toggle = document.getElementById('toggle')!;
   toggle.textContent = getWord(isShow);
+  const hide = () => {
+    option.style.transform = `translateY(${option.offsetHeight - toggle.offsetHeight - 8}px)`;
+  };
+  const show = () => {
+    option.style.transform = 'translateY(0)';
+  };
 
   toggle.addEventListener('click', () => {
     isShow = !isShow;
@@ -27,9 +31,9 @@ export const setupToggle = ({
     hide();
   });
 
-  if(!isShow) {
+  if (!isShow) {
     hide();
-    return
+    return;
   }
 
   show();

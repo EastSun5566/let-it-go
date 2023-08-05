@@ -1,4 +1,4 @@
-import { LetItGo } from 'let-it-go';
+import { LetItGo } from '../../src';
 
 import {
   type RangeOption,
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     root: document.getElementById('let-it-go')!,
   });
 
-  setupToggle();
+  setupToggle({ isShowPanel: false });
 
   bindResetBtn(snow);
   bindSwitch(snow);

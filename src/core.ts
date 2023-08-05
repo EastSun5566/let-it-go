@@ -11,7 +11,7 @@ import {
 } from './utils';
 import { DEFAULT_OPTIONS } from './constants';
 
-import type { Range, Options, Style } from './types';
+import type { Range, Options } from './types';
 
 export class LetItGo {
   readonly root = document.body;
@@ -100,7 +100,7 @@ export class LetItGo {
 
   backgroundColor: CanvasFillStrokeStyles['fillStyle'];
 
-  style: Style
+  style = DEFAULT_OPTIONS.style;
 
   readonly canvas = document.createElement('canvas');
 
@@ -148,6 +148,7 @@ export class LetItGo {
     this.#ctx = ctx;
 
     this.#mountCanvas();
+
     this.#createSnowflakes();
     this.#startAnimate();
   }
@@ -168,8 +169,8 @@ export class LetItGo {
     setStyleProps(this.root, { position: 'relative' });
     setStyleProps(this.canvas, {
       position: 'absolute',
-      top: 0,
-      left: 0,
+      top: '0',
+      left: '0',
       ...this.style,
     });
 
