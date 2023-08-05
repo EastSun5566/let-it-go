@@ -1,5 +1,5 @@
 export type Range = [number, number];
-export type Style = Partial<Record<keyof CSSStyleDeclaration, string | number>>;
+export type Style = Partial<CSSStyleDeclaration>;
 
 export interface Options {
   root?: HTMLElement;
