@@ -1,10 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { LetItGo } from '../../src';
+import { LetItGo } from 'let-it-go';
 
-const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
 export const setupToggle = ({
   isShowPanel = false,
 }: { isShowPanel?: boolean } = {}): void => {
+  const getWord = (isOpen: boolean) => (isOpen ? '👇' : '☝️');
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const option = document.getElementById('option')!;
 
@@ -13,7 +13,7 @@ export const setupToggle = ({
   const toggle = document.getElementById('toggle')!;
   toggle.textContent = getWord(isShow);
   const hide = () => {
-    option.style.transform = `translateY(${option.offsetHeight - toggle.offsetHeight - 8}px)`;
+    option.style.transform = `translateY(${option.offsetHeight - toggle.offsetHeight - 16}px)`;
   };
   const show = () => {
     option.style.transform = 'translateY(0)';

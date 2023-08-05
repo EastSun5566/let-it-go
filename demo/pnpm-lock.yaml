@@ -1,16 +1,12 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   bootswatch:
     specifier: ^5.3.1
     version: 5.3.1
   let-it-go:
-    specifier: ^0.0.9
-    version: 0.0.9
+    specifier: ^1.0.0
+    version: 1.0.0
 
 devDependencies:
   sass:
@@ -342,8 +338,8 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: true
 
-  /let-it-go@0.0.9:
-    resolution: {integrity: sha512-Y9gySqhl+5bJ0NQpyHxxMfFp1Y0erXkb32ITWk9EGsL1ItbaN1zrX2Ug28slwAlDXO4RP4xJBgHhFmHRqG+zhw==}
+  /let-it-go@1.0.0:
+    resolution: {integrity: sha512-yzn7EFjddUpsSzhCsJSh8aWGNcTelVaPOUfOvHuR/4VZjpRQNZFznkiTT5dw4txP0aUQ4/B4lLsY37PwBHw0kA==}
     dev: false
 
   /nanoid@3.3.6:
@@ -453,3 +449,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
