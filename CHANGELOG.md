@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.10](https://github.com/EastSun5566/let-it-go/compare/v0.0.9...v0.0.10) (2023-08-05)
+
+
+### Features
+
+* add logo ([612c8f5](https://github.com/EastSun5566/let-it-go/commit/612c8f562a838eb432d1544b25203b72fc432ab3))
+* update demo ([0f6a6a5](https://github.com/EastSun5566/let-it-go/commit/0f6a6a58cc118dc74b81258d2460fbf1d844097c))
+
+
+### Bug Fixes
+
+* use `style` prop instead of `setProperty` ([36c09f8](https://github.com/EastSun5566/let-it-go/commit/36c09f8cd849d7685ce4f41461dd7bbc2a4b9680))
+
 ### [0.0.9](https://github.com/EastSun5566/let-it-go/compare/v0.0.8...v0.0.9) (2022-12-29)
 
 ### [0.0.8](https://github.com/EastSun5566/let-it-go/compare/v0.0.7...v0.0.8) (2022-12-29)

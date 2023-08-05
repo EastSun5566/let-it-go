@@ -1,6 +1,6 @@
 {
   "name": "let-it-go",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "❄️ Let your website snow instantly",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
