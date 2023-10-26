@@ -6,6 +6,8 @@
 [![NPM Downloads](https://img.shields.io/npm/dt/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
 [![License](https://img.shields.io/github/license/EastSun5566/let-it-go.svg?style=for-the-badge)](https://github.com/EastSun5566/let-it-go/blob/main/LICENSE)
 
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="40">](https://www.buymeacoffee.com/eastsun5566)
+
 > Let your website snow instantly, zero dependencies, small & fast
 
 🔗 <https://eastsun5566.github.io/let-it-go/>
