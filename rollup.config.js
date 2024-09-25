@@ -4,7 +4,9 @@ import { babel } from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import filesize from 'rollup-plugin-filesize';
 
-import { name, main, module } from './package.json';
+import pkg from './package.json' assert { type: 'json' };
+
+const { name, main, module } = pkg;
 
 /**
  * @param {string} string

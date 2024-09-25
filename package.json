@@ -1,6 +1,11 @@
 {
   "name": "let-it-go",
   "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "^18.0.0 || >=20.0.0"
+  },
+  "packageManager": "pnpm@9.1.0",
   "description": "❄️ Let your website snow instantly",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
