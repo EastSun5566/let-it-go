@@ -15,6 +15,5 @@ jobs:
         with:
           node-version: 18.x
       - uses: pnpm/action-setup@v4
-      - run: |
-          pnpm i
-          pnpm build
+      - run: pnpm i
+      - run: pnpm build
