@@ -102,7 +102,7 @@ export class LetItGo {
 
   style = DEFAULT_OPTIONS.style;
 
-  readonly canvas = document.createElement('canvas');
+  readonly canvas: HTMLCanvasElement = document.createElement('canvas');
 
   readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
