@@ -202,8 +202,6 @@ export class LetItGo {
   }
 
   #update = (): void => {
-    if (!this.#isGo) return;
-
     this.#snowflakes.forEach(
       (snowflake) => snowflake.update(this.canvas),
     );
