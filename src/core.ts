@@ -3,6 +3,7 @@
 import {
   Vec2D,
   Snowflake,
+  assert,
   assertIsAlphaRange,
   assertIsRadiusRange,
   assertIsRange,
@@ -25,6 +26,8 @@ export class LetItGo {
   }
 
   set number(number: number) {
+    assert(number >= 0, 'Number must be positive');
+
     this.#number = number;
     this.#createSnowflakes();
   }
@@ -156,15 +159,20 @@ export class LetItGo {
   #resizeObserver: ResizeObserver | null = null;
 
   #mountCanvas(): void {
-    const resizeObserver = new ResizeObserver((entries) => {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const entry of entries) {
-        this.canvas.width = entry.contentRect.width;
-        this.canvas.height = entry.contentRect.height;
-      }
-    });
-    resizeObserver.observe(this.root);
-    this.#resizeObserver = resizeObserver;
+    try {
+      const resizeObserver = new ResizeObserver((entries) => {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const entry of entries) {
+          this.canvas.width = entry.contentRect.width;
+          this.canvas.height = entry.contentRect.height;
+        }
+      });
+      resizeObserver.observe(this.root);
+      this.#resizeObserver = resizeObserver;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('[let-it-go] ResizeObserver is not supported.', error);
+    }
 
     this.canvas.width = this.root.clientWidth;
     this.canvas.height = this.root.clientHeight;
@@ -220,10 +228,14 @@ export class LetItGo {
     this.#requestID = requestAnimationFrame(this.#draw);
   };
 
+  static readonly FRAME_RATE = 30;
+
+  static readonly FRAME_INTERVAL = 1000 / LetItGo.FRAME_RATE;
+
   #startAnimate(): void {
     if (this.#isGo) return;
 
-    this.#intervalID = setInterval(this.#update, 1000 / 30);
+    this.#intervalID = setInterval(this.#update, LetItGo.FRAME_INTERVAL);
     this.#requestID = requestAnimationFrame(this.#draw);
 
     this.#isGo = true;
@@ -259,6 +271,9 @@ export class LetItGo {
     if (this.canvas.parentNode) {
       this.root.removeChild(this.canvas);
     }
+
+    this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.#number = 0;
   }
 }
 
