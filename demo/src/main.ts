@@ -1,4 +1,4 @@
-import { LetItGo } from 'let-it-go';
+import { LetItGo } from '../../src';
 
 import {
   type RangeOption,
