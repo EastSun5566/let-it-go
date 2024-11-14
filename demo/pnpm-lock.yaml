@@ -11,9 +11,6 @@ importers:
       bootswatch:
         specifier: ^5.3.3
         version: 5.3.3
-      let-it-go:
-        specifier: ^1.0.0
-        version: 1.0.0
     devDependencies:
       sass:
         specifier: ^1.79.3
@@ -178,9 +175,6 @@ packages:
 
   immutable@4.3.7:
     resolution: {integrity: sha512-1hqclzwYwjRDFLjcFxOM5AYkkG0rpFPpr1RLPMEuGczoS7YA8gLhy8SWXYRAA/XwfEHpfo3cw5JGioS32fnMRw==}
-
-  let-it-go@1.0.0:
-    resolution: {integrity: sha512-yzn7EFjddUpsSzhCsJSh8aWGNcTelVaPOUfOvHuR/4VZjpRQNZFznkiTT5dw4txP0aUQ4/B4lLsY37PwBHw0kA==}
 
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
@@ -348,8 +342,6 @@ snapshots:
     optional: true
 
   immutable@4.3.7: {}
-
-  let-it-go@1.0.0: {}
 
   nanoid@3.3.7: {}
 

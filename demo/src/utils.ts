@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { LetItGo } from 'let-it-go';
+import { LetItGo } from '../../src';
 
 export const setupToggle = ({
   isShowPanel = false,
