@@ -153,6 +153,8 @@ export class LetItGo {
     this.#startAnimate();
   }
 
+  #resizeObserver: ResizeObserver | null = null;
+
   #mountCanvas(): void {
     const resizeObserver = new ResizeObserver((entries) => {
       // eslint-disable-next-line no-restricted-syntax
@@ -162,6 +164,7 @@ export class LetItGo {
       }
     });
     resizeObserver.observe(this.root);
+    this.#resizeObserver = resizeObserver;
 
     this.canvas.width = this.root.clientWidth;
     this.canvas.height = this.root.clientHeight;
@@ -198,11 +201,17 @@ export class LetItGo {
     );
   }
 
-  #update = (): void => this.#snowflakes.forEach(
-    (snowflake) => snowflake.update(this.canvas),
-  );
+  #update = (): void => {
+    if (!this.#isGo) return;
+
+    this.#snowflakes.forEach(
+      (snowflake) => snowflake.update(this.canvas),
+    );
+  };
 
   #draw = (): void => {
+    if (!this.#isGo) return;
+
     const { width, height } = this.canvas;
 
     this.#ctx.clearRect(0, 0, width, height);
@@ -210,7 +219,7 @@ export class LetItGo {
     this.#ctx.fillRect(0, 0, width, height);
     this.#snowflakes.forEach((snowflake) => snowflake.draw(this.#ctx));
 
-    requestAnimationFrame(this.#draw);
+    this.#requestID = requestAnimationFrame(this.#draw);
   };
 
   #startAnimate(): void {
@@ -223,6 +232,8 @@ export class LetItGo {
   }
 
   letItStop(): void {
+    this.#isGo = false;
+
     if (this.#intervalID) {
       clearInterval(this.#intervalID);
       this.#intervalID = null;
@@ -232,8 +243,6 @@ export class LetItGo {
       cancelAnimationFrame(this.#requestID);
       this.#requestID = null;
     }
-
-    this.#isGo = false;
   }
 
   letItGoAgain(): void {
@@ -243,7 +252,15 @@ export class LetItGo {
   clear(): void {
     this.letItStop();
 
-    this.root.removeChild(this.canvas);
+    this.#snowflakes = [];
+    if (this.#resizeObserver) {
+      this.#resizeObserver.disconnect();
+      this.#resizeObserver = null;
+    }
+
+    if (this.canvas.parentNode) {
+      this.root.removeChild(this.canvas);
+    }
   }
 }
 
