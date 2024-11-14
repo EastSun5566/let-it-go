@@ -1,4 +1,4 @@
-name: Build
+name: Test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,4 +16,5 @@ jobs:
           node-version: 18.x
       - uses: pnpm/action-setup@v4
       - run: pnpm i
+      - run: pnpm test
       - run: pnpm build

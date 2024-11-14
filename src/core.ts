@@ -3,6 +3,7 @@
 import {
   Vec2D,
   Snowflake,
+  assert,
   assertIsAlphaRange,
   assertIsRadiusRange,
   assertIsRange,
@@ -25,6 +26,8 @@ export class LetItGo {
   }
 
   set number(number: number) {
+    assert(number >= 0, 'Number must be positive');
+
     this.#number = number;
     this.#createSnowflakes();
   }
@@ -153,15 +156,23 @@ export class LetItGo {
     this.#startAnimate();
   }
 
+  #resizeObserver: ResizeObserver | null = null;
+
   #mountCanvas(): void {
-    const resizeObserver = new ResizeObserver((entries) => {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const entry of entries) {
-        this.canvas.width = entry.contentRect.width;
-        this.canvas.height = entry.contentRect.height;
-      }
-    });
-    resizeObserver.observe(this.root);
+    try {
+      const resizeObserver = new ResizeObserver((entries) => {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const entry of entries) {
+          this.canvas.width = entry.contentRect.width;
+          this.canvas.height = entry.contentRect.height;
+        }
+      });
+      resizeObserver.observe(this.root);
+      this.#resizeObserver = resizeObserver;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('[let-it-go] ResizeObserver is not supported.', error);
+    }
 
     this.canvas.width = this.root.clientWidth;
     this.canvas.height = this.root.clientHeight;
@@ -198,11 +209,15 @@ export class LetItGo {
     );
   }
 
-  #update = (): void => this.#snowflakes.forEach(
-    (snowflake) => snowflake.update(this.canvas),
-  );
+  #update = (): void => {
+    this.#snowflakes.forEach(
+      (snowflake) => snowflake.update(this.canvas),
+    );
+  };
 
   #draw = (): void => {
+    if (!this.#isGo) return;
+
     const { width, height } = this.canvas;
 
     this.#ctx.clearRect(0, 0, width, height);
@@ -210,19 +225,25 @@ export class LetItGo {
     this.#ctx.fillRect(0, 0, width, height);
     this.#snowflakes.forEach((snowflake) => snowflake.draw(this.#ctx));
 
-    requestAnimationFrame(this.#draw);
+    this.#requestID = requestAnimationFrame(this.#draw);
   };
+
+  static readonly FRAME_RATE = 30;
+
+  static readonly FRAME_INTERVAL = 1000 / LetItGo.FRAME_RATE;
 
   #startAnimate(): void {
     if (this.#isGo) return;
 
-    this.#intervalID = setInterval(this.#update, 1000 / 30);
+    this.#intervalID = setInterval(this.#update, LetItGo.FRAME_INTERVAL);
     this.#requestID = requestAnimationFrame(this.#draw);
 
     this.#isGo = true;
   }
 
   letItStop(): void {
+    this.#isGo = false;
+
     if (this.#intervalID) {
       clearInterval(this.#intervalID);
       this.#intervalID = null;
@@ -232,8 +253,6 @@ export class LetItGo {
       cancelAnimationFrame(this.#requestID);
       this.#requestID = null;
     }
-
-    this.#isGo = false;
   }
 
   letItGoAgain(): void {
@@ -243,7 +262,18 @@ export class LetItGo {
   clear(): void {
     this.letItStop();
 
-    this.root.removeChild(this.canvas);
+    this.#snowflakes = [];
+    if (this.#resizeObserver) {
+      this.#resizeObserver.disconnect();
+      this.#resizeObserver = null;
+    }
+
+    if (this.canvas.parentNode) {
+      this.root.removeChild(this.canvas);
+    }
+
+    this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.#number = 0;
   }
 }
 
