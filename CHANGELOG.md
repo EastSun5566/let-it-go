@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/EastSun5566/let-it-go/compare/v1.0.0...v1.1.0) (2024-11-15)
+
+
+### Features
+
+* add og tag to demo ([23f6b63](https://github.com/EastSun5566/let-it-go/commit/23f6b63009a479551556170ac3340aa2cb29f202))
+* tweak og ([d2aca4f](https://github.com/EastSun5566/let-it-go/commit/d2aca4f74d89b02c15c14625ab0497a14267b891))
+
+
+### Bug Fixes
+
+* add assertions and improve error handling in core functionality ([5c6ac51](https://github.com/EastSun5566/let-it-go/commit/5c6ac51b8a6454064b1d8a67f30746cf1cd6cd03))
+* enhance clean up ([902aba2](https://github.com/EastSun5566/let-it-go/commit/902aba2c37f8e5be72cd2e3a0c06036f81d48750))
+* fix build & add ci build task ([e869da4](https://github.com/EastSun5566/let-it-go/commit/e869da4844d1925c60726ae25d365bc51089d748))
+* remove unnecessary condiction ([536c09f](https://github.com/EastSun5566/let-it-go/commit/536c09f8281cd8170f9cf33866e1bec90b711509))
+
 ## [1.0.0](https://github.com/EastSun5566/let-it-go/compare/v0.0.10...v1.0.0) (2023-08-05)
 
 ### [0.0.10](https://github.com/EastSun5566/let-it-go/compare/v0.0.9...v0.0.10) (2023-08-05)
