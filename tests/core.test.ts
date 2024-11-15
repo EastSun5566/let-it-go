@@ -12,6 +12,7 @@ const mockCanvasContext = {
   fill: vi.fn(),
   save: vi.fn(),
   restore: vi.fn(),
+  reset: vi.fn(),
   closePath: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000',
@@ -47,7 +48,7 @@ describe('LetItGo', () => {
 
   it('should create canvas element and append to root', () => {
     const snow = new LetItGo();
-    expect(document.body.contains(snow.canvas)).toBe(true);
+    expect(document.body.contains(snow.canvasElement)).toBe(true);
     expect(snow.canvas).toBeInstanceOf(HTMLCanvasElement);
   });
 
@@ -80,7 +81,7 @@ describe('LetItGo', () => {
     expect(clearIntervalSpy).toHaveBeenCalled();
     expect(cancelAnimationFrameSpy).toHaveBeenCalled();
     expect(removeChildSpy).toHaveBeenCalledWith(snow.canvas);
-    expect(document.body.contains(snow.canvas)).toBe(false);
+    expect(document.body.contains(snow.canvasElement)).toBe(false);
   });
 
   it('should handle multiple clear calls safely', () => {
