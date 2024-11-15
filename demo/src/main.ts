@@ -14,6 +14,12 @@ import {
 import 'bootswatch/dist/lux/bootstrap.min.css';
 import './style.scss';
 
+declare global {
+  interface Window {
+    snow: LetItGo;
+  }
+}
+
 const rangeOptions: RangeOption[] = [
   {
     type: 'velocityX',
@@ -49,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     root: document.getElementById('let-it-go')!,
   });
+  window.snow = snow;
 
   setupToggle({ isShowPanel: false });
 
