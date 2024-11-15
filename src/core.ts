@@ -262,18 +262,18 @@ export class LetItGo {
   clear(): void {
     this.letItStop();
 
+    this.#number = 0;
     this.#snowflakes = [];
+
     if (this.#resizeObserver) {
       this.#resizeObserver.disconnect();
       this.#resizeObserver = null;
     }
 
+    this.#ctx.reset();
     if (this.canvas.parentNode) {
       this.root.removeChild(this.canvas);
     }
-
-    this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.#number = 0;
   }
 }
 
