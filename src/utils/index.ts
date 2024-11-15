@@ -43,3 +43,7 @@ export function setStyleProps(
       element.style[key] = value || '';
     });
 }
+
+export function isOffscreenCanvasSupported(): boolean {
+  return 'OffscreenCanvas' in window;
+}

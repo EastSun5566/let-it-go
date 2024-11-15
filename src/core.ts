@@ -9,17 +9,18 @@ import {
   assertIsRange,
   getRandom,
   setStyleProps,
+  isOffscreenCanvasSupported,
 } from './utils';
 import { DEFAULT_OPTIONS } from './constants';
 
 import type { Range, Options } from './types';
 
 export class LetItGo {
-  readonly root = document.body;
+  readonly root = DEFAULT_OPTIONS.root;
 
   #isGo = false;
 
-  #number = 0;
+  #number = DEFAULT_OPTIONS.number;
 
   get number(): number {
     return this.#number;
@@ -32,7 +33,7 @@ export class LetItGo {
     this.#createSnowflakes();
   }
 
-  #velocityXRange: Range;
+  #velocityXRange: Range = DEFAULT_OPTIONS.velocityXRange;
 
   get velocityXRange(): Range {
     return this.#velocityXRange;
@@ -46,7 +47,7 @@ export class LetItGo {
     this.#snowflakes.forEach((snowflake) => { snowflake.v.x = getRandom(..._range); });
   }
 
-  #velocityYRange: Range;
+  #velocityYRange: Range = DEFAULT_OPTIONS.velocityYRange;
 
   get velocityYRange(): Range {
     return this.#velocityYRange;
@@ -60,7 +61,7 @@ export class LetItGo {
     this.#snowflakes.forEach((snowflake) => { snowflake.v.y = getRandom(...sortedRange); });
   }
 
-  #radiusRange: Range;
+  #radiusRange: Range = DEFAULT_OPTIONS.radiusRange;
 
   get radiusRange(): Range {
     return this.#radiusRange;
@@ -74,7 +75,7 @@ export class LetItGo {
     this.#snowflakes.forEach((snowflake) => { snowflake.r = getRandom(..._range); });
   }
 
-  #color: CanvasFillStrokeStyles['fillStyle'];
+  #color: CanvasFillStrokeStyles['fillStyle'] = DEFAULT_OPTIONS.color;
 
   get color(): CanvasFillStrokeStyles['fillStyle'] {
     return this.#color;
@@ -85,7 +86,7 @@ export class LetItGo {
     this.#snowflakes.forEach((snowflake) => { snowflake.color = color; });
   }
 
-  #alphaRange: Range;
+  #alphaRange: Range = DEFAULT_OPTIONS.alphaRange;
 
   get alphaRange(): Range {
     return this.#alphaRange;
@@ -105,7 +106,9 @@ export class LetItGo {
 
   style = DEFAULT_OPTIONS.style;
 
-  readonly canvas: HTMLCanvasElement = document.createElement('canvas');
+  readonly canvasElement: HTMLCanvasElement = document.createElement('canvas');
+
+  readonly canvas: HTMLCanvasElement | OffscreenCanvas;
 
   readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
@@ -143,12 +146,14 @@ export class LetItGo {
     this.backgroundColor = backgroundColor;
     this.style = style;
 
-    // TODO: use OffscreenCanvas when is possible
-    // const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
-    const ctx = this.canvas.getContext('2d');
-    if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
+    this.canvas = isOffscreenCanvasSupported()
+      ? this.canvasElement.transferControlToOffscreen()
+      : this.canvasElement;
 
-    this.#ctx = ctx;
+    const ctx = this.canvas.getContext('2d');
+    assert(ctx, 'The 2d context canvas is not supported.');
+
+    this.#ctx = ctx as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
     this.#mountCanvas();
 
@@ -159,33 +164,35 @@ export class LetItGo {
   #resizeObserver: ResizeObserver | null = null;
 
   #mountCanvas(): void {
+    const { root, canvas, canvasElement } = this;
+
     try {
       const resizeObserver = new ResizeObserver((entries) => {
         // eslint-disable-next-line no-restricted-syntax
         for (const entry of entries) {
-          this.canvas.width = entry.contentRect.width;
-          this.canvas.height = entry.contentRect.height;
+          canvas.width = entry.contentRect.width;
+          canvas.height = entry.contentRect.height;
         }
       });
-      resizeObserver.observe(this.root);
+      resizeObserver.observe(root);
       this.#resizeObserver = resizeObserver;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn('[let-it-go] ResizeObserver is not supported.', error);
     }
 
-    this.canvas.width = this.root.clientWidth;
-    this.canvas.height = this.root.clientHeight;
+    canvas.width = root.clientWidth;
+    canvas.height = root.clientHeight;
 
-    setStyleProps(this.root, { position: 'relative' });
-    setStyleProps(this.canvas, {
+    setStyleProps(root, { position: 'relative' });
+    setStyleProps(canvasElement, {
       position: 'absolute',
       top: '0',
       left: '0',
       ...this.style,
     });
 
-    this.root.appendChild(this.canvas);
+    this.root.appendChild(canvasElement);
   }
 
   #createSnowflakes(): void {
@@ -263,17 +270,16 @@ export class LetItGo {
     this.letItStop();
 
     this.#snowflakes = [];
+
     if (this.#resizeObserver) {
       this.#resizeObserver.disconnect();
       this.#resizeObserver = null;
     }
 
-    if (this.canvas.parentNode) {
-      this.root.removeChild(this.canvas);
+    this.#ctx.reset();
+    if (this.canvasElement.parentNode) {
+      this.root.removeChild(this.canvasElement);
     }
-
-    this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.#number = 0;
   }
 }
 
