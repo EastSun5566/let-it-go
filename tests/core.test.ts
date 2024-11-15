@@ -12,6 +12,7 @@ const mockCanvasContext = {
   fill: vi.fn(),
   save: vi.fn(),
   restore: vi.fn(),
+  reset: vi.fn(),
   closePath: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000',
