@@ -276,7 +276,7 @@ export class LetItGo {
       this.#resizeObserver = null;
     }
 
-    this.#ctx.reset();
+    this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (this.canvasElement.parentNode) {
       this.root.removeChild(this.canvasElement);
     }

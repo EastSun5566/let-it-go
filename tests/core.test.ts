@@ -12,7 +12,6 @@ const mockCanvasContext = {
   fill: vi.fn(),
   save: vi.fn(),
   restore: vi.fn(),
-  reset: vi.fn(),
   closePath: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000',
@@ -89,7 +88,7 @@ describe('LetItGo', () => {
 
     // First clear should work
     snow.clear();
-    expect(document.body.contains(snow.canvas)).toBe(false);
+    expect(document.body.contains(snow.canvasElement)).toBe(false);
 
     // Second clear should not throw
     expect(() => snow.clear()).not.toThrow();
@@ -148,7 +147,7 @@ describe('LetItGo', () => {
 
     const snow = new LetItGo({ root: customRoot });
 
-    expect(customRoot.contains(snow.canvas)).toBe(true);
+    expect(customRoot.contains(snow.canvasElement)).toBe(true);
     expect(document.body.contains(customRoot)).toBe(true);
   });
 
