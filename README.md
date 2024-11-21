@@ -4,7 +4,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
 [![NPM Downloads](https://img.shields.io/npm/dt/let-it-go.svg?style=for-the-badge)](https://www.npmjs.com/package/let-it-go)
-![JSR Version](https://img.shields.io/jsr/v/%40eastsun5566/let-it-go?style=for-the-badge)
+[![JSR Version](https://img.shields.io/jsr/v/%40eastsun5566/let-it-go?style=for-the-badge)](https://jsr.io/@eastsun5566/let-it-go)
 [![License](https://img.shields.io/github/license/EastSun5566/let-it-go.svg?style=for-the-badge)](https://github.com/EastSun5566/let-it-go/blob/main/LICENSE)
 
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" height="40">](https://www.buymeacoffee.com/eastsun5566)
