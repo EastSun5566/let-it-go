@@ -1,4 +1,4 @@
-<img src="./logo.jpg" width="180" style="border-radius: 50%" alt="let-it-go logo">
+<img src="./logo.svg" width="180" alt="let-it-go logo">
 
 # ❄️ Let It Go
 
