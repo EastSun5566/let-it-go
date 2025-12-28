@@ -1,6 +1,5 @@
 import { Options } from './types';
 
-// eslint-disable-next-line import/prefer-default-export
 export const DEFAULT_OPTIONS: Required<Options> = {
   root: document.body,
   number: window.innerWidth,

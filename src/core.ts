@@ -1,5 +1,5 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-underscore-dangle */
+ 
+ 
 import {
   Vec2D,
   Snowflake,
@@ -161,7 +161,7 @@ export class LetItGo {
   #mountCanvas(): void {
     try {
       const resizeObserver = new ResizeObserver((entries) => {
-        // eslint-disable-next-line no-restricted-syntax
+         
         for (const entry of entries) {
           this.canvas.width = entry.contentRect.width;
           this.canvas.height = entry.contentRect.height;
@@ -170,7 +170,7 @@ export class LetItGo {
       resizeObserver.observe(this.root);
       this.#resizeObserver = resizeObserver;
     } catch (error) {
-      // eslint-disable-next-line no-console
+       
       console.warn('[let-it-go] ResizeObserver is not supported.', error);
     }
 
