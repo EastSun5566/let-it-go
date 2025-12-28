@@ -11,7 +11,7 @@ export default [
   {
     rules: {
       // Customizations for this project
-      'import-x/extensions': 'off',
+      'import-x/extensions': 'off', // TypeScript uses node module resolution without extensions
       'import-x/prefer-default-export': 'off',
       'no-underscore-dangle': 'off', // Using # for private fields
       'no-param-reassign': ['error', { props: false }],
