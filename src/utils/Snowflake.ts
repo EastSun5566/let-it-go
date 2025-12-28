@@ -8,7 +8,6 @@ interface Options {
   alpha?: number;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export class Snowflake {
   p: Vec2D;
 

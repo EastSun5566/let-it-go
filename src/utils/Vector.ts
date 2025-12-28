@@ -1,9 +1,7 @@
-// eslint-disable-next-line import/prefer-default-export
 export class Vec2D {
-  // eslint-disable-next-line no-useless-constructor
   constructor(
-    public x: number = 0,
-    public y: number = 0,
+    public x = 0,
+    public y = 0,
   ) {}
 
   add({ x = 0, y = 0 }: Vec2D): Vec2D {

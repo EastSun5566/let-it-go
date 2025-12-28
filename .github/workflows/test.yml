@@ -16,5 +16,6 @@ jobs:
           node-version: "lts/*"
       - uses: pnpm/action-setup@v4
       - run: pnpm i --frozen-lockfile
+      - run: pnpm lint
       - run: pnpm test
       - run: pnpm build

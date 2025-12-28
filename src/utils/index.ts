@@ -37,9 +37,8 @@ export function setStyleProps(
   Object
     .entries(style)
     .forEach(([key, value]) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      // eslint-disable-next-line no-param-reassign
+
       element.style[key] = value || '';
     });
 }
