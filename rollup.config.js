@@ -39,7 +39,6 @@ const config = {
     babel({
       extensions: [...DEFAULT_EXTENSIONS, '.ts'],
       presets: ['@babel/env', '@babel/typescript'],
-      plugins: ['@babel/proposal-class-properties'],
       babelHelpers: 'bundled',
     }),
     terser(),
