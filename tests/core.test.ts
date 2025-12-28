@@ -47,7 +47,7 @@ describe('LetItGo', () => {
 
   it('should create canvas element and append to root', () => {
     const snow = new LetItGo();
-    expect(document.body.contains(snow.canvas)).toBe(true);
+    expect(document.body.contains(snow.canvasElement)).toBe(true);
     expect(snow.canvas).toBeInstanceOf(HTMLCanvasElement);
   });
 
@@ -80,7 +80,7 @@ describe('LetItGo', () => {
     expect(clearIntervalSpy).toHaveBeenCalled();
     expect(cancelAnimationFrameSpy).toHaveBeenCalled();
     expect(removeChildSpy).toHaveBeenCalledWith(snow.canvas);
-    expect(document.body.contains(snow.canvas)).toBe(false);
+    expect(document.body.contains(snow.canvasElement)).toBe(false);
   });
 
   it('should handle multiple clear calls safely', () => {
@@ -88,7 +88,7 @@ describe('LetItGo', () => {
 
     // First clear should work
     snow.clear();
-    expect(document.body.contains(snow.canvas)).toBe(false);
+    expect(document.body.contains(snow.canvasElement)).toBe(false);
 
     // Second clear should not throw
     expect(() => snow.clear()).not.toThrow();
@@ -147,7 +147,7 @@ describe('LetItGo', () => {
 
     const snow = new LetItGo({ root: customRoot });
 
-    expect(customRoot.contains(snow.canvas)).toBe(true);
+    expect(customRoot.contains(snow.canvasElement)).toBe(true);
     expect(document.body.contains(customRoot)).toBe(true);
   });
 

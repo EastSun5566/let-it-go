@@ -29,9 +29,6 @@ importers:
       '@rollup/plugin-terser':
         specifier: ^0.2.1
         version: 0.2.1(rollup@3.29.5)
-      '@types/offscreencanvas':
-        specifier: ^2019.7.3
-        version: 2019.7.3
       '@typescript-eslint/eslint-plugin':
         specifier: ^4.33.0
         version: 4.33.0(@typescript-eslint/parser@4.33.0(eslint@7.32.0)(typescript@4.9.5))(eslint@7.32.0)(typescript@4.9.5)
@@ -1041,9 +1038,6 @@ packages:
 
   '@types/node@22.7.0':
     resolution: {integrity: sha512-MOdOibwBs6KW1vfqz2uKMlxq5xAfAZ98SZjO8e3XnAbFnTJtAspqhWk7hrdSAs9/Y14ZWMiy7/MxMUzAOadYEw==}
-
-  '@types/offscreencanvas@2019.7.3':
-    resolution: {integrity: sha512-ieXiYmgSRXUDeOntE1InxjWyvEelZGP63M+cGuquuRLuIKKT1osnkXjxev9B7d1nXSug5vpunx+gNlbVxMlC9A==}
 
   '@types/resolve@1.17.1':
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
@@ -4074,8 +4068,6 @@ snapshots:
   '@types/node@22.7.0':
     dependencies:
       undici-types: 6.19.8
-
-  '@types/offscreencanvas@2019.7.3': {}
 
   '@types/resolve@1.17.1':
     dependencies:
