@@ -1,31 +1,31 @@
-import tseslint from 'typescript-eslint';
-import airbnbExtended from 'eslint-config-airbnb-extended';
+import { configs, plugins } from 'eslint-config-airbnb-extended';
 
-const { configs, plugins } = airbnbExtended;
-
-export default tseslint.config(
+export default [
   {
     ignores: ['dist/**', 'node_modules/**', 'demo/**', '*.config.js', '*.config.ts'],
   },
-  ...configs.base.typescript,
-  ...tseslint.configs.recommended,
+  plugins.importX,
+  plugins.stylistic,
+  plugins.typescriptEslint,
+  ...configs.base.all,
   {
-    files: ['src/**/*.ts', 'src/**/*.js'],
-    plugins: {
-      '@stylistic': plugins.stylistic,
-      'import-x': plugins.importX,
-      'n': plugins.node,
-    },
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json',
-      },
-    },
     rules: {
-      // Customizations for TypeScript
-      'import/extensions': 'off',
+      // Customizations for this project
       'import-x/extensions': 'off',
+      'import-x/prefer-default-export': 'off',
+      'no-underscore-dangle': 'off', // Using # for private fields
+      'no-param-reassign': ['error', { props: false }],
+      'no-restricted-syntax': ['error', 'LabeledStatement', 'WithStatement'], // Allow for...of loops
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-restricted-exports': ['error', { restrictedNamedExports: ['then'] }], // Allow 'default'
+      '@typescript-eslint/naming-convention': 'off', // Allow flexible naming
+      '@stylistic/max-len': ['error', {
+        code: 120,
+        ignoreComments: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+      }],
     },
   },
-);
+];
 

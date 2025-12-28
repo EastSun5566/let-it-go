@@ -1,5 +1,3 @@
- 
- 
 import {
   Vec2D,
   Snowflake,
@@ -43,7 +41,9 @@ export class LetItGo {
 
     const _range = range.sort();
     this.#velocityXRange = _range;
-    this.#snowflakes.forEach((snowflake) => { snowflake.v.x = getRandom(..._range); });
+    this.#snowflakes.forEach((snowflake) => {
+      snowflake.v.x = getRandom(..._range);
+    });
   }
 
   #velocityYRange: Range;
@@ -57,7 +57,9 @@ export class LetItGo {
 
     const sortedRange = range.sort();
     this.#velocityYRange = sortedRange;
-    this.#snowflakes.forEach((snowflake) => { snowflake.v.y = getRandom(...sortedRange); });
+    this.#snowflakes.forEach((snowflake) => {
+      snowflake.v.y = getRandom(...sortedRange);
+    });
   }
 
   #radiusRange: Range;
@@ -71,7 +73,9 @@ export class LetItGo {
 
     const _range = range.sort();
     this.#radiusRange = _range;
-    this.#snowflakes.forEach((snowflake) => { snowflake.r = getRandom(..._range); });
+    this.#snowflakes.forEach((snowflake) => {
+      snowflake.r = getRandom(..._range);
+    });
   }
 
   #color: CanvasFillStrokeStyles['fillStyle'];
@@ -82,7 +86,9 @@ export class LetItGo {
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
     this.#color = color;
-    this.#snowflakes.forEach((snowflake) => { snowflake.color = color; });
+    this.#snowflakes.forEach((snowflake) => {
+      snowflake.color = color;
+    });
   }
 
   #alphaRange: Range;
@@ -161,7 +167,6 @@ export class LetItGo {
   #mountCanvas(): void {
     try {
       const resizeObserver = new ResizeObserver((entries) => {
-         
         for (const entry of entries) {
           this.canvas.width = entry.contentRect.width;
           this.canvas.height = entry.contentRect.height;
@@ -170,7 +175,6 @@ export class LetItGo {
       resizeObserver.observe(this.root);
       this.#resizeObserver = resizeObserver;
     } catch (error) {
-       
       console.warn('[let-it-go] ResizeObserver is not supported.', error);
     }
 

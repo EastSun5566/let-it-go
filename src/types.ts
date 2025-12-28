@@ -10,5 +10,5 @@ export interface Options {
   color?: CanvasFillStrokeStyles['fillStyle'];
   alphaRange?: Range;
   backgroundColor?: CanvasFillStrokeStyles['fillStyle'];
-  style?: Style
+  style?: Style;
 }
