@@ -10,6 +10,6 @@
         }
     ],
     "theme_color": "#4A90E2",
-    "background_color": "#000000",
+    "background_color": "#1a1a1a",
     "display": "standalone"
 }
