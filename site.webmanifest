@@ -1,0 +1,15 @@
+{
+    "name": "Let it Go",
+    "short_name": "Let it Go",
+    "icons": [
+        {
+            "src": "/logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "theme_color": "#4A90E2",
+    "background_color": "#1a1a1a",
+    "display": "standalone"
+}
