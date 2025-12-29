@@ -40,13 +40,11 @@ const rangeOptions: RangeOption[] = [
 
 document.addEventListener('DOMContentLoaded', () => {
   createRangeInputs(
-
     document.getElementById('ranges-container')!,
     rangeOptions,
   );
 
   const snow = new LetItGo({
-
     root: document.getElementById('let-it-go')!,
   });
 
