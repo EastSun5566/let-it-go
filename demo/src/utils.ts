@@ -103,7 +103,7 @@ export interface RangeOption {
   type: string;
   min: number;
   max: number;
-  step?: number;
+  step?: number
 }
 
 export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): void => {
