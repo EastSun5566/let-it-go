@@ -15,9 +15,6 @@ export default [
       'import-x/prefer-default-export': 'off',
       'no-console': 'off', // Allow console in demo
       '@typescript-eslint/naming-convention': 'off',
-      '@typescript-eslint/semi': 'off', // Allow missing semicolons
-      '@stylistic/semi': 'off', // Allow missing semicolons
-      '@stylistic/member-delimiter-style': 'off', // Allow flexible interface member delimiters
       '@stylistic/max-len': ['error', {
         code: 120,
         ignoreComments: true,
