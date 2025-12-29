@@ -1,4 +1,4 @@
-import { LetItGo } from '../../src';
+import { LetItGo } from 'let-it-go';
 
 import {
   type RangeOption,
@@ -40,13 +40,11 @@ const rangeOptions: RangeOption[] = [
 
 document.addEventListener('DOMContentLoaded', () => {
   createRangeInputs(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     document.getElementById('ranges-container')!,
     rangeOptions,
   );
 
   const snow = new LetItGo({
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     root: document.getElementById('let-it-go')!,
   });
 

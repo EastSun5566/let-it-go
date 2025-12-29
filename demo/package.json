@@ -3,18 +3,30 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "sh scripts/deploy.sh"
+    "deploy": "sh scripts/deploy.sh",
+    "lint": "eslint --fix src"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^3.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-airbnb-extended": "^2.3.3",
+    "eslint-import-resolver-typescript": "^4.0.0",
+    "eslint-plugin-import-x": "^4.0.0",
+    "eslint-plugin-n": "^17.0.0",
     "sass": "^1.79.3",
     "typescript": "^5.9.3",
-    "vite": "^5.4.21"
+    "typescript-eslint": "^8.50.1",
+    "vite": "^7.3.0"
   },
   "dependencies": {
-    "bootswatch": "^5.3.3"
+    "bootswatch": "^5.3.3",
+    "let-it-go": "file:.."
   }
 }
