@@ -6,7 +6,7 @@
             "src": "/logo.svg",
             "sizes": "any",
             "type": "image/svg+xml",
-            "purpose": "any"
+            "purpose": "any maskable"
         }
     ],
     "theme_color": "#4A90E2",
