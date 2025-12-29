@@ -1,4 +1,4 @@
-import { Range, Style } from '../types';
+import type { Range, Style } from '../types';
 
 export * from './Vector';
 export * from './Snowflake';
