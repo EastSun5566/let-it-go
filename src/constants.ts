@@ -1,4 +1,4 @@
-import { Options } from './types';
+import type { Options } from './types';
 
 export const DEFAULT_OPTIONS: Required<Options> = {
   root: document.body,
