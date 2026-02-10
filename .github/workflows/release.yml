@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+      - uses: pnpm/action-setup@v4
+      - name: Install and test
+        run: |
+          pnpm i --frozen-lockfile
+          pnpm lint
+          pnpm type-check
+          pnpm test
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+          registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v4
+      - name: Install deps
+        run: pnpm i --frozen-lockfile
+      - name: Ensure npm supports OIDC
+        run: npm install -g npm@latest
+      - name: Publish to NPM via OIDC
+        run: npm publish
+      - name: Publish to JSR
+        run: npx jsr publish
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        continue-on-error: true
+        with:
+          generate_release_notes: true
