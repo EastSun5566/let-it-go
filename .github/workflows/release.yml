@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "**"
+      - "v*"
 
 jobs:
   test:
@@ -36,10 +36,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - name: Install deps
         run: pnpm i --frozen-lockfile
-      - name: Ensure npm supports OIDC
-        run: npm install -g npm@latest
-      - name: Publish to NPM via OIDC
-        run: npm publish
+      - name: Publish to NPM
+        run: pnpm publish --no-git-checks
       - name: Publish to JSR
         run: npx jsr publish
       - name: Create GitHub Release
