@@ -62,24 +62,20 @@ describe('LetItGo', () => {
 
   it('should stop animation when calling letItStop', () => {
     const snow = new LetItGo();
-    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame');
 
     snow.letItStop();
 
-    expect(clearIntervalSpy).toHaveBeenCalled();
     expect(cancelAnimationFrameSpy).toHaveBeenCalled();
   });
 
   it('should clean up', () => {
     const snow = new LetItGo();
-    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame');
     const removeChildSpy = vi.spyOn(document.body, 'removeChild');
 
     snow.clear();
 
-    expect(clearIntervalSpy).toHaveBeenCalled();
     expect(cancelAnimationFrameSpy).toHaveBeenCalled();
     expect(removeChildSpy).toHaveBeenCalledWith(snow.canvas);
     expect(document.body.contains(snow.canvas)).toBe(false);
@@ -134,12 +130,10 @@ describe('LetItGo', () => {
     const snow = new LetItGo();
     snow.letItStop();
 
-    const setIntervalSpy = vi.spyOn(window, 'setInterval');
     const requestAnimationFrameSpy = vi.spyOn(window, 'requestAnimationFrame');
 
     snow.letItGoAgain();
 
-    expect(setIntervalSpy).toHaveBeenCalled();
     expect(requestAnimationFrameSpy).toHaveBeenCalled();
   });
 
