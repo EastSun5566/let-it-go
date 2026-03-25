@@ -308,6 +308,11 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
+  '@rollup/rollup-linux-arm-gnueabihf@4.52.5':
+    resolution: {integrity: sha512-PsNAbcyv9CcecAUagQefwX8fQn9LQ4nZkpDboBOttmyffnInRy8R8dSg6hxxl2Re5QhHBf6FYIDhIj5v982ATQ==}
+    cpu: [arm]
+    os: [linux]
+
   '@rollup/rollup-linux-arm-musleabihf@4.52.5':
     resolution: {integrity: sha512-Fw4tysRutyQc/wwkmcyoqFtJhh0u31K+Q6jYjeicsGJJ7bbEq8LwPWV/w0cnzOqR2m694/Af6hpFayLJZkG2VQ==}
     cpu: [arm]
@@ -1309,6 +1314,9 @@ snapshots:
   '@rollup/rollup-freebsd-x64@4.52.5':
     optional: true
 
+  '@rollup/rollup-linux-arm-gnueabihf@4.52.5':
+    optional: true
+
   '@rollup/rollup-linux-arm-musleabihf@4.52.5':
     optional: true
 
@@ -1948,6 +1956,7 @@ snapshots:
       '@rollup/rollup-darwin-x64': 4.52.5
       '@rollup/rollup-freebsd-arm64': 4.52.5
       '@rollup/rollup-freebsd-x64': 4.52.5
+      '@rollup/rollup-linux-arm-gnueabihf': 4.52.5
       '@rollup/rollup-linux-arm-musleabihf': 4.52.5
       '@rollup/rollup-linux-arm64-gnu': 4.52.5
       '@rollup/rollup-linux-arm64-musl': 4.52.5
