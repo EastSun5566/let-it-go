@@ -54,27 +54,14 @@ describe('Snowflake', () => {
   });
 
   describe('update', () => {
-    it('should update position by adding velocity multiplied by deltaTime', () => {
+    it('should update position by adding velocity', () => {
       const snowflake = new Snowflake({
         p: new Vec2D(10, 20),
         v: new Vec2D(1, 2),
       });
       
-      snowflake.update({ width: 100, height: 100, deltaTime: 1 });
-      
-      expect(snowflake.p.x).toBe(11);
-      expect(snowflake.p.y).toBe(22);
-    });
-
-    it('should use default deltaTime of 1/60 when not provided', () => {
-      const snowflake = new Snowflake({
-        p: new Vec2D(10, 20),
-        v: new Vec2D(60, 120),
-      });
-      
       snowflake.update({ width: 100, height: 100 });
       
-      // With deltaTime = 1/60: x = 10 + 60 * (1/60) = 11, y = 20 + 120 * (1/60) = 22
       expect(snowflake.p.x).toBe(11);
       expect(snowflake.p.y).toBe(22);
     });
@@ -86,11 +73,10 @@ describe('Snowflake', () => {
         r: 5,
       });
       
-      snowflake.update({ width: 100, height: 100, deltaTime: 1 });
+      snowflake.update({ width: 100, height: 100 });
       
-      // Position gets velocity added first: 106 + 1 * 1 = 107
-      // Then wrapping check: (107 - 5) > 100 -> true, so reset to -r = -5
-      expect(snowflake.p.y).toBe(-5);
+      // Position is reset to -r, then velocity is added
+      expect(snowflake.p.y).toBe(-4); // -5 + 1
     });
 
     it('should wrap snowflake horizontally when it goes beyond right edge', () => {
@@ -100,11 +86,10 @@ describe('Snowflake', () => {
         r: 5,
       });
       
-      snowflake.update({ width: 100, height: 100, deltaTime: 1 });
+      snowflake.update({ width: 100, height: 100 });
       
-      // Position gets velocity added first: 106 + 1 * 1 = 107
-      // Then wrapping check: (107 - 5) > 100 -> true, so reset to -r = -5
-      expect(snowflake.p.x).toBe(-5);
+      // Position is reset to -r, then velocity is added
+      expect(snowflake.p.x).toBe(-4); // -5 + 1
     });
 
     it('should wrap snowflake horizontally when it goes beyond left edge', () => {
@@ -114,29 +99,27 @@ describe('Snowflake', () => {
         r: 5,
       });
       
-      snowflake.update({ width: 100, height: 100, deltaTime: 1 });
+      snowflake.update({ width: 100, height: 100 });
       
-      // Position gets velocity added first: -6 + (-1) * 1 = -7
-      // Then wrapping check: (-7 + 5) < 0 -> true, so reset to width + r = 105
-      expect(snowflake.p.x).toBe(105);
+      // Position is reset to width + r, then velocity is added
+      expect(snowflake.p.x).toBe(104); // 105 - 1
     });
 
     it('should handle update with no dimensions provided (defaults to 0)', () => {
       const snowflake = new Snowflake({
         p: new Vec2D(10, 20),
-        v: new Vec2D(60, 120),
+        v: new Vec2D(1, 2),
         r: 0.5,
       });
       
       snowflake.update();
       
-      // When width and height default to 0, deltaTime defaults to 1/60:
-      // p.x += v.x * deltaTime: 10 + 60 * (1/60) = 11
-      // p.y += v.y * deltaTime: 20 + 120 * (1/60) = 22
-      // p.y - r (22 - 0.5) > 0 -> true, so p.y = 0 - 0.5 = -0.5
-      // p.x - r (11 - 0.5) > 0 -> true, so p.x = 0 - 0.5 = -0.5
-      expect(snowflake.p.x).toBe(-0.5);
-      expect(snowflake.p.y).toBe(-0.5);
+      // When width and height default to 0:
+      // p.y - r (20 - 0.5) > 0 -> true, so p.y = 0 - 0.5 = -0.5
+      // p.x - r (10 - 0.5) > 0 -> true, so p.x = 0 - 0.5 = -0.5
+      // Then p.add(v): p.x = -0.5 + 1 = 0.5, p.y = -0.5 + 2 = 1.5
+      expect(snowflake.p.x).toBe(0.5);
+      expect(snowflake.p.y).toBe(1.5);
     });
 
     it('should not wrap when snowflake is within bounds', () => {
@@ -146,7 +129,7 @@ describe('Snowflake', () => {
         r: 2,
       });
       
-      snowflake.update({ width: 100, height: 100, deltaTime: 1 });
+      snowflake.update({ width: 100, height: 100 });
       
       expect(snowflake.p.x).toBe(51);
       expect(snowflake.p.y).toBe(51);

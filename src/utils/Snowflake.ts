@@ -33,11 +33,8 @@ export class Snowflake {
     this.alpha = alpha;
   }
 
-  update({ width = 0, height = 0, deltaTime = 1 / 60 } = {}): void {
+  update({ width = 0, height = 0 } = {}): void {
     const { p, r, v } = this;
-
-    p.x += v.x * deltaTime;
-    p.y += v.y * deltaTime;
 
     if (p.y - r > height) {
       this.p.y = 0 - r;
@@ -50,6 +47,8 @@ export class Snowflake {
     if (p.x + r < 0) {
       this.p.x = width + r;
     }
+
+    this.p.add(v);
   }
 
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void {
