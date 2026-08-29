@@ -2,6 +2,7 @@ import {
   describe, it, expect, vi, beforeEach, afterEach,
 } from 'vitest';
 import { LetItGo } from '../src';
+import { Snowflake } from '../src/utils/Snowflake';
 
 // Mock canvas context
 const mockCanvasContext = {
@@ -18,11 +19,15 @@ const mockCanvasContext = {
 };
 
 beforeEach(() => {
+  vi.useFakeTimers();
+
   // Mock canvas getContext
   HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(mockCanvasContext);
 
   // Mock requestAnimationFrame & cancelAnimationFrame
-  vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => setTimeout(cb, 0));
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
+    (cb) => setTimeout(() => cb(Date.now()), 0),
+  );
   vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id) => clearTimeout(id));
 
   // Mock ResizeObserver
@@ -36,6 +41,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
   document.body.innerHTML = '';
 });
@@ -62,24 +68,20 @@ describe('LetItGo', () => {
 
   it('should stop animation when calling letItStop', () => {
     const snow = new LetItGo();
-    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame');
 
     snow.letItStop();
 
-    expect(clearIntervalSpy).toHaveBeenCalled();
     expect(cancelAnimationFrameSpy).toHaveBeenCalled();
   });
 
   it('should clean up', () => {
     const snow = new LetItGo();
-    const clearIntervalSpy = vi.spyOn(window, 'clearInterval');
     const cancelAnimationFrameSpy = vi.spyOn(window, 'cancelAnimationFrame');
     const removeChildSpy = vi.spyOn(document.body, 'removeChild');
 
     snow.clear();
 
-    expect(clearIntervalSpy).toHaveBeenCalled();
     expect(cancelAnimationFrameSpy).toHaveBeenCalled();
     expect(removeChildSpy).toHaveBeenCalledWith(snow.canvas);
     expect(document.body.contains(snow.canvas)).toBe(false);
@@ -134,13 +136,25 @@ describe('LetItGo', () => {
     const snow = new LetItGo();
     snow.letItStop();
 
-    const setIntervalSpy = vi.spyOn(window, 'setInterval');
     const requestAnimationFrameSpy = vi.spyOn(window, 'requestAnimationFrame');
 
     snow.letItGoAgain();
 
-    expect(setIntervalSpy).toHaveBeenCalled();
     expect(requestAnimationFrameSpy).toHaveBeenCalled();
+  });
+
+  it('should update snowflakes inside the animation frame', () => {
+    const snow = new LetItGo();
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+
+    // First frame initializes the timing baseline.
+    vi.advanceTimersByTime(0);
+    // Second frame has enough elapsed time to trigger an update.
+    vi.advanceTimersByTime(100);
+
+    snow.letItStop();
+
+    expect(updateSpy).toHaveBeenCalled();
   });
 
   it('should use custom root element', () => {

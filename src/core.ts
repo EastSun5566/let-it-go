@@ -117,7 +117,7 @@ export class LetItGo {
 
   #snowflakes: Snowflake[] = [];
 
-  #intervalID: number | null = null;
+  #lastUpdate: number | null = null;
 
   #requestID: number | null = null;
 
@@ -220,16 +220,29 @@ export class LetItGo {
   };
 
   #draw = (): void => {
-    if (!this.#isGo) return;
-
     const { width, height } = this.canvas;
 
     this.#ctx.clearRect(0, 0, width, height);
     this.#ctx.fillStyle = this.backgroundColor;
     this.#ctx.fillRect(0, 0, width, height);
     this.#snowflakes.forEach((snowflake) => snowflake.draw(this.#ctx));
+  };
 
-    this.#requestID = requestAnimationFrame(this.#draw);
+  #animate = (timestamp: number): void => {
+    if (!this.#isGo) return;
+
+    if (this.#lastUpdate === null) this.#lastUpdate = timestamp;
+
+    const elapsed = timestamp - this.#lastUpdate;
+    if (elapsed >= LetItGo.FRAME_INTERVAL) {
+      this.#update();
+      this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
+    }
+
+    this.#draw();
+
+    if (!this.#isGo) return;
+    this.#requestID = requestAnimationFrame(this.#animate);
   };
 
   static readonly FRAME_RATE = 30;
@@ -239,19 +252,13 @@ export class LetItGo {
   #startAnimate(): void {
     if (this.#isGo) return;
 
-    this.#intervalID = setInterval(this.#update, LetItGo.FRAME_INTERVAL);
-    this.#requestID = requestAnimationFrame(this.#draw);
-
     this.#isGo = true;
+    this.#lastUpdate = null;
+    this.#requestID = requestAnimationFrame(this.#animate);
   }
 
   letItStop(): void {
     this.#isGo = false;
-
-    if (this.#intervalID) {
-      clearInterval(this.#intervalID);
-      this.#intervalID = null;
-    }
 
     if (this.#requestID) {
       cancelAnimationFrame(this.#requestID);
