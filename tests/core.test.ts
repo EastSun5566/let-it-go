@@ -155,22 +155,12 @@ describe('LetItGo', () => {
   });
 
   it('should draw snowflakes inside the animation frame', () => {
-    // Invoke the animation callback synchronously once for deterministic counts.
-    let frameRun = false;
-    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
-      (cb: FrameRequestCallback) => {
-        if (!frameRun) {
-          frameRun = true;
-          cb(Date.now());
-        }
-        return 0;
-      },
-    );
-
     mockCanvasContext.beginPath.mockClear();
     mockCanvasContext.fill.mockClear();
 
     const snow = new LetItGo({ number: 3 });
+    // Run one frame to exercise the draw loop with the existing RAF mock.
+    vi.advanceTimersByTime(0);
     snow.letItStop();
 
     expect(mockCanvasContext.fillStyle).toBe(snow.color);
@@ -206,6 +196,30 @@ describe('LetItGo', () => {
 
     expect(alphaValuesAtFillRect.length).toBeGreaterThanOrEqual(2);
     expect(alphaValuesAtFillRect.every((alpha) => alpha === 1)).toBe(true);
+  });
+
+  it('should reset globalAlpha after drawing snowflakes each frame', () => {
+    const trackedContext = {
+      ...mockCanvasContext,
+      _alpha: 1,
+      get globalAlpha() {
+        return this._alpha;
+      },
+      set globalAlpha(value: number) {
+        this._alpha = value;
+      },
+    };
+
+    HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(trackedContext);
+
+    const snow = new LetItGo({ number: 1, alphaRange: [0.5, 0.5] });
+
+    // Run one frame; after the draw loop the context alpha must be restored to 1.
+    vi.advanceTimersByTime(0);
+
+    snow.letItStop();
+
+    expect(trackedContext.globalAlpha).toBe(1);
   });
 
   it('should use custom root element', () => {

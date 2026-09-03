@@ -232,6 +232,8 @@ export class LetItGo {
       snowflake.draw(ctx);
       ctx.fill();
     }
+
+    ctx.globalAlpha = 1;
   };
 
   #animate = (timestamp: number): void => {
