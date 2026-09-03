@@ -251,11 +251,11 @@ export class LetItGo {
       elapsed = LetItGo.MAX_CATCH_UP_TIME;
     }
 
-    while (elapsed >= LetItGo.FRAME_INTERVAL) {
+    const steps = Math.floor((elapsed * LetItGo.FRAME_RATE) / 1000);
+    for (let i = 0; i < steps; i += 1) {
       this.#update();
-      this.#lastUpdate += LetItGo.FRAME_INTERVAL;
-      elapsed -= LetItGo.FRAME_INTERVAL;
     }
+    this.#lastUpdate += steps * LetItGo.FRAME_INTERVAL;
 
     this.#draw();
 

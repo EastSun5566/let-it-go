@@ -175,6 +175,48 @@ describe('LetItGo', () => {
     snow.letItStop();
   });
 
+  it('should run the correct number of updates for an exact 100 ms delay', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(0);
+
+    updateSpy.mockClear();
+    rAFCallback!(100);
+
+    expect(updateSpy).toHaveBeenCalledTimes(3);
+
+    snow.letItStop();
+  });
+
+  it('should run the correct number of updates for an exact 1000 ms delay', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(0);
+
+    updateSpy.mockClear();
+    rAFCallback!(1000);
+
+    expect(updateSpy).toHaveBeenCalledTimes(30);
+
+    snow.letItStop();
+  });
+
   it('should cap catch-up steps after a very long suspension', () => {
     let rAFCallback: FrameRequestCallback | undefined;
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
