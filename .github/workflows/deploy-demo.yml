@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pages: read
+      pages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "lts/*"
 
@@ -32,9 +32,8 @@ jobs:
         run: |
           pnpm i --frozen-lockfile
           pnpm build
-          cd demo
-          pnpm i --frozen-lockfile
-          pnpm build
+          pnpm -C demo i --frozen-lockfile
+          pnpm -C demo build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
