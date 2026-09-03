@@ -11,9 +11,6 @@ const mockCanvasContext = {
   beginPath: vi.fn(),
   arc: vi.fn(),
   fill: vi.fn(),
-  save: vi.fn(),
-  restore: vi.fn(),
-  closePath: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000',
 };
@@ -155,6 +152,60 @@ describe('LetItGo', () => {
     snow.letItStop();
 
     expect(updateSpy).toHaveBeenCalled();
+  });
+
+  it('should draw snowflakes inside the animation frame', () => {
+    // Invoke the animation callback synchronously once for deterministic counts.
+    let frameRun = false;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
+      (cb: FrameRequestCallback) => {
+        if (!frameRun) {
+          frameRun = true;
+          cb(Date.now());
+        }
+        return 0;
+      },
+    );
+
+    mockCanvasContext.beginPath.mockClear();
+    mockCanvasContext.fill.mockClear();
+
+    const snow = new LetItGo({ number: 3 });
+    snow.letItStop();
+
+    expect(mockCanvasContext.fillStyle).toBe(snow.color);
+    expect(mockCanvasContext.beginPath).toHaveBeenCalledTimes(3);
+    expect(mockCanvasContext.fill).toHaveBeenCalledTimes(3);
+  });
+
+  it('should reset globalAlpha before drawing the background each frame', () => {
+    const alphaValuesAtFillRect: number[] = [];
+    const trackedContext = {
+      ...mockCanvasContext,
+      _alpha: 1,
+      get globalAlpha() {
+        return this._alpha;
+      },
+      set globalAlpha(value: number) {
+        this._alpha = value;
+      },
+      fillRect: vi.fn(function fillRect() {
+        alphaValuesAtFillRect.push(this.globalAlpha);
+      }),
+    };
+
+    HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(trackedContext);
+
+    const snow = new LetItGo({ number: 1 });
+
+    // Run two frames; the second frame must paint the background with alpha === 1.
+    vi.advanceTimersByTime(0);
+    vi.advanceTimersByTime(100);
+
+    snow.letItStop();
+
+    expect(alphaValuesAtFillRect.length).toBeGreaterThanOrEqual(2);
+    expect(alphaValuesAtFillRect.every((alpha) => alpha === 1)).toBe(true);
   });
 
   it('should use custom root element', () => {

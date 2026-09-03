@@ -4,7 +4,6 @@ interface Options {
   p?: Vec2D;
   v?: Vec2D;
   r?: number;
-  color?: CanvasFillStrokeStyles['fillStyle'];
   alpha?: number;
 }
 
@@ -15,21 +14,17 @@ export class Snowflake {
 
   r: number;
 
-  color: CanvasFillStrokeStyles['fillStyle'];
-
   alpha: number;
 
   constructor({
     p = new Vec2D(),
     v = new Vec2D(),
     r = 0.5,
-    color = '#ffffff',
     alpha = 1,
   }: Options = {}) {
     this.p = p;
     this.v = v;
     this.r = r;
-    this.color = color;
     this.alpha = alpha;
   }
 
@@ -52,23 +47,8 @@ export class Snowflake {
   }
 
   draw(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D): void {
-    const {
-      p,
-      r,
-      color,
-      alpha,
-    } = this;
+    const { p, r } = this;
 
-    ctx.save();
-
-    ctx.beginPath();
     ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-    ctx.closePath();
-
-    ctx.fillStyle = color;
-    ctx.globalAlpha = alpha;
-    ctx.fill();
-
-    ctx.restore();
   }
 }
