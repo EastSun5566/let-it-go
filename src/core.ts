@@ -233,10 +233,11 @@ export class LetItGo {
 
     if (this.#lastUpdate === null) this.#lastUpdate = timestamp;
 
-    const elapsed = timestamp - this.#lastUpdate;
-    if (elapsed >= LetItGo.FRAME_INTERVAL) {
+    let elapsed = timestamp - this.#lastUpdate;
+    while (elapsed >= LetItGo.FRAME_INTERVAL) {
       this.#update();
-      this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
+      this.#lastUpdate += LetItGo.FRAME_INTERVAL;
+      elapsed -= LetItGo.FRAME_INTERVAL;
     }
 
     this.#draw();

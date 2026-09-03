@@ -26,7 +26,7 @@ beforeEach(() => {
 
   // Mock requestAnimationFrame & cancelAnimationFrame
   vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
-    (cb) => setTimeout(() => cb(Date.now()), 0),
+    (cb) => setTimeout(() => cb(Date.now()), 16),
   );
   vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id) => clearTimeout(id));
 
@@ -147,9 +147,7 @@ describe('LetItGo', () => {
     const snow = new LetItGo();
     const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
 
-    // First frame initializes the timing baseline.
-    vi.advanceTimersByTime(0);
-    // Second frame has enough elapsed time to trigger an update.
+    // Advance time so at least one animation frame exceeds the update interval.
     vi.advanceTimersByTime(100);
 
     snow.letItStop();
