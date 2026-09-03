@@ -255,7 +255,7 @@ export class LetItGo {
     for (let i = 0; i < steps; i += 1) {
       this.#update();
     }
-    this.#lastUpdate += steps * LetItGo.FRAME_INTERVAL;
+    this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
 
     this.#draw();
 
