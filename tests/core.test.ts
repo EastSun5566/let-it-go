@@ -23,7 +23,7 @@ beforeEach(() => {
 
   // Mock requestAnimationFrame & cancelAnimationFrame
   vi.spyOn(window, 'requestAnimationFrame').mockImplementation(
-    (cb) => setTimeout(() => cb(Date.now()), 0),
+    (cb) => setTimeout(() => cb(Date.now()), 16),
   );
   vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id) => clearTimeout(id));
 
@@ -144,14 +144,101 @@ describe('LetItGo', () => {
     const snow = new LetItGo();
     const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
 
-    // First frame initializes the timing baseline.
-    vi.advanceTimersByTime(0);
-    // Second frame has enough elapsed time to trigger an update.
+    // Advance time so at least one animation frame exceeds the update interval.
     vi.advanceTimersByTime(100);
 
     snow.letItStop();
 
     expect(updateSpy).toHaveBeenCalled();
+  });
+
+  it('should catch up the correct number of fixed steps when a frame is delayed', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+    updateSpy.mockClear();
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(16);
+
+    // Simulate a delay spanning three update intervals.
+    updateSpy.mockClear();
+    rAFCallback!(16 + 3 * LetItGo.FRAME_INTERVAL + 5);
+
+    expect(updateSpy).toHaveBeenCalledTimes(3);
+
+    snow.letItStop();
+  });
+
+  it('should run the correct number of updates for an exact 100 ms delay', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(0);
+
+    updateSpy.mockClear();
+    rAFCallback!(100);
+
+    expect(updateSpy).toHaveBeenCalledTimes(3);
+
+    snow.letItStop();
+  });
+
+  it('should run the correct number of updates for an exact 1000 ms delay', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(0);
+
+    updateSpy.mockClear();
+    rAFCallback!(1000);
+
+    expect(updateSpy).toHaveBeenCalledTimes(30);
+
+    snow.letItStop();
+  });
+
+  it('should cap catch-up steps after a very long suspension', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+    updateSpy.mockClear();
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(16);
+
+    // Simulate the tab being suspended for one minute.
+    updateSpy.mockClear();
+    rAFCallback!(16 + 60_000);
+
+    const maxUpdates = Math.ceil(LetItGo.MAX_CATCH_UP_TIME / LetItGo.FRAME_INTERVAL);
+    expect(updateSpy.mock.calls.length).toBeLessThanOrEqual(maxUpdates);
+
+    snow.letItStop();
   });
 
   it('should draw snowflakes inside the animation frame', () => {
@@ -160,7 +247,7 @@ describe('LetItGo', () => {
 
     const snow = new LetItGo({ number: 3 });
     // Run one frame to exercise the draw loop with the existing RAF mock.
-    vi.advanceTimersByTime(0);
+    vi.advanceTimersByTime(16);
     snow.letItStop();
 
     expect(mockCanvasContext.fillStyle).toBe(snow.color);
@@ -189,7 +276,7 @@ describe('LetItGo', () => {
     const snow = new LetItGo({ number: 1 });
 
     // Run two frames; the second frame must paint the background with alpha === 1.
-    vi.advanceTimersByTime(0);
+    vi.advanceTimersByTime(16);
     vi.advanceTimersByTime(100);
 
     snow.letItStop();
@@ -215,7 +302,7 @@ describe('LetItGo', () => {
     const snow = new LetItGo({ number: 1, alphaRange: [0.5, 0.5] });
 
     // Run one frame; after the draw loop the context alpha must be restored to 1.
-    vi.advanceTimersByTime(0);
+    vi.advanceTimersByTime(16);
 
     snow.letItStop();
 

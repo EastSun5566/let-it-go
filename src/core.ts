@@ -241,11 +241,21 @@ export class LetItGo {
 
     if (this.#lastUpdate === null) this.#lastUpdate = timestamp;
 
-    const elapsed = timestamp - this.#lastUpdate;
-    if (elapsed >= LetItGo.FRAME_INTERVAL) {
-      this.#update();
-      this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
+    let elapsed = timestamp - this.#lastUpdate;
+
+    // Cap catch-up time so a background tab, device sleep, or debugger pause
+    // does not freeze the page by replaying every missed fixed step at once.
+    // Excess lag is discarded; ordinary short delays keep the fixed timestep.
+    if (elapsed > LetItGo.MAX_CATCH_UP_TIME) {
+      this.#lastUpdate = timestamp - LetItGo.MAX_CATCH_UP_TIME;
+      elapsed = LetItGo.MAX_CATCH_UP_TIME;
     }
+
+    const steps = Math.floor((elapsed * LetItGo.FRAME_RATE) / 1000);
+    for (let i = 0; i < steps; i += 1) {
+      this.#update();
+    }
+    this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
 
     this.#draw();
 
@@ -256,6 +266,8 @@ export class LetItGo {
   static readonly FRAME_RATE = 30;
 
   static readonly FRAME_INTERVAL = 1000 / LetItGo.FRAME_RATE;
+
+  static readonly MAX_CATCH_UP_TIME = 1000;
 
   #startAnimate(): void {
     if (this.#isGo) return;
