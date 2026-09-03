@@ -86,9 +86,6 @@ export class LetItGo {
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
     this.#color = color;
-    this.#snowflakes.forEach((snowflake) => {
-      snowflake.color = color;
-    });
   }
 
   #alphaRange: Range;
@@ -207,7 +204,6 @@ export class LetItGo {
           getRandom(...this.#velocityYRange) || Number.MIN_VALUE,
         ),
         r: getRandom(...this.#radiusRange) || Number.MIN_VALUE,
-        color: this.#color,
         alpha: getRandom(...this.#alphaRange) || Number.MIN_VALUE,
       }),
     );
@@ -221,11 +217,23 @@ export class LetItGo {
 
   #draw = (): void => {
     const { width, height } = this.canvas;
+    const ctx = this.#ctx;
 
-    this.#ctx.clearRect(0, 0, width, height);
-    this.#ctx.fillStyle = this.backgroundColor;
-    this.#ctx.fillRect(0, 0, width, height);
-    this.#snowflakes.forEach((snowflake) => snowflake.draw(this.#ctx));
+    ctx.globalAlpha = 1;
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = this.backgroundColor;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = this.#color;
+
+    for (const snowflake of this.#snowflakes) {
+      ctx.globalAlpha = snowflake.alpha;
+      ctx.beginPath();
+      snowflake.draw(ctx);
+      ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
   };
 
   #animate = (timestamp: number): void => {

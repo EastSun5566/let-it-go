@@ -4,16 +4,7 @@ import { Vec2D } from '../src/utils/Vector';
 
 // Mock canvas context
 const mockCanvasContext = {
-  clearRect: vi.fn(),
-  fillRect: vi.fn(),
-  beginPath: vi.fn(),
   arc: vi.fn(),
-  fill: vi.fn(),
-  save: vi.fn(),
-  restore: vi.fn(),
-  closePath: vi.fn(),
-  globalAlpha: 1,
-  fillStyle: '#000',
 };
 
 beforeEach(() => {
@@ -31,7 +22,6 @@ describe('Snowflake', () => {
     expect(snowflake.v.x).toBe(0);
     expect(snowflake.v.y).toBe(0);
     expect(snowflake.r).toBe(0.5);
-    expect(snowflake.color).toBe('#ffffff');
     expect(snowflake.alpha).toBe(1);
   });
 
@@ -42,14 +32,12 @@ describe('Snowflake', () => {
       p: position,
       v: velocity,
       r: 2,
-      color: '#ff0000',
       alpha: 0.5,
     });
-    
+
     expect(snowflake.p).toBe(position);
     expect(snowflake.v).toBe(velocity);
     expect(snowflake.r).toBe(2);
-    expect(snowflake.color).toBe('#ff0000');
     expect(snowflake.alpha).toBe(0.5);
   });
 
@@ -141,51 +129,11 @@ describe('Snowflake', () => {
       const snowflake = new Snowflake({
         p: new Vec2D(50, 75),
         r: 3,
-        color: '#ffffff',
-        alpha: 0.8,
       });
-      
+
       snowflake.draw(mockCanvasContext as any);
-      
-      expect(mockCanvasContext.save).toHaveBeenCalled();
-      expect(mockCanvasContext.beginPath).toHaveBeenCalled();
+
       expect(mockCanvasContext.arc).toHaveBeenCalledWith(50, 75, 3, 0, Math.PI * 2);
-      expect(mockCanvasContext.closePath).toHaveBeenCalled();
-      expect(mockCanvasContext.fillStyle).toBe('#ffffff');
-      expect(mockCanvasContext.globalAlpha).toBe(0.8);
-      expect(mockCanvasContext.fill).toHaveBeenCalled();
-      expect(mockCanvasContext.restore).toHaveBeenCalled();
-    });
-
-    it('should draw snowflake with custom color', () => {
-      const snowflake = new Snowflake({
-        p: new Vec2D(100, 150),
-        color: '#00ff00',
-      });
-      
-      snowflake.draw(mockCanvasContext as any);
-      
-      expect(mockCanvasContext.fillStyle).toBe('#00ff00');
-    });
-
-    it('should call context methods in correct order', () => {
-      const snowflake = new Snowflake();
-      const callOrder: string[] = [];
-      
-      const orderedMockContext = {
-        save: vi.fn(() => callOrder.push('save')),
-        beginPath: vi.fn(() => callOrder.push('beginPath')),
-        arc: vi.fn(() => callOrder.push('arc')),
-        closePath: vi.fn(() => callOrder.push('closePath')),
-        fill: vi.fn(() => callOrder.push('fill')),
-        restore: vi.fn(() => callOrder.push('restore')),
-        fillStyle: '',
-        globalAlpha: 1,
-      };
-      
-      snowflake.draw(orderedMockContext as any);
-      
-      expect(callOrder).toEqual(['save', 'beginPath', 'arc', 'closePath', 'fill', 'restore']);
     });
   });
 });
