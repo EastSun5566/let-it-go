@@ -155,6 +155,53 @@ describe('LetItGo', () => {
     expect(updateSpy).toHaveBeenCalled();
   });
 
+  it('should catch up the correct number of fixed steps when a frame is delayed', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+    updateSpy.mockClear();
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(16);
+
+    // Simulate a delay spanning three update intervals.
+    updateSpy.mockClear();
+    rAFCallback!(16 + 3 * LetItGo.FRAME_INTERVAL + 5);
+
+    expect(updateSpy).toHaveBeenCalledTimes(3);
+
+    snow.letItStop();
+  });
+
+  it('should cap catch-up steps after a very long suspension', () => {
+    let rAFCallback: FrameRequestCallback | undefined;
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rAFCallback = cb;
+      return 1;
+    });
+
+    const snow = new LetItGo({ number: 1 });
+    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+    updateSpy.mockClear();
+
+    // Initialize lastUpdate with the first animation frame.
+    rAFCallback!(16);
+
+    // Simulate the tab being suspended for one minute.
+    updateSpy.mockClear();
+    rAFCallback!(16 + 60_000);
+
+    const maxUpdates = Math.ceil(LetItGo.MAX_CATCH_UP_TIME / LetItGo.FRAME_INTERVAL);
+    expect(updateSpy.mock.calls.length).toBeLessThanOrEqual(maxUpdates);
+
+    snow.letItStop();
+  });
+
   it('should use custom root element', () => {
     const customRoot = document.createElement('div');
     document.body.appendChild(customRoot);
