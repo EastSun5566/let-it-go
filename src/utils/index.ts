@@ -1,4 +1,5 @@
 import type { Range, Style } from '../types';
+import { MAX_SNOWFLAKES } from '../constants';
 
 export * from './Vector';
 export * from './Snowflake';
@@ -10,7 +11,13 @@ export function assert<TCond = unknown>(condition: TCond, message = 'internal er
 export function assertIsRange(range: unknown): asserts range is Range {
   assert(Array.isArray(range), 'Range must be an array.');
   assert(range.length === 2, 'Range size must be 2.');
-  assert(range.every((value) => typeof value === 'number' && Number.isFinite(value)), 'Range value must be finite.');
+  assert(
+    typeof range[0] === 'number'
+      && Number.isFinite(range[0])
+      && typeof range[1] === 'number'
+      && Number.isFinite(range[1]),
+    'Range value must be finite.',
+  );
 }
 
 export function assertIsRadiusRange(range: unknown): asserts range is Range {
@@ -25,8 +32,11 @@ export function assertIsAlphaRange(range: unknown): asserts range is Range {
 
 export function assertIsSnowflakeNumber(number: unknown): asserts number is number {
   assert(
-    typeof number === 'number' && Number.isSafeInteger(number) && number >= 0,
-    'Number must be a non-negative safe integer.',
+    typeof number === 'number'
+      && Number.isSafeInteger(number)
+      && number >= 0
+      && number <= MAX_SNOWFLAKES,
+    `Number must be a non-negative safe integer no greater than ${MAX_SNOWFLAKES.toLocaleString('en-US')}.`,
   );
 }
 

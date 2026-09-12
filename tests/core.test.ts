@@ -1,7 +1,7 @@
 import {
   describe, it, expect, vi, beforeEach, afterEach,
 } from 'vitest';
-import { LetItGo } from '../src';
+import { LetItGo, MAX_SNOWFLAKES } from '../src';
 import { Snowflake } from '../src/utils/Snowflake';
 
 // Mock canvas context
@@ -80,15 +80,23 @@ describe('LetItGo', () => {
     expect(snow.number).toBe(newNumber);
   });
 
-  it.each([-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY])(
+  it.each([
+    -1,
+    1.5,
+    MAX_SNOWFLAKES + 1,
+    Number.MAX_SAFE_INTEGER,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
+  ])(
     'should reject invalid snowflake count %s',
     (number) => {
-      expect(() => new LetItGo({ number })).toThrow('Number must be a non-negative safe integer.');
+      const expectedError = 'Number must be a non-negative safe integer no greater than 10,000.';
+      expect(() => new LetItGo({ number })).toThrow(expectedError);
 
       const snow = new LetItGo({ number: 1 });
       expect(() => {
         snow.number = number;
-      }).toThrow('Number must be a non-negative safe integer.');
+      }).toThrow(expectedError);
       snow.clear();
     },
   );
@@ -326,6 +334,21 @@ describe('LetItGo', () => {
     expect(customRoot.style.position).toBe('');
   });
 
+  it('should preserve a shared root position until every instance is cleared', () => {
+    const customRoot = document.createElement('div');
+    document.body.appendChild(customRoot);
+
+    const firstSnow = new LetItGo({ root: customRoot, number: 0 });
+    const secondSnow = new LetItGo({ root: customRoot, number: 0 });
+    expect(customRoot.style.position).toBe('relative');
+
+    firstSnow.clear();
+    expect(customRoot.style.position).toBe('relative');
+
+    secondSnow.clear();
+    expect(customRoot.style.position).toBe('');
+  });
+
   it('should preserve a root position changed by the caller after mount', () => {
     const customRoot = document.createElement('div');
     document.body.appendChild(customRoot);
@@ -363,14 +386,24 @@ describe('LetItGo', () => {
       };
     }) as any;
     mockCanvasContext.clearRect.mockClear();
-    const snow = new LetItGo({ number: 0 });
+    let rootWidth = 800;
+    let rootHeight = 600;
+    const customRoot = document.createElement('div');
+    Object.defineProperties(customRoot, {
+      clientWidth: { get: () => rootWidth },
+      clientHeight: { get: () => rootHeight },
+    });
+    document.body.appendChild(customRoot);
+    const snow = new LetItGo({ root: customRoot, number: 0 });
 
     runAnimationFrame(0);
     runAnimationFrame(10);
     expect(mockCanvasContext.clearRect).toHaveBeenCalledTimes(1);
 
+    rootWidth = 320;
+    rootHeight = 240;
     resizeCallback?.([
-      { contentRect: { width: 320, height: 240 } } as ResizeObserverEntry,
+      { contentRect: { width: 280, height: 200 } } as ResizeObserverEntry,
     ], {} as ResizeObserver);
     runAnimationFrame(20);
 

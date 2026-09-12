@@ -43,7 +43,7 @@ construct it from a client-only lifecycle hook.
 const snow = new LetItGo({
   // root container, defaults to `document.body`
   root: document.getElementById("root") ?? document.body,
-  // number of snowflake, defaults to `window.innerWidth`
+  // number of snowflakes, defaults to `window.innerWidth` (capped at 10,000)
   number: 1000,
   // velocity x range of snowflake, defaults to `[-3, 3]`
   velocityXRange: [-3, 3],
@@ -82,7 +82,8 @@ snow.alphaRange = [0.8, 1];
 ```
 
 Range values must be finite two-item tuples. `number` must be a non-negative
-safe integer. The `root` and `style` options are construction-only.
+safe integer no greater than 10,000. The `root` and `style` options are
+construction-only.
 
 #### Some other methods
 

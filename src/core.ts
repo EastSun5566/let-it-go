@@ -9,9 +9,19 @@ import {
   normalizeRange,
   setStyleProps,
 } from './utils';
-import { DEFAULT_OPTIONS } from './constants';
+import {
+  DEFAULT_OPTIONS,
+  MAX_SNOWFLAKES as MAX_SNOWFLAKE_COUNT,
+} from './constants';
 
 import type { Range, Options } from './types';
+
+interface RootPositionState {
+  initialInlinePosition: string;
+  mountedInstances: number;
+}
+
+const rootPositionStates = new WeakMap<HTMLElement, RootPositionState>();
 
 export class LetItGo {
   readonly root: HTMLElement;
@@ -138,11 +148,11 @@ export class LetItGo {
 
   #isDirty = true;
 
-  #rootPositionWasApplied = false;
-
-  #initialRootInlinePosition = '';
+  #rootPositionState: RootPositionState | null = null;
 
   static readonly DEFAULT_OPTIONS = DEFAULT_OPTIONS;
+
+  static readonly MAX_SNOWFLAKES = MAX_SNOWFLAKE_COUNT;
 
   constructor({
     root = DEFAULT_OPTIONS.root,
@@ -187,14 +197,20 @@ export class LetItGo {
 
   #resizeObserver: ResizeObserver | null = null;
 
+  #resizeCanvas(): void {
+    const width = this.root.clientWidth;
+    const height = this.root.clientHeight;
+    if (this.canvas.width === width && this.canvas.height === height) return;
+
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.#isDirty = true;
+  }
+
   #mountCanvas(): void {
     try {
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          this.canvas.width = entry.contentRect.width;
-          this.canvas.height = entry.contentRect.height;
-          this.#isDirty = true;
-        }
+      const resizeObserver = new ResizeObserver(() => {
+        this.#resizeCanvas();
       });
       resizeObserver.observe(this.root);
       this.#resizeObserver = resizeObserver;
@@ -202,15 +218,27 @@ export class LetItGo {
       console.warn('[let-it-go] ResizeObserver is not supported.', error);
     }
 
-    this.canvas.width = this.root.clientWidth;
-    this.canvas.height = this.root.clientHeight;
+    this.#resizeCanvas();
 
-    const computedPosition = this.root.ownerDocument.defaultView
-      ?.getComputedStyle(this.root).position;
-    if (!computedPosition || computedPosition === 'static') {
-      this.#initialRootInlinePosition = this.root.style.position;
+    const existingRootPositionState = rootPositionStates.get(this.root);
+    if (existingRootPositionState) {
+      existingRootPositionState.mountedInstances += 1;
+      this.#rootPositionState = existingRootPositionState;
+    } else {
+      const computedPosition = this.root.ownerDocument.defaultView
+        ?.getComputedStyle(this.root).position;
+      if (!computedPosition || computedPosition === 'static') {
+        const rootPositionState = {
+          initialInlinePosition: this.root.style.position,
+          mountedInstances: 1,
+        };
+        rootPositionStates.set(this.root, rootPositionState);
+        this.#rootPositionState = rootPositionState;
+      }
+    }
+
+    if (this.#rootPositionState?.mountedInstances === 1) {
       setStyleProps(this.root, { position: 'relative' });
-      this.#rootPositionWasApplied = true;
     }
     setStyleProps(this.canvas, {
       position: 'absolute',
@@ -344,10 +372,16 @@ export class LetItGo {
 
     this.canvas.remove();
 
-    if (this.#rootPositionWasApplied && this.root.style.position === 'relative') {
-      this.root.style.position = this.#initialRootInlinePosition;
+    if (this.#rootPositionState) {
+      this.#rootPositionState.mountedInstances -= 1;
+      if (this.#rootPositionState.mountedInstances === 0) {
+        rootPositionStates.delete(this.root);
+        if (this.root.style.position === 'relative') {
+          this.root.style.position = this.#rootPositionState.initialInlinePosition;
+        }
+      }
+      this.#rootPositionState = null;
     }
-    this.#rootPositionWasApplied = false;
 
     this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.#number = 0;

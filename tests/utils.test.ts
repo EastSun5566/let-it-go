@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { MAX_SNOWFLAKES } from '../src/constants';
 import {
   assert,
   assertIsRange,
@@ -56,19 +57,37 @@ describe('Utility Functions', () => {
       expect(() => assertIsRange([Number.NaN, 5])).toThrow('Range value must be finite.');
       expect(() => assertIsRange([1, Number.POSITIVE_INFINITY])).toThrow('Range value must be finite.');
     });
+
+    it('should reject sparse ranges', () => {
+      const emptySlots = new Array<number>(2);
+      const missingFirstValue = new Array<number>(2);
+      missingFirstValue[1] = 5;
+
+      expect(() => assertIsRange(emptySlots)).toThrow('Range value must be finite.');
+      expect(() => assertIsRange(missingFirstValue)).toThrow('Range value must be finite.');
+    });
   });
 
   describe('assertIsSnowflakeNumber', () => {
-    it('should accept non-negative safe integers', () => {
+    it('should accept snowflake counts within the supported limit', () => {
       expect(() => assertIsSnowflakeNumber(0)).not.toThrow();
       expect(() => assertIsSnowflakeNumber(100)).not.toThrow();
+      expect(() => assertIsSnowflakeNumber(MAX_SNOWFLAKES)).not.toThrow();
     });
 
-    it.each([-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, '1'])(
+    it.each([
+      -1,
+      1.5,
+      MAX_SNOWFLAKES + 1,
+      Number.MAX_SAFE_INTEGER,
+      Number.NaN,
+      Number.POSITIVE_INFINITY,
+      '1',
+    ])(
       'should reject invalid value %s',
       (number) => {
         expect(() => assertIsSnowflakeNumber(number)).toThrow(
-          'Number must be a non-negative safe integer.',
+          'Number must be a non-negative safe integer no greater than 10,000.',
         );
       },
     );

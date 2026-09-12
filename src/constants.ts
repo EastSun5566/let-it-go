@@ -1,5 +1,7 @@
 import type { Options } from './types';
 
+export const MAX_SNOWFLAKES = 10_000;
+
 const requireDocument = (): Document => {
   if (typeof document === 'undefined') {
     throw new Error('[let-it-go] A DOM is required to create a LetItGo instance.');
@@ -21,7 +23,7 @@ export const DEFAULT_OPTIONS: Readonly<Required<Options>> = Object.freeze({
     return requireDocument().body;
   },
   get number() {
-    return requireWindow().innerWidth;
+    return Math.min(requireWindow().innerWidth, MAX_SNOWFLAKES);
   },
   velocityXRange: Object.freeze([-3, 3] as const),
   velocityYRange: Object.freeze([1, 5] as const),
