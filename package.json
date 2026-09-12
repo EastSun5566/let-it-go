@@ -37,9 +37,8 @@
     "prepare": "husky install",
     "prepublishOnly": "pnpm build",
     "release:check": "node scripts/check-release-version.mjs",
-    "release": "pnpm release:check && pnpx standard-version@9.5.0 && pnpm release:check && git push --follow-tags",
-    "demo:dev": "pnpm build && pnpm -C demo dev",
-    "demo:deploy": "pnpm -C demo run deploy"
+    "release": "pnpm release:check && standard-version && pnpm release:check && git push --follow-tags",
+    "demo:dev": "pnpm build && pnpm -C demo dev"
   },
   "keywords": [
     "let-it-go",
@@ -74,6 +73,7 @@
     "rollup": "^4.54.0",
     "rollup-plugin-dts": "^6.5.1",
     "rollup-plugin-filesize": "^9.1.2",
+    "standard-version": "^9.5.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.50.1",
     "vitest": "^4.0.0"
