@@ -1,11 +1,12 @@
 import {
   Vec2D,
   Snowflake,
-  assert,
   assertIsAlphaRange,
   assertIsRadiusRange,
   assertIsRange,
+  assertIsSnowflakeNumber,
   getRandom,
+  normalizeRange,
   setStyleProps,
 } from './utils';
 import { DEFAULT_OPTIONS } from './constants';
@@ -13,7 +14,7 @@ import { DEFAULT_OPTIONS } from './constants';
 import type { Range, Options } from './types';
 
 export class LetItGo {
-  readonly root = document.body;
+  readonly root: HTMLElement;
 
   #isGo = false;
 
@@ -24,10 +25,11 @@ export class LetItGo {
   }
 
   set number(number: number) {
-    assert(number >= 0, 'Number must be positive');
+    assertIsSnowflakeNumber(number);
 
     this.#number = number;
     this.#createSnowflakes();
+    this.#isDirty = true;
   }
 
   #velocityXRange: Range;
@@ -39,11 +41,12 @@ export class LetItGo {
   set velocityXRange(range: Range) {
     assertIsRange(range);
 
-    const _range = range.sort();
-    this.#velocityXRange = _range;
+    const normalizedRange = normalizeRange(range);
+    this.#velocityXRange = normalizedRange;
     this.#snowflakes.forEach((snowflake) => {
-      snowflake.v.x = getRandom(..._range);
+      snowflake.v.x = getRandom(...normalizedRange);
     });
+    this.#isDirty = true;
   }
 
   #velocityYRange: Range;
@@ -55,11 +58,12 @@ export class LetItGo {
   set velocityYRange(range: Range) {
     assertIsRange(range);
 
-    const sortedRange = range.sort();
-    this.#velocityYRange = sortedRange;
+    const normalizedRange = normalizeRange(range);
+    this.#velocityYRange = normalizedRange;
     this.#snowflakes.forEach((snowflake) => {
-      snowflake.v.y = getRandom(...sortedRange);
+      snowflake.v.y = getRandom(...normalizedRange);
     });
+    this.#isDirty = true;
   }
 
   #radiusRange: Range;
@@ -71,11 +75,12 @@ export class LetItGo {
   set radiusRange(range: Range) {
     assertIsRadiusRange(range);
 
-    const _range = range.sort();
-    this.#radiusRange = _range;
+    const normalizedRange = normalizeRange(range);
+    this.#radiusRange = normalizedRange;
     this.#snowflakes.forEach((snowflake) => {
-      snowflake.r = getRandom(..._range);
+      snowflake.r = getRandom(...normalizedRange);
     });
+    this.#isDirty = true;
   }
 
   #color: CanvasFillStrokeStyles['fillStyle'];
@@ -86,6 +91,7 @@ export class LetItGo {
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
     this.#color = color;
+    this.#isDirty = true;
   }
 
   #alphaRange: Range;
@@ -97,18 +103,28 @@ export class LetItGo {
   set alphaRange(range: Range) {
     assertIsAlphaRange(range);
 
-    const sortedRange = range.sort();
-    this.#alphaRange = sortedRange;
+    const normalizedRange = normalizeRange(range);
+    this.#alphaRange = normalizedRange;
     this.#snowflakes.forEach((snowflake) => {
-      snowflake.alpha = getRandom(...sortedRange);
+      snowflake.alpha = getRandom(...normalizedRange);
     });
+    this.#isDirty = true;
   }
 
-  backgroundColor: CanvasFillStrokeStyles['fillStyle'];
+  #backgroundColor: CanvasFillStrokeStyles['fillStyle'];
 
-  style = DEFAULT_OPTIONS.style;
+  get backgroundColor(): CanvasFillStrokeStyles['fillStyle'] {
+    return this.#backgroundColor;
+  }
 
-  readonly canvas: HTMLCanvasElement = document.createElement('canvas');
+  set backgroundColor(backgroundColor: CanvasFillStrokeStyles['fillStyle']) {
+    this.#backgroundColor = backgroundColor;
+    this.#isDirty = true;
+  }
+
+  readonly style: Readonly<Partial<CSSStyleDeclaration>>;
+
+  readonly canvas: HTMLCanvasElement;
 
   readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
@@ -117,6 +133,12 @@ export class LetItGo {
   #lastUpdate: number | null = null;
 
   #requestID: number | null = null;
+
+  #isDirty = true;
+
+  #rootPositionWasApplied = false;
+
+  #initialRootInlinePosition = '';
 
   static readonly DEFAULT_OPTIONS = DEFAULT_OPTIONS;
 
@@ -135,16 +157,18 @@ export class LetItGo {
     assertIsRange(velocityYRange);
     assertIsRadiusRange(radiusRange);
     assertIsAlphaRange(alphaRange);
+    assertIsSnowflakeNumber(number);
 
     this.root = root;
+    this.canvas = root.ownerDocument.createElement('canvas');
     this.#number = number;
-    this.#velocityXRange = velocityXRange.sort();
-    this.#velocityYRange = velocityYRange.sort();
-    this.#radiusRange = radiusRange.sort();
+    this.#velocityXRange = normalizeRange(velocityXRange);
+    this.#velocityYRange = normalizeRange(velocityYRange);
+    this.#radiusRange = normalizeRange(radiusRange);
     this.#color = color;
-    this.#alphaRange = alphaRange.sort();
-    this.backgroundColor = backgroundColor;
-    this.style = style;
+    this.#alphaRange = normalizeRange(alphaRange);
+    this.#backgroundColor = backgroundColor;
+    this.style = Object.freeze({ ...style });
 
     // TODO: use OffscreenCanvas when is possible
     // const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
@@ -167,6 +191,7 @@ export class LetItGo {
         for (const entry of entries) {
           this.canvas.width = entry.contentRect.width;
           this.canvas.height = entry.contentRect.height;
+          this.#isDirty = true;
         }
       });
       resizeObserver.observe(this.root);
@@ -178,7 +203,13 @@ export class LetItGo {
     this.canvas.width = this.root.clientWidth;
     this.canvas.height = this.root.clientHeight;
 
-    setStyleProps(this.root, { position: 'relative' });
+    const computedPosition = this.root.ownerDocument.defaultView
+      ?.getComputedStyle(this.root).position;
+    if (!computedPosition || computedPosition === 'static') {
+      this.#initialRootInlinePosition = this.root.style.position;
+      setStyleProps(this.root, { position: 'relative' });
+      this.#rootPositionWasApplied = true;
+    }
     setStyleProps(this.canvas, {
       position: 'absolute',
       top: '0',
@@ -200,11 +231,11 @@ export class LetItGo {
           getRandom(0, -canvas.height),
         ),
         v: new Vec2D(
-          getRandom(...this.#velocityXRange) || Number.MIN_VALUE,
-          getRandom(...this.#velocityYRange) || Number.MIN_VALUE,
+          getRandom(...this.#velocityXRange),
+          getRandom(...this.#velocityYRange),
         ),
-        r: getRandom(...this.#radiusRange) || Number.MIN_VALUE,
-        alpha: getRandom(...this.#alphaRange) || Number.MIN_VALUE,
+        r: getRandom(...this.#radiusRange),
+        alpha: getRandom(...this.#alphaRange),
       }),
     );
   }
@@ -242,12 +273,20 @@ export class LetItGo {
     if (this.#lastUpdate === null) this.#lastUpdate = timestamp;
 
     const elapsed = timestamp - this.#lastUpdate;
-    if (elapsed >= LetItGo.FRAME_INTERVAL) {
+    const dueSteps = Math.floor((elapsed * LetItGo.FRAME_RATE) / 1000);
+    const steps = Math.min(dueSteps, LetItGo.MAX_CATCH_UP_STEPS);
+    for (let index = 0; index < steps; index += 1) {
       this.#update();
+    }
+    if (steps > 0) {
+      this.#isDirty = true;
       this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
     }
 
-    this.#draw();
+    if (this.#isDirty) {
+      this.#draw();
+      this.#isDirty = false;
+    }
 
     if (!this.#isGo) return;
     this.#requestID = requestAnimationFrame(this.#animate);
@@ -257,18 +296,21 @@ export class LetItGo {
 
   static readonly FRAME_INTERVAL = 1000 / LetItGo.FRAME_RATE;
 
+  static readonly MAX_CATCH_UP_STEPS = 5;
+
   #startAnimate(): void {
     if (this.#isGo) return;
 
     this.#isGo = true;
     this.#lastUpdate = null;
+    this.#isDirty = true;
     this.#requestID = requestAnimationFrame(this.#animate);
   }
 
   letItStop(): void {
     this.#isGo = false;
 
-    if (this.#requestID) {
+    if (this.#requestID !== null) {
       cancelAnimationFrame(this.#requestID);
       this.#requestID = null;
     }
@@ -287,9 +329,12 @@ export class LetItGo {
       this.#resizeObserver = null;
     }
 
-    if (this.canvas.parentNode) {
-      this.root.removeChild(this.canvas);
+    this.canvas.remove();
+
+    if (this.#rootPositionWasApplied && this.root.style.position === 'relative') {
+      this.root.style.position = this.#initialRootInlinePosition;
     }
+    this.#rootPositionWasApplied = false;
 
     this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.#number = 0;
