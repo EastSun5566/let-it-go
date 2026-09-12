@@ -19,20 +19,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
-
-      - uses: pnpm/action-setup@v4
+          node-version: "24.x"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Install and build
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
           pnpm build
-          pnpm -C demo i --frozen-lockfile
+          pnpm -C demo install --frozen-lockfile
           pnpm -C demo build
 
       - name: Upload artifact

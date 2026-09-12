@@ -32,10 +32,13 @@
     "build:types": "tsc --emitDeclarationOnly && rollup -c rollup.types.config.js && rimraf dist/types",
     "build:js": "rollup -c",
     "build": "rimraf dist && pnpm build:types && pnpm build:js",
-    "lint": "eslint --fix src",
+    "lint": "eslint src",
+    "lint:fix": "pnpm lint --fix",
+    "prepare": "husky install",
     "prepublishOnly": "pnpm build",
-    "release": "pnpx standard-version && git push --follow-tags && pnpm publish",
-    "demo:dev": "pnpm -C demo dev",
+    "release:check": "node scripts/check-release-version.mjs",
+    "release": "pnpm release:check && pnpx standard-version@9.5.0 && pnpm release:check && git push --follow-tags",
+    "demo:dev": "pnpm build && pnpm -C demo dev",
     "demo:deploy": "pnpm -C demo run deploy"
   },
   "keywords": [
@@ -51,11 +54,6 @@
     "url": "https://github.com/EastSun5566/let-it-go"
   },
   "homepage": "https://eastsun5566.github.io/let-it-go/",
-  "husky": {
-    "hooks": {
-      "pre-commit": "pnpm lint"
-    }
-  },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
