@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+env:
+  HUSKY: 0
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,6 +30,7 @@ jobs:
           npm pack --dry-run
           npx --yes jsr@0.14.3 publish --dry-run
 
+  # Keep registry publishes independent so a failed registry can be retried alone.
   publish-npm:
     needs: test
     runs-on: ubuntu-latest

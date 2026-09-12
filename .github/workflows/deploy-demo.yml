@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  HUSKY: 0
+
 concurrency:
   group: pages-demo
   cancel-in-progress: false
