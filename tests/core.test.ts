@@ -133,6 +133,19 @@ describe('LetItGo', () => {
     expect(() => snow.clear()).not.toThrow();
   });
 
+  it('should not restart animation after clear', () => {
+    const snow = new LetItGo();
+    snow.clear();
+
+    const requestAnimationFrameSpy = vi.spyOn(window, 'requestAnimationFrame');
+    requestAnimationFrameSpy.mockClear();
+
+    snow.letItGoAgain();
+
+    expect(requestAnimationFrameSpy).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+  });
+
   it('should update velocity ranges correctly', () => {
     const snow = new LetItGo();
     const newVelocityX: [number, number] = [-2, 2];
@@ -422,5 +435,36 @@ describe('LetItGo', () => {
     expect(mockCanvasContext.arc).toHaveBeenCalledWith(0, 0, 0, 0, Math.PI * 2);
     expect(mockCanvasContext.globalAlpha).toBe(1);
     randomSpy.mockRestore();
+  });
+
+  it.each([
+    { velocityY: -1, expectedY: 150 },
+    { velocityY: 0, expectedY: 50 },
+    { velocityY: 1, expectedY: -50 },
+  ])('should place a $velocityY vertical velocity snowflake on the correct side', ({
+    velocityY,
+    expectedY,
+  }) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockCanvasContext.arc.mockClear();
+    const customRoot = document.createElement('div');
+    Object.defineProperties(customRoot, {
+      clientWidth: { value: 100 },
+      clientHeight: { value: 100 },
+    });
+    document.body.appendChild(customRoot);
+    const snow = new LetItGo({
+      root: customRoot,
+      number: 1,
+      velocityXRange: [0, 0],
+      velocityYRange: [velocityY, velocityY],
+      radiusRange: [1, 1],
+      alphaRange: [1, 1],
+    });
+
+    runAnimationFrame(0);
+
+    expect(mockCanvasContext.arc).toHaveBeenCalledWith(50, expectedY, 1, 0, Math.PI * 2);
+    snow.clear();
   });
 });

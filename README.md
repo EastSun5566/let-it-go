@@ -71,7 +71,7 @@ const allTheDefaultOptions = LetItGo.DEFAULT_OPTIONS;
 /** the number of snowflake */
 const snowflakeNumber = snow.number;
 
-// These runtime options redraw or update existing snowflakes immediately.
+// These options update state immediately and redraw on the next running frame.
 snow.number = 5566;
 snow.color = "#333333";
 snow.backgroundColor = "transparent";
@@ -93,6 +93,7 @@ snow.letItStop();
 // and snow again!
 snow.letItGoAgain();
 
-// stop animation & remove mounted `canvas` element
+// permanently stop animation and remove the mounted `canvas` element
+// create a new instance if you need to mount the effect again
 snow.clear();
 ```

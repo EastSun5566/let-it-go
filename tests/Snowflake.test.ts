@@ -67,6 +67,30 @@ describe('Snowflake', () => {
       expect(snowflake.p.y).toBe(-4); // -5 + 1
     });
 
+    it('should wrap an upward snowflake when it goes above canvas', () => {
+      const snowflake = new Snowflake({
+        p: new Vec2D(50, -6),
+        v: new Vec2D(0, -1),
+        r: 5,
+      });
+
+      snowflake.update({ width: 100, height: 100 });
+
+      expect(snowflake.p.y).toBe(104);
+    });
+
+    it('should preserve the staggered start of a downward snowflake above canvas', () => {
+      const snowflake = new Snowflake({
+        p: new Vec2D(50, -20),
+        v: new Vec2D(0, 1),
+        r: 5,
+      });
+
+      snowflake.update({ width: 100, height: 100 });
+
+      expect(snowflake.p.y).toBe(-19);
+    });
+
     it('should wrap snowflake horizontally when it goes beyond right edge', () => {
       const snowflake = new Snowflake({
         p: new Vec2D(106, 50), // p.x - r (106 - 5) > width (100) -> 101 > 100 = true

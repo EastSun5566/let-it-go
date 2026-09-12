@@ -18,6 +18,8 @@ export class LetItGo {
 
   #isGo = false;
 
+  #isCleared = false;
+
   #number = 0;
 
   get number(): number {
@@ -226,18 +228,27 @@ export class LetItGo {
 
     this.#snowflakes = Array.from(
       { length: this.#number },
-      () => new Snowflake({
-        p: new Vec2D(
-          getRandom(0, canvas.width),
-          getRandom(0, -canvas.height),
-        ),
-        v: new Vec2D(
+      () => {
+        const velocity = new Vec2D(
           getRandom(...this.#velocityXRange),
           getRandom(...this.#velocityYRange),
-        ),
-        r: getRandom(...this.#radiusRange),
-        alpha: getRandom(...this.#alphaRange),
-      }),
+        );
+        let verticalStart: number;
+        if (velocity.y > 0) {
+          verticalStart = getRandom(-canvas.height, 0);
+        } else if (velocity.y < 0) {
+          verticalStart = getRandom(canvas.height, canvas.height * 2);
+        } else {
+          verticalStart = getRandom(0, canvas.height);
+        }
+
+        return new Snowflake({
+          p: new Vec2D(getRandom(0, canvas.width), verticalStart),
+          v: velocity,
+          r: getRandom(...this.#radiusRange),
+          alpha: getRandom(...this.#alphaRange),
+        });
+      },
     );
   }
 
@@ -300,7 +311,7 @@ export class LetItGo {
   static readonly MAX_CATCH_UP_STEPS = 5;
 
   #startAnimate(): void {
-    if (this.#isGo) return;
+    if (this.#isGo || this.#isCleared) return;
 
     this.#isGo = true;
     this.#lastUpdate = null;
@@ -322,6 +333,7 @@ export class LetItGo {
   }
 
   clear(): void {
+    this.#isCleared = true;
     this.letItStop();
 
     this.#snowflakes = [];
