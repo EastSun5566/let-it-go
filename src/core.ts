@@ -216,6 +216,7 @@ export class LetItGo {
       left: '0',
       ...this.style,
     });
+    this.canvas.setAttribute('aria-hidden', 'true');
 
     this.root.appendChild(this.canvas);
   }

@@ -70,6 +70,7 @@ describe('LetItGo', () => {
     const snow = new LetItGo();
     expect(document.body.contains(snow.canvas)).toBe(true);
     expect(snow.canvas).toBeInstanceOf(HTMLCanvasElement);
+    expect(snow.canvas.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('should update number of snowflakes when setting number property', () => {
