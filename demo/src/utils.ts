@@ -153,26 +153,19 @@ export const bindRangeInputs = (snow: LetItGo, rangeOptions: RangeOption[]): voi
   rangeOptions.forEach((option) => {
     const { type } = option;
     const property = getRangeProperty(type);
-    let [first, second] = LetItGo.DEFAULT_OPTIONS[property];
+    const firstInput = getElement<HTMLInputElement>(`#${type}-range-value-1`);
+    const secondInput = getElement<HTMLInputElement>(`#${type}-range-value-2`);
 
     const update = (): void => {
-      snow[property] = [first, second];
-      setRangeControlValues(option, [first, second]);
+      const range: Range = [firstInput.valueAsNumber, secondInput.valueAsNumber];
+      snow[property] = range;
+      setRangeControlValues(option, range);
     };
 
-    const firstInput = getElement<HTMLInputElement>(`#${type}-range-value-1`);
-    firstInput.addEventListener('input', () => {
-      first = firstInput.valueAsNumber;
-      update();
-    });
+    firstInput.addEventListener('input', update);
+    secondInput.addEventListener('input', update);
 
-    const secondInput = getElement<HTMLInputElement>(`#${type}-range-value-2`);
-    secondInput.addEventListener('input', () => {
-      second = secondInput.valueAsNumber;
-      update();
-    });
-
-    setRangeControlValues(option, [first, second]);
+    setRangeControlValues(option, LetItGo.DEFAULT_OPTIONS[property]);
   });
 };
 
