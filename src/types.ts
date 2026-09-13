@@ -1,5 +1,5 @@
-export type Range = [number, number];
-export type Style = Partial<CSSStyleDeclaration>;
+export type Range = readonly [number, number];
+export type Style = Readonly<Partial<CSSStyleDeclaration>>;
 
 export interface Options {
   root?: HTMLElement;

@@ -7,9 +7,20 @@
   },
   "packageManager": "pnpm@9.1.0",
   "description": "❄️ Let your website snow instantly",
-  "main": "dist/index.umd.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.umd.js",
+  "jsdelivr": "dist/index.umd.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.esm.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
     "src"
@@ -18,14 +29,16 @@
     "test": "vitest ./tests",
     "type-check": "tsc --noEmit",
     "type-check:watch": "pnpm type-check --watch",
-    "build:types": "tsc --emitDeclarationOnly",
+    "build:types": "tsc --emitDeclarationOnly && rollup -c rollup.types.config.js && rimraf dist/types",
     "build:js": "rollup -c",
     "build": "rimraf dist && pnpm build:types && pnpm build:js",
-    "lint": "eslint --fix src",
+    "lint": "eslint src",
+    "lint:fix": "pnpm lint --fix",
+    "prepare": "husky install",
     "prepublishOnly": "pnpm build",
-    "release": "pnpx standard-version && git push --follow-tags && pnpm publish",
-    "demo:dev": "pnpm -C demo dev",
-    "demo:deploy": "pnpm -C demo run deploy"
+    "release:check": "node scripts/check-release-version.mjs",
+    "release": "pnpm release:check && standard-version && pnpm release:check && git push --follow-tags",
+    "demo:dev": "pnpm build && pnpm -C demo dev"
   },
   "keywords": [
     "let-it-go",
@@ -40,11 +53,6 @@
     "url": "https://github.com/EastSun5566/let-it-go"
   },
   "homepage": "https://eastsun5566.github.io/let-it-go/",
-  "husky": {
-    "hooks": {
-      "pre-commit": "pnpm lint"
-    }
-  },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
@@ -63,7 +71,9 @@
     "jsdom": "^25.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^4.54.0",
+    "rollup-plugin-dts": "^6.5.1",
     "rollup-plugin-filesize": "^9.1.2",
+    "standard-version": "^9.5.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.50.1",
     "vitest": "^4.0.0"

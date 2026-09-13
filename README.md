@@ -26,11 +26,15 @@ npm i let-it-go
 ```js
 import { LetItGo } from "let-it-go";
 
-// just snow!
+// Run this in a browser after the document body is available.
 const snow = new LetItGo();
 ```
 
-### Advance
+The package can be imported by Node.js and SSR tooling, but creating a
+`LetItGo` instance requires browser DOM and Canvas APIs. In an SSR application,
+construct it from a client-only lifecycle hook.
+
+### Advanced
 
 #### Options
 
@@ -38,8 +42,8 @@ const snow = new LetItGo();
 // create snow with some options
 const snow = new LetItGo({
   // root container, defaults to `document.body`
-  root: document.getElementById("root"),
-  // number of snowflake, defaults to `window.innerWidth`
+  root: document.getElementById("root") ?? document.body,
+  // number of snowflakes, defaults to `window.innerWidth` (capped at 10,000)
   number: 1000,
   // velocity x range of snowflake, defaults to `[-3, 3]`
   velocityXRange: [-3, 3],
@@ -53,8 +57,8 @@ const snow = new LetItGo({
   alphaRange: [0.8, 1],
   // background color of `canvas` element, defaults to `transparent`
   backgroundColor: "transparent",
-  // style prop of `canvas` element, defaults to `{ zIndex: -1, pointerEvents: 'none' }`
-  style: { zIndex: -999, pointerEvents: "none" },
+  // construction-only canvas styles; CSSStyleDeclaration values are strings
+  style: { zIndex: "-999", pointerEvents: "none" },
 });
 
 // you can use static prop `DEFAULT_OPTIONS` to get all the default options
@@ -67,11 +71,19 @@ const allTheDefaultOptions = LetItGo.DEFAULT_OPTIONS;
 /** the number of snowflake */
 const snowflakeNumber = snow.number;
 
-// you can directly update instance prop and it will reflect those change limitedly
+// These options update state immediately and redraw on the next running frame.
 snow.number = 5566;
-snow.color: "#333333"
-snow.velocityXRange = [-10, 50]; // must be tuple `[number, number]`
+snow.color = "#333333";
+snow.backgroundColor = "transparent";
+snow.velocityXRange = [-10, 50];
+snow.velocityYRange = [1, 5];
+snow.radiusRange = [0.5, 1];
+snow.alphaRange = [0.8, 1];
 ```
+
+Range values must be finite two-item tuples. `number` must be a non-negative
+safe integer no greater than 10,000. The `root` and `style` options are
+construction-only.
 
 #### Some other methods
 
@@ -82,6 +94,7 @@ snow.letItStop();
 // and snow again!
 snow.letItGoAgain();
 
-// stop animation & remove mounted `canvas` element
+// permanently stop animation and remove the mounted `canvas` element
+// create a new instance if you need to mount the effect again
 snow.clear();
 ```

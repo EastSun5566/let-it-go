@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest';
+import { MAX_SNOWFLAKES } from '../src/constants';
 import {
   assert,
   assertIsRange,
   assertIsRadiusRange,
   assertIsAlphaRange,
+  assertIsSnowflakeNumber,
   getRandom,
+  normalizeRange,
   setStyleProps,
 } from '../src/utils';
 
@@ -47,10 +50,58 @@ describe('Utility Functions', () => {
       expect(() => assertIsRange([] as any)).toThrow('Range size must be 2.');
     });
 
-    it('should throw error when range values are not numbers', () => {
-      expect(() => assertIsRange(['a', 'b'] as any)).toThrow('Range value must be a number.');
-      expect(() => assertIsRange([1, 'b'] as any)).toThrow('Range value must be a number.');
-      expect(() => assertIsRange([null, 5] as any)).toThrow('Range value must be a number.');
+    it('should throw error when range values are not finite numbers', () => {
+      expect(() => assertIsRange(['a', 'b'] as any)).toThrow('Range value must be finite.');
+      expect(() => assertIsRange([1, 'b'] as any)).toThrow('Range value must be finite.');
+      expect(() => assertIsRange([null, 5] as any)).toThrow('Range value must be finite.');
+      expect(() => assertIsRange([Number.NaN, 5])).toThrow('Range value must be finite.');
+      expect(() => assertIsRange([1, Number.POSITIVE_INFINITY])).toThrow('Range value must be finite.');
+    });
+
+    it('should reject sparse ranges', () => {
+      const emptySlots = new Array<number>(2);
+      const missingFirstValue = new Array<number>(2);
+      missingFirstValue[1] = 5;
+
+      expect(() => assertIsRange(emptySlots)).toThrow('Range value must be finite.');
+      expect(() => assertIsRange(missingFirstValue)).toThrow('Range value must be finite.');
+    });
+  });
+
+  describe('assertIsSnowflakeNumber', () => {
+    it('should accept snowflake counts within the supported limit', () => {
+      expect(() => assertIsSnowflakeNumber(0)).not.toThrow();
+      expect(() => assertIsSnowflakeNumber(100)).not.toThrow();
+      expect(() => assertIsSnowflakeNumber(MAX_SNOWFLAKES)).not.toThrow();
+    });
+
+    it.each([
+      -1,
+      1.5,
+      MAX_SNOWFLAKES + 1,
+      Number.MAX_SAFE_INTEGER,
+      Number.NaN,
+      Number.POSITIVE_INFINITY,
+      '1',
+    ])(
+      'should reject invalid value %s',
+      (number) => {
+        expect(() => assertIsSnowflakeNumber(number)).toThrow(
+          'Number must be a non-negative safe integer no greater than 10,000.',
+        );
+      },
+    );
+  });
+
+  describe('normalizeRange', () => {
+    it('should return a frozen, numerically ordered copy', () => {
+      const input: [number, number] = [10, 2];
+      const normalized = normalizeRange(input);
+
+      expect(normalized).toEqual([2, 10]);
+      expect(normalized).not.toBe(input);
+      expect(input).toEqual([10, 2]);
+      expect(Object.isFrozen(normalized)).toBe(true);
     });
   });
 

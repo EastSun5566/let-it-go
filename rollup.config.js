@@ -6,7 +6,9 @@ import filesize from 'rollup-plugin-filesize';
 
 import pkg from './package.json' with { type: 'json' };
 
-const { name, main, module } = pkg;
+const {
+  name, main, module, unpkg,
+} = pkg;
 
 /**
  * @param {string} string
@@ -22,9 +24,8 @@ const config = {
   input: 'src/index.ts',
   output: [
     {
-      name: camalize(name),
       file: main,
-      format: 'umd',
+      format: 'cjs',
       // sourcemap: true,
       exports: 'named',
     },
@@ -33,12 +34,19 @@ const config = {
       format: 'es',
       // sourcemap: true,
     },
+    {
+      name: camalize(name),
+      file: unpkg,
+      format: 'umd',
+      // sourcemap: true,
+      exports: 'named',
+    },
   ],
   plugins: [
     nodeResolve({ extensions: [...DEFAULTS.extensions, '.ts'] }),
     babel({
       extensions: [...DEFAULT_EXTENSIONS, '.ts'],
-      presets: ['@babel/env', '@babel/typescript'],
+      presets: [['@babel/env', { modules: false }], '@babel/typescript'],
       babelHelpers: 'bundled',
     }),
     terser(),

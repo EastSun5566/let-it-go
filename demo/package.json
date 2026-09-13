@@ -10,8 +10,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "sh scripts/deploy.sh",
-    "lint": "eslint --fix src"
+    "lint": "eslint src",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^3.0.0",
@@ -27,6 +28,6 @@
   },
   "dependencies": {
     "bootswatch": "^5.3.3",
-    "let-it-go": "file:.."
+    "let-it-go": "link:.."
   }
 }

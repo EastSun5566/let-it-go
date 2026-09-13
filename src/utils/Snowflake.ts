@@ -31,8 +31,12 @@ export class Snowflake {
   update({ width = 0, height = 0 } = {}): void {
     const { p, r, v } = this;
 
-    if (p.y - r > height) {
+    if (v.y >= 0 && p.y - r > height) {
       this.p.y = 0 - r;
+    }
+
+    if (v.y < 0 && p.y + r < 0) {
+      this.p.y = height + r;
     }
 
     if (p.x - r > width) {

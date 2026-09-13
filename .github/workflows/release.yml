@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+env:
+  HUSKY: 0
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -12,36 +15,66 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
-      - uses: pnpm/action-setup@v4
+          node-version: "24.x"
       - name: Install and test
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
           pnpm lint
           pnpm type-check
           pnpm test
+          pnpm build
+          node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
+          npm pack --dry-run
+          npx --yes jsr@0.14.3 publish --dry-run
 
-  publish:
+  # Keep registry publishes independent so a failed registry can be retried alone.
+  publish-npm:
     needs: test
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+          registry-url: https://registry.npmjs.org/
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Verify release version
+        run: node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
+      - name: Publish to NPM
+        run: npm install --global npm@12.0.2 && npm publish --provenance
+
+  publish-jsr:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
-          registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v4
-      - name: Install deps
-        run: pnpm i --frozen-lockfile
-      - name: Publish to NPM
-        run: npm install -g npm@latest && npm publish
+          node-version: "24.x"
+      - name: Verify release version
+        run: node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
       - name: Publish to JSR
-        run: npx jsr publish
+        run: npx --yes jsr@0.14.3 publish
+
+  github-release:
+    needs:
+      - publish-npm
+      - publish-jsr
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
