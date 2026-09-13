@@ -21,24 +21,29 @@ $options-bg: rgba(white, 0.3);
   position: absolute;
   left: 16px;
   bottom: 16px;
+  box-sizing: border-box;
+  width: min(22rem, calc(100% - 2rem));
 
   background-color: $options-bg;
   padding: 16px;
   max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
   border-radius: 8px;
   box-shadow: 0 0 16px rgba(black, 0.3);
-
-  @media screen and (max-width: 720px) {
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    border-radius: 0;
-  }
 }
 
 .options__content {
-  max-height: calc(40vh - 4rem);
+  max-height: min(14rem, calc(100vh - 7.5rem));
+  max-height: min(14rem, calc(100dvh - 7.5rem));
   overflow-y: auto;
+
+  &:not([hidden]) {
+    margin-top: 1rem;
+  }
+}
+
+.options legend {
+  font-size: inherit;
 }
 
 :where(a, button, input):focus-visible {
