@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/EastSun5566/let-it-go/compare/v1.1.0...v2.0.0) (2026-09-28)
+
+### Highlights
+
+* support importing the package in Node.js and SSR environments without accessing DOM globals
+* publish explicit ESM, CommonJS, UMD, and TypeScript declaration entry points
+* improve custom-root sizing, resize handling, animation timing, rendering work, and cleanup
+
+### Breaking Changes
+
+* Node.js 22 or newer is required
+* ranges, styles, and `DEFAULT_OPTIONS` are owned by the library and exposed as read-only values
+* `number` must be a non-negative safe integer no greater than 10,000
+* package exports are limited to the root entry point and `package.json`; undocumented deep imports are no longer available
+* `clear()` permanently disposes the instance; create a new instance to mount the effect again
+
+### Migration
+
+Import from the package root, replace options through setters instead of mutating returned values,
+and create a new instance after clearing the previous one:
+
+```js
+import { LetItGo } from "let-it-go";
+
+let snow = new LetItGo();
+snow.velocityXRange = [-2, 10];
+
+snow.clear();
+snow = new LetItGo();
+```
+
+### Bug Fixes
+
+* build error on nodejs >=22 ([e1cea5e](https://github.com/EastSun5566/let-it-go/commit/e1cea5eaa5af04e450eb0f702d402ff77579aecf))
+* **demo:** stabilize control panel layout ([#100](https://github.com/EastSun5566/let-it-go/issues/100)) ([d2bee02](https://github.com/EastSun5566/let-it-go/commit/d2bee02fb352e9911cd1a933654b8480f8026a8e))
+* harden runtime, packaging, and release workflows ([#99](https://github.com/EastSun5566/let-it-go/issues/99)) ([bd3a540](https://github.com/EastSun5566/let-it-go/commit/bd3a5408fd9657870a9f861ec101d435c8dbc805))
+* unify render loop into single requestAnimationFrame callback ([#93](https://github.com/EastSun5566/let-it-go/issues/93)) ([389ccfa](https://github.com/EastSun5566/let-it-go/commit/389ccfabfd839cd14b739f6e54dcd6770c451b2e))
+
 ## [1.1.0](https://github.com/EastSun5566/let-it-go/compare/v1.0.0...v1.1.0) (2024-11-15)
 
 
