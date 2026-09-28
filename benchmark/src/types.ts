@@ -1,6 +1,4 @@
-export type BenchmarkMode = 'production-main' | 'prototype-main' | 'prototype-worker';
-
-export type FailureMode = 'none' | 'unsupported' | 'constructor' | 'probe' | 'init' | 'context';
+export type BenchmarkMode = 'production-main' | 'production-worker';
 
 export type Range = readonly [number, number];
 

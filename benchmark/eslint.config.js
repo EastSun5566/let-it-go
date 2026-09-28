@@ -3,7 +3,7 @@ import baseConfig from '../eslint.config.js';
 export default [
   ...baseConfig,
   {
-    files: ['benchmark/src/**/*.ts', 'benchmark/tests/**/*.ts'],
+    files: ['benchmark/src/**/*.ts', 'benchmark/tests/**/*.ts', 'benchmark/scripts/**/*.mjs'],
     rules: {
       'class-methods-use-this': 'off',
       'max-classes-per-file': 'off',

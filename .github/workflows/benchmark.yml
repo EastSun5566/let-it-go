@@ -29,8 +29,13 @@ jobs:
       - run: pnpm -C benchmark test:functional
 
   performance:
+    name: performance (attempt ${{ matrix.attempt }})
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        attempt: [1, 2, 3]
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
@@ -48,7 +53,22 @@ jobs:
           console.log(JSON.stringify({ decision: result.decision, summaries: result.summaries }, null, 2))"
       - uses: actions/upload-artifact@v7
         with:
-          name: worker-benchmark-${{ github.sha }}
+          name: worker-benchmark-${{ github.sha }}-attempt-${{ matrix.attempt }}
           path: benchmark/test-results/benchmark-results.json
           if-no-files-found: error
           retention-days: 30
+
+  performance-gate:
+    needs: performance
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: worker-benchmark-${{ github.sha }}-attempt-*
+          path: benchmark-artifacts
+      - name: Evaluate cross-attempt gate
+        run: node benchmark/scripts/evaluate-attempts.mjs benchmark-artifacts

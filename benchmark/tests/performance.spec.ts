@@ -44,7 +44,7 @@ interface ScenarioSummary {
   mainThreadTaskCoefficientOfVariation: number;
 }
 
-const MODES: BenchmarkMode[] = ['production-main', 'prototype-main', 'prototype-worker'];
+const MODES: BenchmarkMode[] = ['production-main', 'production-worker'];
 const COUNTS = [1_000, 1_280, 5_000, 10_000];
 const REPETITIONS = Number(process.env.BENCHMARK_REPETITIONS ?? 5);
 const WARMUP_MS = Number(process.env.BENCHMARK_WARMUP_MS ?? 2_000);
@@ -204,21 +204,9 @@ const evaluateDecision = (summaries: ScenarioSummary[]): { status: 'passed' | 'f
     return { status: 'invalid', reasons: ['At least one main-thread task sample has coefficient of variation above 15%.'] };
   }
 
-  for (const number of COUNTS) {
-    const production = summaries.find((summary) => summary.mode === 'production-main' && summary.number === number);
-    const prototype = summaries.find((summary) => summary.mode === 'prototype-main' && summary.number === number);
-    if (!production || !prototype || production.totalCpuProxyMsMedian === 0) {
-      return { status: 'invalid', reasons: [`Missing equivalence data for ${number} flakes.`] };
-    }
-    const difference = Math.abs(prototype.totalCpuProxyMsMedian - production.totalCpuProxyMsMedian)
-      / production.totalCpuProxyMsMedian;
-    if (difference > 0.1) reasons.push(`Prototype main differs from production main by more than 10% at ${number} flakes.`);
-  }
-  if (reasons.length > 0) return { status: 'invalid', reasons };
-
   for (const number of [5_000, 10_000]) {
     const production = summaries.find((summary) => summary.mode === 'production-main' && summary.number === number);
-    const worker = summaries.find((summary) => summary.mode === 'prototype-worker' && summary.number === number);
+    const worker = summaries.find((summary) => summary.mode === 'production-worker' && summary.number === number);
     if (!production || !worker || production.mainThreadTaskMsMedian === 0) {
       return { status: 'invalid', reasons: [`Missing worker comparison data for ${number} flakes.`] };
     }
@@ -227,7 +215,7 @@ const evaluateDecision = (summaries: ScenarioSummary[]): { status: 'passed' | 'f
   }
 
   const defaultProduction = summaries.find((summary) => summary.mode === 'production-main' && summary.number === 1_280);
-  const defaultWorker = summaries.find((summary) => summary.mode === 'prototype-worker' && summary.number === 1_280);
+  const defaultWorker = summaries.find((summary) => summary.mode === 'production-worker' && summary.number === 1_280);
   if (!defaultProduction || !defaultWorker) return { status: 'invalid', reasons: ['Missing default-count data.'] };
   if (defaultWorker.totalCpuProxyMsMedian > defaultProduction.totalCpuProxyMsMedian * 1.1) {
     reasons.push('Default-count total CPU proxy regresses by more than 10%.');
@@ -274,6 +262,7 @@ test('records deterministic main-thread and worker benchmark results', async ({ 
       ({ duration }) => window.benchmark?.runSample(duration, 20),
       { duration: DURATION_MS },
     );
+    expect(pageResult?.activeMode).toBe(scenario.mode);
     await client.send('HeapProfiler.collectGarbage');
     const mainHeap = await client.send('Runtime.getHeapUsage');
     const memoryBytes = totalHeapBytes(mainHeap) + await measureWorkerHeap(browser);

@@ -3,7 +3,6 @@ import './style.css';
 import { createRenderer } from './renderers';
 import type {
   BenchmarkMode,
-  FailureMode,
   RendererStatus,
   SampleResult,
   SceneOptions,
@@ -72,24 +71,12 @@ const runInteractionProbes = async (count: number, durationMs: number): Promise<
 };
 
 const parseMode = (value: string | null): BenchmarkMode => {
-  if (value === 'production-main' || value === 'prototype-main' || value === 'prototype-worker') return value;
+  if (value === 'production-main' || value === 'production-worker') return value;
   return 'production-main';
-};
-
-const parseFailureMode = (value: string | null): FailureMode => {
-  if (
-    value === 'unsupported'
-    || value === 'constructor'
-    || value === 'probe'
-    || value === 'init'
-    || value === 'context'
-  ) return value;
-  return 'none';
 };
 
 const params = new URLSearchParams(window.location.search);
 const requestedMode = parseMode(params.get('mode'));
-const failureMode = parseFailureMode(params.get('failure'));
 const requestedNumber = Number(params.get('number') ?? DEFAULT_OPTIONS.number);
 const number = Number.isSafeInteger(requestedNumber) && requestedNumber >= 0 && requestedNumber <= 10_000
   ? requestedNumber
@@ -120,7 +107,6 @@ const { renderer, fallbackReason } = await createRenderer(
   root,
   { ...DEFAULT_OPTIONS, number },
   seed,
-  failureMode,
 );
 
 const getStatus = async (): Promise<RendererStatus> => {
@@ -133,8 +119,8 @@ const getStatus = async (): Promise<RendererStatus> => {
     running: renderer.running,
     cleared: renderer.cleared,
     canvasCount: root.querySelectorAll('canvas').length,
-    width: renderer.canvas.width,
-    height: renderer.canvas.height,
+    width: renderer.canvas.clientWidth,
+    height: renderer.canvas.clientHeight,
     options: renderer.options,
     stats,
   };

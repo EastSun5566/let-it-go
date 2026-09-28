@@ -19,47 +19,18 @@ test('loads the production renderer without changing its public canvas contract'
   expect(status?.running).toBe(true);
 });
 
-test('uses the worker renderer when supported and otherwise falls back cleanly', async ({ page }) => {
-  await openBenchmark(page, 'mode=prototype-worker&number=10&seed=5566');
+test('uses the production worker renderer', async ({ page }) => {
+  await openBenchmark(page, 'mode=production-worker&number=10&seed=5566');
   const status = await page.evaluate(() => window.benchmark?.getStatus());
 
-  expect(['prototype-worker', 'prototype-main']).toContain(status?.activeMode);
+  expect(status?.activeMode).toBe('production-worker');
   expect(status?.canvasCount).toBe(1);
-  if (status?.activeMode === 'prototype-worker') {
-    expect(status.workerSupported).toBe(true);
-    expect(status.fallbackReason).toBeNull();
-  } else {
-    expect(status?.fallbackReason).toBeTruthy();
-  }
-});
-
-test('falls back before transfer when worker support is unavailable', async ({ page }) => {
-  await openBenchmark(page, 'mode=prototype-worker&failure=unsupported&number=10');
-  const status = await page.evaluate(() => window.benchmark?.getStatus());
-
-  expect(status?.requestedMode).toBe('prototype-worker');
-  expect(status?.activeMode).toBe('prototype-main');
-  expect(status?.workerSupported).toBe(false);
-  expect(status?.canvasCount).toBe(1);
-  expect(status?.fallbackReason).toContain('forced unsupported');
-});
-
-test.describe('post-transfer fallbacks', () => {
-  for (const failure of ['init', 'context'] as const) {
-    test(`replaces the transferred canvas after ${failure} failure`, async ({ page }) => {
-      await openBenchmark(page, `mode=prototype-worker&failure=${failure}&number=10`);
-      const status = await page.evaluate(() => window.benchmark?.getStatus());
-
-      expect(status?.activeMode).toBe('prototype-main');
-      expect(status?.workerSupported).toBe(true);
-      expect(status?.canvasCount).toBe(1);
-      expect(status?.fallbackReason).toBeTruthy();
-    });
-  }
+  expect(status?.workerSupported).toBe(true);
+  expect(status?.fallbackReason).toBeNull();
 });
 
 test('synchronizes options, resize, stop, restart, and permanent clear', async ({ page }) => {
-  await openBenchmark(page, 'mode=prototype-worker&number=10&seed=5566');
+  await openBenchmark(page, 'mode=production-worker&number=10&seed=5566');
 
   await page.evaluate(() => {
     window.benchmark?.setOptions({
@@ -99,7 +70,7 @@ test('synchronizes options, resize, stop, restart, and permanent clear', async (
 });
 
 test('keeps the benchmark controls responsive', async ({ page }) => {
-  await openBenchmark(page, 'mode=prototype-worker&number=1000');
+  await openBenchmark(page, 'mode=production-worker&number=1000');
   const button = page.getByRole('button', { name: 'Interaction probe' });
   await button.click();
   await expect(button).toHaveAttribute('data-count', '1');

@@ -10,7 +10,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "lint": "pnpm --dir .. exec eslint --config benchmark/eslint.config.js benchmark/src benchmark/tests",
+    "lint": "pnpm --dir .. exec eslint --config benchmark/eslint.config.js benchmark/src benchmark/tests benchmark/scripts",
     "type-check": "tsc --noEmit",
     "test:functional": "playwright test tests/functional.spec.ts",
     "benchmark:chromium": "playwright test tests/performance.spec.ts --project=chromium"
