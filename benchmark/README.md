@@ -37,7 +37,7 @@ BENCHMARK_REPETITIONS=1 BENCHMARK_WARMUP_MS=100 BENCHMARK_DURATION_MS=500 \
 
 The runner reads main and Dedicated Worker heap usage from their separate Chromium CDP targets after requesting garbage collection. The default output is `benchmark/test-results/benchmark-results.json`. Set `BENCHMARK_OUTPUT` to preserve a reviewed result under `benchmark/results/`.
 
-The benchmark workflow runs the same full suite for pull requests that change this package and for manual dispatches. It prints the decision in the job log and retains the raw JSON as a 30-day Actions artifact. A failed decision remains evidence rather than failing CI; CI fails only when the harness cannot complete.
+The benchmark workflow runs the same full suite on a pinned Ubuntu 24.04 runner for pull requests that change this package and for manual dispatches. It prints the decision in the job log and retains the raw JSON as a 30-day Actions artifact. A failed decision remains evidence rather than failing CI; CI fails only when the harness cannot complete.
 
 ## Native Safari
 
