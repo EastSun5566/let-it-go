@@ -1,0 +1,2007 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "platform": "darwin",
+    "architecture": "arm64",
+    "node": "v24.16.0",
+    "browserVersion": "153.0.8010.12",
+    "repetitions": 5,
+    "warmupMs": 2000,
+    "durationMs": 10000,
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "deviceScaleFactor": 1
+    }
+  },
+  "runs": [
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 33.179999992251396,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2737122,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:36:19.115Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 587.621,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 587.621
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 19.739999994635582,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2769042,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:36:31.948Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 600.219,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 600.219
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 33.53000000119209,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3311406,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:36:44.750Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1421.454,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1421.454
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 24.16500000655651,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4860755,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:36:57.625Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 2695.029,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 2695.029
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 30.91499999165535,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2653293,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:37:10.571Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 615.354,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 615.354
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 32.42500001192093,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2692825,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:37:23.417Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 592.255,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 592.255
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 30.54500000178814,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3422621,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:37:36.225Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1565.15,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1565.15
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 597,
+        "droppedFrames": 2,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 32.46000000834465,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3671186,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:37:49.265Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 3059.583,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 3059.583
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 598,
+        "droppedFrames": 2,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 20.765000000596046,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3253977,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:38:02.366Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 112.298,
+        "workerTaskMs": 470.09,
+        "totalCpuProxyMs": 582.3879999999999
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 20.17000000178814,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3066989,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:38:15.330Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 109.591,
+        "workerTaskMs": 517.953,
+        "totalCpuProxyMs": 627.544
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 1,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 28.82999999821186,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3490785,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:38:28.230Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 127.933,
+        "workerTaskMs": 1655.774,
+        "totalCpuProxyMs": 1783.7069999999999
+      }
+    },
+    {
+      "repetition": 0,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 490,
+        "droppedFrames": 109,
+        "p95FrameIntervalMs": 33.335000000000036,
+        "p95InteractionLatencyMs": 43.195000007748604,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4046958,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:38:41.233Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 109.327,
+        "workerTaskMs": 2660.747,
+        "totalCpuProxyMs": 2770.0739999999996
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 23.855000004172325,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3281649,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:38:54.268Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 123.441,
+        "workerTaskMs": 540.357,
+        "totalCpuProxyMs": 663.798
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 24.319999992847443,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3312757,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:39:07.107Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 106.071,
+        "workerTaskMs": 525.825,
+        "totalCpuProxyMs": 631.8960000000001
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 596,
+        "droppedFrames": 4,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 23.714999988675117,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3702321,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:39:20.935Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 151.76,
+        "workerTaskMs": 1674.912,
+        "totalCpuProxyMs": 1826.672
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 423,
+        "droppedFrames": 176,
+        "p95FrameIntervalMs": 33.335000000000946,
+        "p95InteractionLatencyMs": 45.24499998986721,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4229902,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:39:35.129Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 103.096,
+        "workerTaskMs": 2833.696,
+        "totalCpuProxyMs": 2936.792
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 18.674999997019768,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2661465,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:39:48.210Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 569.75,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 569.75
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 23.359999999403954,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2684449,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:40:01.500Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 777.401,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 777.401
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 29.060000002384186,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3423073,
+        "rendererStats": {
+          "frames": 363,
+          "steps": 362,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:40:14.703Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1740.989,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1740.989
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 28.70999999344349,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3981406,
+        "rendererStats": {
+          "frames": 363,
+          "steps": 362,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:40:28.122Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 3473.026,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 3473.026
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 26.510000005364418,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3052106,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:40:41.576Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 733.049,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 733.049
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 28.79000000655651,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2777406,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:40:54.674Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 752.833,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 752.833
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 20.109999999403954,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3617394,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:41:08.056Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1891.556,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1891.556
+      }
+    },
+    {
+      "repetition": 1,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 593,
+        "droppedFrames": 6,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 39.689999997615814,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4899515,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:41:21.505Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 3989.141,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 3989.141
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 21.484999999403954,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2728786,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:41:35.244Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 777.917,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 777.917
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 27.894999995827675,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3092166,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:41:48.209Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 615.067,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 615.067
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 24.219999998807907,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3956130,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:42:01.751Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 2085.589,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 2085.589
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 597,
+        "droppedFrames": 2,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 34.99500000476837,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4631127,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:42:15.808Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 3956.592,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 3956.592
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 23.480000004172325,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2653129,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:42:29.658Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 749.805,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 749.805
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 25.280000001192093,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2684461,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:42:43.255Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 893.838,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 893.838
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 19.765000000596046,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3102629,
+        "rendererStats": {
+          "frames": 363,
+          "steps": 362,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:42:57.216Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1682.47,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1682.47
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 592,
+        "droppedFrames": 6,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 30.655000001192093,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4049454,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:43:10.532Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 4196.868,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 4196.868
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 563,
+        "droppedFrames": 37,
+        "p95FrameIntervalMs": 33.32999999999993,
+        "p95InteractionLatencyMs": 50.37999999523163,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3044181,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:43:24.680Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 140.607,
+        "workerTaskMs": 682.635,
+        "totalCpuProxyMs": 823.242
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 467,
+        "droppedFrames": 133,
+        "p95FrameIntervalMs": 33.335000000000036,
+        "p95InteractionLatencyMs": 64.09000000357628,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3322421,
+        "rendererStats": {
+          "frames": 363,
+          "steps": 362,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:43:38.546Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 155.034,
+        "workerTaskMs": 957.078,
+        "totalCpuProxyMs": 1112.112
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 538,
+        "droppedFrames": 61,
+        "p95FrameIntervalMs": 33.33000000000038,
+        "p95InteractionLatencyMs": 57.87999999523163,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3662909,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:43:51.855Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 103.759,
+        "workerTaskMs": 1614.807,
+        "totalCpuProxyMs": 1718.566
+      }
+    },
+    {
+      "repetition": 2,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 422,
+        "droppedFrames": 177,
+        "p95FrameIntervalMs": 33.335000000000036,
+        "p95InteractionLatencyMs": 44.67499999701977,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4046958,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:44:04.969Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 117.345,
+        "workerTaskMs": 4174.009,
+        "totalCpuProxyMs": 4291.354
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 1,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 25.719999998807907,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3281777,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:44:18.586Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 125.522,
+        "workerTaskMs": 518.085,
+        "totalCpuProxyMs": 643.6070000000001
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 33.29500000178814,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3075673,
+        "rendererStats": {
+          "frames": 363,
+          "steps": 361,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:44:31.833Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 125.58,
+        "workerTaskMs": 596.994,
+        "totalCpuProxyMs": 722.5740000000001
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 545,
+        "droppedFrames": 55,
+        "p95FrameIntervalMs": 33.32999999999993,
+        "p95InteractionLatencyMs": 36.43000000715256,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3482245,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:44:44.681Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 130.213,
+        "workerTaskMs": 1757.339,
+        "totalCpuProxyMs": 1887.552
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 430,
+        "droppedFrames": 170,
+        "p95FrameIntervalMs": 33.335000000000036,
+        "p95InteractionLatencyMs": 48.75,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4304226,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:44:57.726Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 94.057,
+        "workerTaskMs": 3308.25,
+        "totalCpuProxyMs": 3402.307
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 34.190000012516975,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2661465,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:45:11.391Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 476.712,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 476.712
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 24.810000002384186,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3004577,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:45:24.193Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 680.264,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 680.264
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 29.924999997019768,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3110993,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:45:36.973Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1558.253,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1558.253
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 31.350000008940697,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3983418,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:45:49.810Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 2654.073,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 2654.073
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 29.100000008940697,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2737122,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:46:02.805Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 615.643,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 615.643
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 26.71000000834465,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2777406,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:46:15.522Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 690.783,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 690.783
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 28.444999992847443,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3758310,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:46:28.237Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1670.331,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1670.331
+      }
+    },
+    {
+      "repetition": 3,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 30.70499999821186,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4031583,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:46:41.229Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 2815.152,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 2815.152
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 33.55000001192093,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2737122,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:46:54.302Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 512.761,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 512.761
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 32.935000002384186,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2777406,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:47:07.168Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 582.649,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 582.649
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 30,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3625638,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:47:20.037Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1625.296,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1625.296
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "production-main",
+        "activeMode": "production-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 22.38000001013279,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4023071,
+        "rendererStats": {
+          "frames": 0,
+          "steps": 0,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:47:32.957Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 2809.479,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 2809.479
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 20.484999999403954,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2653129,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:47:46.049Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 456.576,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 456.576
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 31.135000005364418,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 2692825,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:47:58.849Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 646.296,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 646.296
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 27.019999995827675,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3423865,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:48:11.656Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 1506.328,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 1506.328
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-main",
+        "activeMode": "prototype-main",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 599,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 24.385000005364418,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3982570,
+        "rendererStats": {
+          "frames": 362,
+          "steps": 361,
+          "messages": 0
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:48:24.563Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 2771.185,
+        "workerTaskMs": 0,
+        "totalCpuProxyMs": 2771.185
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 20.855000004172325,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3035785,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:48:37.556Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 122.032,
+        "workerTaskMs": 552.398,
+        "totalCpuProxyMs": 674.4300000000001
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 1280,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 27.605000004172325,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3075685,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:48:50.366Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 130.567,
+        "workerTaskMs": 614.772,
+        "totalCpuProxyMs": 745.339
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 5000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 600,
+        "droppedFrames": 0,
+        "p95FrameIntervalMs": 16.670000000000073,
+        "p95InteractionLatencyMs": 29.884999990463257,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 3648153,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:49:03.146Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 133.163,
+        "workerTaskMs": 1637.582,
+        "totalCpuProxyMs": 1770.7450000000001
+      }
+    },
+    {
+      "repetition": 4,
+      "page": {
+        "mode": "prototype-worker",
+        "activeMode": "prototype-worker",
+        "number": 10000,
+        "seed": 5566,
+        "durationMs": 10000,
+        "frameCount": 529,
+        "droppedFrames": 71,
+        "p95FrameIntervalMs": 33.33499999999913,
+        "p95InteractionLatencyMs": 47.815000012516975,
+        "longAnimationFrameCount": 0,
+        "memoryBytes": 4216114,
+        "rendererStats": {
+          "frames": 361,
+          "steps": 360,
+          "messages": 6
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36",
+        "hardwareConcurrency": 8,
+        "deviceMemory": 16,
+        "crossOriginIsolated": true,
+        "timestamp": "2026-09-28T10:49:15.993Z"
+      },
+      "trace": {
+        "mainThreadTaskMs": 109.711,
+        "workerTaskMs": 2738.355,
+        "totalCpuProxyMs": 2848.066
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "mode": "production-main",
+      "number": 1000,
+      "mainThreadTaskMsMedian": 615.643,
+      "totalCpuProxyMsMedian": 615.643,
+      "memoryBytesMedian": 2737122,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 29.100000008940697,
+      "mainThreadTaskCoefficientOfVariation": 0.150318926215967
+    },
+    {
+      "mode": "production-main",
+      "number": 1280,
+      "mainThreadTaskMsMedian": 615.067,
+      "totalCpuProxyMsMedian": 615.067,
+      "memoryBytesMedian": 2777406,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 27.894999995827675,
+      "mainThreadTaskCoefficientOfVariation": 0.09866567278454208
+    },
+    {
+      "mode": "production-main",
+      "number": 5000,
+      "mainThreadTaskMsMedian": 1670.331,
+      "totalCpuProxyMsMedian": 1670.331,
+      "memoryBytesMedian": 3625638,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 28.444999992847443,
+      "mainThreadTaskCoefficientOfVariation": 0.13161411211574559
+    },
+    {
+      "mode": "production-main",
+      "number": 10000,
+      "mainThreadTaskMsMedian": 2815.152,
+      "totalCpuProxyMsMedian": 2815.152,
+      "memoryBytesMedian": 4631127,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 30.70499999821186,
+      "mainThreadTaskCoefficientOfVariation": 0.18116849301457297
+    },
+    {
+      "mode": "prototype-main",
+      "number": 1000,
+      "mainThreadTaskMsMedian": 569.75,
+      "totalCpuProxyMsMedian": 569.75,
+      "memoryBytesMedian": 2653293,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 23.480000004172325,
+      "mainThreadTaskCoefficientOfVariation": 0.18430475103098018
+    },
+    {
+      "mode": "prototype-main",
+      "number": 1280,
+      "mainThreadTaskMsMedian": 680.264,
+      "totalCpuProxyMsMedian": 680.264,
+      "memoryBytesMedian": 2692825,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 25.280000001192093,
+      "mainThreadTaskCoefficientOfVariation": 0.14847481960140982
+    },
+    {
+      "mode": "prototype-main",
+      "number": 5000,
+      "mainThreadTaskMsMedian": 1565.15,
+      "totalCpuProxyMsMedian": 1565.15,
+      "memoryBytesMedian": 3422621,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 29.060000002384186,
+      "mainThreadTaskCoefficientOfVariation": 0.054015963299263316
+    },
+    {
+      "mode": "prototype-main",
+      "number": 10000,
+      "mainThreadTaskMsMedian": 3059.583,
+      "totalCpuProxyMsMedian": 3059.583,
+      "memoryBytesMedian": 3982570,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 30.655000001192093,
+      "mainThreadTaskCoefficientOfVariation": 0.1731654306472998
+    },
+    {
+      "mode": "prototype-worker",
+      "number": 1000,
+      "mainThreadTaskMsMedian": 123.441,
+      "totalCpuProxyMsMedian": 663.798,
+      "memoryBytesMedian": 3253977,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 23.855000004172325,
+      "mainThreadTaskCoefficientOfVariation": 0.07311650799461314
+    },
+    {
+      "mode": "prototype-worker",
+      "number": 1280,
+      "mainThreadTaskMsMedian": 125.58,
+      "totalCpuProxyMsMedian": 722.5740000000001,
+      "memoryBytesMedian": 3075685,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 27.605000004172325,
+      "mainThreadTaskCoefficientOfVariation": 0.13945997147027944
+    },
+    {
+      "mode": "prototype-worker",
+      "number": 5000,
+      "mainThreadTaskMsMedian": 130.213,
+      "totalCpuProxyMsMedian": 1783.7069999999999,
+      "memoryBytesMedian": 3648153,
+      "p95FrameIntervalMsMedian": 16.670000000000073,
+      "p95InteractionLatencyMsMedian": 29.884999990463257,
+      "mainThreadTaskCoefficientOfVariation": 0.11846874931376618
+    },
+    {
+      "mode": "prototype-worker",
+      "number": 10000,
+      "mainThreadTaskMsMedian": 109.327,
+      "totalCpuProxyMsMedian": 2936.792,
+      "memoryBytesMedian": 4216114,
+      "p95FrameIntervalMsMedian": 33.335000000000036,
+      "p95InteractionLatencyMsMedian": 45.24499998986721,
+      "mainThreadTaskCoefficientOfVariation": 0.07284656153810641
+    }
+  ],
+  "decision": {
+    "status": "invalid",
+    "reasons": [
+      "At least one main-thread task sample has coefficient of variation above 15%."
+    ]
+  }
+}
