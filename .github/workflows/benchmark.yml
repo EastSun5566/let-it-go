@@ -1,4 +1,4 @@
-name: Worker benchmark functional checks
+name: Worker benchmark
 
 on:
   pull_request:
@@ -27,3 +27,28 @@ jobs:
       - run: pnpm -C benchmark build
       - run: pnpm -C benchmark exec playwright install --with-deps chromium firefox webkit
       - run: pnpm -C benchmark test:functional
+
+  performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm -C benchmark install --frozen-lockfile
+      - run: pnpm -C benchmark exec playwright install --with-deps chromium
+      - run: pnpm -C benchmark benchmark:chromium
+      - name: Print benchmark result
+        run: >-
+          node -e "const result = require('./benchmark/test-results/benchmark-results.json');
+          console.log(JSON.stringify({ decision: result.decision, summaries: result.summaries }, null, 2))"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: worker-benchmark-${{ github.sha }}
+          path: benchmark/test-results/benchmark-results.json
+          if-no-files-found: error
+          retention-days: 30

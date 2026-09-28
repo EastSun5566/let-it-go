@@ -37,6 +37,8 @@ BENCHMARK_REPETITIONS=1 BENCHMARK_WARMUP_MS=100 BENCHMARK_DURATION_MS=500 \
 
 The runner reads main and Dedicated Worker heap usage from their separate Chromium CDP targets after requesting garbage collection. The default output is `benchmark/test-results/benchmark-results.json`. Set `BENCHMARK_OUTPUT` to preserve a reviewed result under `benchmark/results/`.
 
+The benchmark workflow runs the same full suite for pull requests that change this package and for manual dispatches. It prints the decision in the job log and retains the raw JSON as a 30-day Actions artifact. A failed decision remains evidence rather than failing CI; CI fails only when the harness cannot complete.
+
 ## Native Safari
 
 Run `pnpm -C benchmark dev`, open <http://127.0.0.1:4174/?mode=prototype-worker&number=5000>, and confirm the status says `prototype-worker`. Use **Run 10s sample** and **Download JSON** for each required count. Repeat with `mode=production-main` and `mode=prototype-main`.
