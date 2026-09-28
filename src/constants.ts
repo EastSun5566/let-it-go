@@ -35,4 +35,5 @@ export const DEFAULT_OPTIONS: Readonly<Required<Options>> = Object.freeze({
     zIndex: '-1',
     pointerEvents: 'none',
   }),
+  renderer: 'main',
 });

@@ -1,6 +1,7 @@
 import {
   Vec2D,
   Snowflake,
+  assert,
   assertIsAlphaRange,
   assertIsRadiusRange,
   assertIsRange,
@@ -13,13 +14,21 @@ import {
   DEFAULT_OPTIONS,
   MAX_SNOWFLAKES as MAX_SNOWFLAKE_COUNT,
 } from './constants';
+import { createInlineWorker } from './worker';
 
-import type { Range, Options } from './types';
+import type { Options, Range } from './types';
+import type {
+  MainToWorkerMessage,
+  WorkerOptions,
+  WorkerToMainMessage,
+} from './worker';
 
 interface RootPositionState {
   initialInlinePosition: string;
   mountedInstances: number;
 }
+
+type WorkerPhase = 'idle' | 'probing' | 'initializing' | 'ready';
 
 const rootPositionStates = new WeakMap<HTMLElement, RootPositionState>();
 
@@ -40,7 +49,8 @@ export class LetItGo {
     assertIsSnowflakeNumber(number);
 
     this.#number = number;
-    this.#createSnowflakes();
+    if (this.#usesMainRenderer()) this.#createSnowflakes();
+    else this.#sendWorkerOptions({ number });
     this.#isDirty = true;
   }
 
@@ -55,9 +65,13 @@ export class LetItGo {
 
     const normalizedRange = normalizeRange(range);
     this.#velocityXRange = normalizedRange;
-    this.#snowflakes.forEach((snowflake) => {
-      snowflake.v.x = getRandom(...normalizedRange);
-    });
+    if (this.#usesMainRenderer()) {
+      this.#snowflakes.forEach((snowflake) => {
+        snowflake.v.x = getRandom(...normalizedRange);
+      });
+    } else {
+      this.#sendWorkerOptions({ velocityXRange: normalizedRange });
+    }
     this.#isDirty = true;
   }
 
@@ -72,9 +86,13 @@ export class LetItGo {
 
     const normalizedRange = normalizeRange(range);
     this.#velocityYRange = normalizedRange;
-    this.#snowflakes.forEach((snowflake) => {
-      snowflake.v.y = getRandom(...normalizedRange);
-    });
+    if (this.#usesMainRenderer()) {
+      this.#snowflakes.forEach((snowflake) => {
+        snowflake.v.y = getRandom(...normalizedRange);
+      });
+    } else {
+      this.#sendWorkerOptions({ velocityYRange: normalizedRange });
+    }
     this.#isDirty = true;
   }
 
@@ -89,9 +107,13 @@ export class LetItGo {
 
     const normalizedRange = normalizeRange(range);
     this.#radiusRange = normalizedRange;
-    this.#snowflakes.forEach((snowflake) => {
-      snowflake.r = getRandom(...normalizedRange);
-    });
+    if (this.#usesMainRenderer()) {
+      this.#snowflakes.forEach((snowflake) => {
+        snowflake.r = getRandom(...normalizedRange);
+      });
+    } else {
+      this.#sendWorkerOptions({ radiusRange: normalizedRange });
+    }
     this.#isDirty = true;
   }
 
@@ -103,6 +125,7 @@ export class LetItGo {
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
     this.#color = color;
+    if (!this.#usesMainRenderer()) this.#sendWorkerOptions({ color });
     this.#isDirty = true;
   }
 
@@ -117,9 +140,13 @@ export class LetItGo {
 
     const normalizedRange = normalizeRange(range);
     this.#alphaRange = normalizedRange;
-    this.#snowflakes.forEach((snowflake) => {
-      snowflake.alpha = getRandom(...normalizedRange);
-    });
+    if (this.#usesMainRenderer()) {
+      this.#snowflakes.forEach((snowflake) => {
+        snowflake.alpha = getRandom(...normalizedRange);
+      });
+    } else {
+      this.#sendWorkerOptions({ alphaRange: normalizedRange });
+    }
     this.#isDirty = true;
   }
 
@@ -131,14 +158,19 @@ export class LetItGo {
 
   set backgroundColor(backgroundColor: CanvasFillStrokeStyles['fillStyle']) {
     this.#backgroundColor = backgroundColor;
+    if (!this.#usesMainRenderer()) this.#sendWorkerOptions({ backgroundColor });
     this.#isDirty = true;
   }
 
   readonly style: Readonly<Partial<CSSStyleDeclaration>>;
 
-  readonly canvas: HTMLCanvasElement;
+  #canvas: HTMLCanvasElement;
 
-  readonly #ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+  get canvas(): HTMLCanvasElement {
+    return this.#canvas;
+  }
+
+  #ctx: CanvasRenderingContext2D | null = null;
 
   #snowflakes: Snowflake[] = [];
 
@@ -150,9 +182,25 @@ export class LetItGo {
 
   #rootPositionState: RootPositionState | null = null;
 
+  #resizeObserver: ResizeObserver | null = null;
+
+  #worker: Worker | null = null;
+
+  #workerURL: string | null = null;
+
+  #workerTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  #workerPhase: WorkerPhase = 'idle';
+
+  #canvasTransferred = false;
+
+  #didWarnAboutFallback = false;
+
   static readonly DEFAULT_OPTIONS = DEFAULT_OPTIONS;
 
   static readonly MAX_SNOWFLAKES = MAX_SNOWFLAKE_COUNT;
+
+  static readonly WORKER_TIMEOUT = 2000;
 
   constructor({
     root = DEFAULT_OPTIONS.root,
@@ -164,15 +212,20 @@ export class LetItGo {
     alphaRange = DEFAULT_OPTIONS.alphaRange,
     backgroundColor = DEFAULT_OPTIONS.backgroundColor,
     style = DEFAULT_OPTIONS.style,
+    renderer = DEFAULT_OPTIONS.renderer,
   }: Readonly<Options> = {}) {
     assertIsRange(velocityXRange);
     assertIsRange(velocityYRange);
     assertIsRadiusRange(radiusRange);
     assertIsAlphaRange(alphaRange);
     assertIsSnowflakeNumber(number);
+    assert(
+      renderer === 'main' || renderer === 'worker',
+      'Renderer must be either "main" or "worker".',
+    );
 
     this.root = root;
-    this.canvas = root.ownerDocument.createElement('canvas');
+    this.#canvas = root.ownerDocument.createElement('canvas');
     this.#number = number;
     this.#velocityXRange = normalizeRange(velocityXRange);
     this.#velocityYRange = normalizeRange(velocityYRange);
@@ -182,26 +235,48 @@ export class LetItGo {
     this.#backgroundColor = backgroundColor;
     this.style = Object.freeze({ ...style });
 
-    // TODO: use OffscreenCanvas when is possible
-    // const ctx = this.canvas.transferControlToOffscreen().getContext('2d');
-    const ctx = this.canvas.getContext('2d');
-    if (!ctx) throw new Error('[let-it-go] The 2d context canvas is not supported.');
-
-    this.#ctx = ctx;
+    if (renderer === 'main') {
+      const context = this.#canvas.getContext('2d');
+      if (!context) throw new Error('[let-it-go] The 2d context canvas is not supported.');
+      this.#ctx = context;
+    }
 
     this.#mountCanvas();
+    this.#isGo = true;
 
-    this.#createSnowflakes();
-    this.#startAnimate();
+    if (renderer === 'worker') this.#startWorkerRenderer();
+    else this.#startMainRenderer();
   }
 
-  #resizeObserver: ResizeObserver | null = null;
+  #usesMainRenderer(): boolean {
+    return this.#ctx !== null;
+  }
+
+  #applyCanvasPresentation(canvas: HTMLCanvasElement): void {
+    setStyleProps(canvas, {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      ...this.style,
+    });
+    canvas.setAttribute('aria-hidden', 'true');
+  }
 
   #resizeCanvas(): void {
+    if (this.#isCleared) return;
+
     const width = this.root.clientWidth;
     const height = this.root.clientHeight;
-    if (this.canvas.width === width && this.canvas.height === height) return;
+    if (this.#canvasTransferred) {
+      if (this.#workerPhase === 'initializing' || this.#workerPhase === 'ready') {
+        this.#postWorker({ type: 'resize', width, height });
+      }
+      return;
+    }
 
+    if (this.canvas.width === width && this.canvas.height === height) return;
     this.canvas.width = width;
     this.canvas.height = height;
     this.#isDirty = true;
@@ -240,15 +315,183 @@ export class LetItGo {
     if (this.#rootPositionState?.mountedInstances === 1) {
       setStyleProps(this.root, { position: 'relative' });
     }
-    setStyleProps(this.canvas, {
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      ...this.style,
-    });
-    this.canvas.setAttribute('aria-hidden', 'true');
-
+    this.#applyCanvasPresentation(this.canvas);
     this.root.appendChild(this.canvas);
+  }
+
+  #snapshotWorkerOptions(): WorkerOptions {
+    return {
+      number: this.#number,
+      velocityXRange: this.#velocityXRange,
+      velocityYRange: this.#velocityYRange,
+      radiusRange: this.#radiusRange,
+      color: this.#color,
+      alphaRange: this.#alphaRange,
+      backgroundColor: this.#backgroundColor,
+    };
+  }
+
+  #startWorkerRenderer(): void {
+    if (typeof this.canvas.transferControlToOffscreen !== 'function') {
+      this.#fallbackToMain('OffscreenCanvas transfer is unavailable.');
+      return;
+    }
+
+    try {
+      const { worker, url } = createInlineWorker();
+      this.#worker = worker;
+      this.#workerURL = url;
+      this.#workerPhase = 'probing';
+      worker.addEventListener('message', this.#handleWorkerMessage);
+      worker.addEventListener('error', this.#handleWorkerError);
+      this.#setWorkerTimeout('Worker capability probe timed out.');
+      this.#postWorker({ type: 'probe' });
+    } catch (error) {
+      this.#fallbackToMain(error);
+    }
+  }
+
+  #handleWorkerMessage = ({ data }: MessageEvent<WorkerToMainMessage>): void => {
+    if (this.#isCleared) return;
+
+    if (data.type === 'probe-result') {
+      if (this.#workerPhase !== 'probing') return;
+      this.#clearWorkerTimeout();
+      this.#revokeWorkerURL();
+      if (!data.supported) {
+        this.#fallbackToMain(data.reason ?? 'Worker renderer is unsupported.');
+        return;
+      }
+      this.#initializeWorkerRenderer();
+      return;
+    }
+
+    if (data.type === 'ready') {
+      if (this.#workerPhase !== 'initializing') return;
+      this.#clearWorkerTimeout();
+      this.#workerPhase = 'ready';
+      return;
+    }
+
+    if (data.type === 'error') {
+      this.#fallbackToMain(`Worker ${data.phase} failed: ${data.message}`);
+    }
+  };
+
+  #handleWorkerError = (event: ErrorEvent): void => {
+    event.preventDefault();
+    this.#fallbackToMain(event.message || 'Worker renderer crashed.');
+  };
+
+  #initializeWorkerRenderer(): void {
+    try {
+      const offscreenCanvas = this.canvas.transferControlToOffscreen();
+      this.#canvasTransferred = true;
+      this.#workerPhase = 'initializing';
+      this.#setWorkerTimeout('Worker renderer initialization timed out.');
+      this.#postWorker({
+        type: 'init',
+        canvas: offscreenCanvas,
+        width: this.root.clientWidth,
+        height: this.root.clientHeight,
+        options: this.#snapshotWorkerOptions(),
+        running: this.#isGo,
+      }, [offscreenCanvas]);
+    } catch (error) {
+      this.#fallbackToMain(error);
+    }
+  }
+
+  #setWorkerTimeout(message: string): void {
+    this.#clearWorkerTimeout();
+    this.#workerTimeout = setTimeout(() => {
+      this.#workerTimeout = null;
+      this.#fallbackToMain(message);
+    }, LetItGo.WORKER_TIMEOUT);
+  }
+
+  #clearWorkerTimeout(): void {
+    if (this.#workerTimeout === null) return;
+    clearTimeout(this.#workerTimeout);
+    this.#workerTimeout = null;
+  }
+
+  #postWorker(message: MainToWorkerMessage, transfer: Transferable[] = []): void {
+    if (!this.#worker || this.#isCleared) return;
+    try {
+      this.#worker.postMessage(message, transfer);
+    } catch (error) {
+      this.#fallbackToMain(error);
+    }
+  }
+
+  #sendWorkerOptions(patch: Partial<WorkerOptions>): void {
+    if (this.#workerPhase !== 'initializing' && this.#workerPhase !== 'ready') return;
+    this.#postWorker({ type: 'options', patch });
+  }
+
+  #revokeWorkerURL(): void {
+    if (!this.#workerURL) return;
+    URL.revokeObjectURL(this.#workerURL);
+    this.#workerURL = null;
+  }
+
+  #disposeWorker(): void {
+    this.#clearWorkerTimeout();
+    this.#revokeWorkerURL();
+    if (this.#worker) {
+      this.#worker.removeEventListener('message', this.#handleWorkerMessage);
+      this.#worker.removeEventListener('error', this.#handleWorkerError);
+      this.#worker.terminate();
+      this.#worker = null;
+    }
+    this.#workerPhase = 'idle';
+  }
+
+  #replaceTransferredCanvas(): void {
+    const previousCanvas = this.#canvas;
+    const replacement = this.root.ownerDocument.createElement('canvas');
+    replacement.width = this.root.clientWidth;
+    replacement.height = this.root.clientHeight;
+    this.#applyCanvasPresentation(replacement);
+    previousCanvas.replaceWith(replacement);
+    this.#canvas = replacement;
+    this.#canvasTransferred = false;
+  }
+
+  #fallbackToMain(reason: unknown): void {
+    this.#disposeWorker();
+    if (this.#isCleared || this.#usesMainRenderer()) return;
+
+    if (!this.#didWarnAboutFallback) {
+      console.warn(
+        '[let-it-go] Worker renderer unavailable; falling back to the main thread.',
+        reason,
+      );
+      this.#didWarnAboutFallback = true;
+    }
+
+    if (this.#canvasTransferred) this.#replaceTransferredCanvas();
+
+    const context = this.canvas.getContext('2d');
+    if (!context) {
+      console.error('[let-it-go] The 2d context canvas is not supported.');
+      return;
+    }
+    this.#ctx = context;
+    this.#startMainRenderer();
+  }
+
+  #startMainRenderer(): void {
+    this.#createSnowflakes();
+    this.#lastUpdate = null;
+    this.#isDirty = true;
+    if (this.#isGo && this.#requestID === null) {
+      this.#requestID = requestAnimationFrame(this.#animate);
+    } else if (!this.#isGo) {
+      this.#draw();
+      this.#isDirty = false;
+    }
   }
 
   #createSnowflakes(): void {
@@ -287,37 +530,37 @@ export class LetItGo {
   };
 
   #draw = (): void => {
+    if (!this.#ctx) return;
+
     const { width, height } = this.canvas;
-    const ctx = this.#ctx;
+    const context = this.#ctx;
 
-    ctx.globalAlpha = 1;
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = this.backgroundColor;
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.fillStyle = this.#color;
+    context.globalAlpha = 1;
+    context.clearRect(0, 0, width, height);
+    context.fillStyle = this.backgroundColor;
+    context.fillRect(0, 0, width, height);
+    context.fillStyle = this.#color;
 
     for (const snowflake of this.#snowflakes) {
-      ctx.globalAlpha = snowflake.alpha;
-      ctx.beginPath();
-      snowflake.draw(ctx);
-      ctx.fill();
+      context.globalAlpha = snowflake.alpha;
+      context.beginPath();
+      snowflake.draw(context);
+      context.fill();
     }
 
-    ctx.globalAlpha = 1;
+    context.globalAlpha = 1;
   };
 
   #animate = (timestamp: number): void => {
-    if (!this.#isGo) return;
+    this.#requestID = null;
+    if (!this.#isGo || this.#isCleared) return;
 
     if (this.#lastUpdate === null) this.#lastUpdate = timestamp;
 
     const elapsed = timestamp - this.#lastUpdate;
     const dueSteps = Math.floor((elapsed * LetItGo.FRAME_RATE) / 1000);
     const steps = Math.min(dueSteps, LetItGo.MAX_CATCH_UP_STEPS);
-    for (let index = 0; index < steps; index += 1) {
-      this.#update();
-    }
+    for (let index = 0; index < steps; index += 1) this.#update();
     if (steps > 0) {
       this.#isDirty = true;
       this.#lastUpdate = timestamp - (elapsed % LetItGo.FRAME_INTERVAL);
@@ -328,8 +571,7 @@ export class LetItGo {
       this.#isDirty = false;
     }
 
-    if (!this.#isGo) return;
-    this.#requestID = requestAnimationFrame(this.#animate);
+    if (this.#isGo) this.#requestID = requestAnimationFrame(this.#animate);
   };
 
   static readonly FRAME_RATE = 30;
@@ -338,18 +580,13 @@ export class LetItGo {
 
   static readonly MAX_CATCH_UP_STEPS = 5;
 
-  #startAnimate(): void {
-    if (this.#isGo || this.#isCleared) return;
-
-    this.#isGo = true;
-    this.#lastUpdate = null;
-    this.#isDirty = true;
-    this.#requestID = requestAnimationFrame(this.#animate);
-  }
-
   letItStop(): void {
+    if (this.#isCleared) return;
     this.#isGo = false;
 
+    if (this.#workerPhase === 'initializing' || this.#workerPhase === 'ready') {
+      this.#postWorker({ type: 'stop' });
+    }
     if (this.#requestID !== null) {
       cancelAnimationFrame(this.#requestID);
       this.#requestID = null;
@@ -357,19 +594,34 @@ export class LetItGo {
   }
 
   letItGoAgain(): void {
-    this.#startAnimate();
+    if (this.#isCleared || this.#isGo) return;
+    this.#isGo = true;
+
+    if (this.#workerPhase === 'initializing' || this.#workerPhase === 'ready') {
+      this.#postWorker({ type: 'start' });
+    } else if (this.#usesMainRenderer() && this.#requestID === null) {
+      this.#lastUpdate = null;
+      this.#isDirty = true;
+      this.#requestID = requestAnimationFrame(this.#animate);
+    }
   }
 
   clear(): void {
+    if (this.#isCleared) return;
     this.#isCleared = true;
-    this.letItStop();
+    this.#isGo = false;
 
+    if (this.#requestID !== null) cancelAnimationFrame(this.#requestID);
+    this.#requestID = null;
+    this.#disposeWorker();
     this.#snowflakes = [];
+
     if (this.#resizeObserver) {
       this.#resizeObserver.disconnect();
       this.#resizeObserver = null;
     }
 
+    if (this.#ctx) this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvas.remove();
 
     if (this.#rootPositionState) {
@@ -383,7 +635,6 @@ export class LetItGo {
       this.#rootPositionState = null;
     }
 
-    this.#ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.#number = 0;
   }
 }
