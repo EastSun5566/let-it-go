@@ -40,15 +40,6 @@ interface InlineWorkerScope {
   cancelAnimationFrame(requestId: number): void;
 }
 
-interface WorkerSnowflake {
-  x: number;
-  y: number;
-  velocityX: number;
-  velocityY: number;
-  radius: number;
-  alpha: number;
-}
-
 // The implementation deliberately avoids syntax that Babel rewrites using outer helpers.
 // Its emitted function source must remain self-contained because it becomes the Blob Worker body.
 export function workerMain(inputScope?: InlineWorkerScope): void {
@@ -56,11 +47,18 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
   const frameRate = 30;
   const frameInterval = 1000 / frameRate;
   const maxCatchUpSteps = 5;
+  const snowflakeStride = 6;
+  const xOffset = 0;
+  const yOffset = 1;
+  const velocityXOffset = 2;
+  const velocityYOffset = 3;
+  const radiusOffset = 4;
+  const alphaOffset = 5;
 
   let canvas: OffscreenCanvas | null = null;
   let context: OffscreenCanvasRenderingContext2D | null = null;
   let options: WorkerOptions | null = null;
-  let snowflakes: WorkerSnowflake[] = [];
+  let snowflakes = new Float32Array(0);
   let width = 0;
   let height = 0;
   let requestId: number | null = null;
@@ -72,44 +70,44 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
     return Math.random() * (range[1] - range[0]) + range[0];
   }
 
-  function createSnowflake(): WorkerSnowflake {
-    if (!options) throw new Error('Worker options are unavailable.');
-
-    const velocityY = randomInRange(options.velocityYRange);
-    let y: number;
-    if (velocityY > 0) y = randomInRange([-height, 0]);
-    else if (velocityY < 0) y = randomInRange([height, height * 2]);
-    else y = randomInRange([0, height]);
-
-    return {
-      x: randomInRange([0, width]),
-      y,
-      velocityX: randomInRange(options.velocityXRange),
-      velocityY,
-      radius: randomInRange(options.radiusRange),
-      alpha: randomInRange(options.alphaRange),
-    };
-  }
-
   function createSnowflakes(): void {
     if (!options) return;
-    snowflakes = Array.from({ length: options.number }, createSnowflake);
+    snowflakes = new Float32Array(options.number * snowflakeStride);
+    for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+      const velocityY = randomInRange(options.velocityYRange);
+      let y: number;
+      if (velocityY > 0) y = randomInRange([-height, 0]);
+      else if (velocityY < 0) y = randomInRange([height, height * 2]);
+      else y = randomInRange([0, height]);
+
+      snowflakes[index + xOffset] = randomInRange([0, width]);
+      snowflakes[index + yOffset] = y;
+      snowflakes[index + velocityXOffset] = randomInRange(options.velocityXRange);
+      snowflakes[index + velocityYOffset] = velocityY;
+      snowflakes[index + radiusOffset] = randomInRange(options.radiusRange);
+      snowflakes[index + alphaOffset] = randomInRange(options.alphaRange);
+    }
   }
 
   function update(): void {
-    snowflakes.forEach((snowflake) => {
-      if (snowflake.velocityY >= 0 && snowflake.y - snowflake.radius > height) {
-        snowflake.y = -snowflake.radius;
+    for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+      const radius = snowflakes[index + radiusOffset] ?? 0;
+      const velocityX = snowflakes[index + velocityXOffset] ?? 0;
+      const velocityY = snowflakes[index + velocityYOffset] ?? 0;
+      let x = snowflakes[index + xOffset] ?? 0;
+      let y = snowflakes[index + yOffset] ?? 0;
+      if (velocityY >= 0 && y - radius > height) {
+        y = -radius;
       }
-      if (snowflake.velocityY < 0 && snowflake.y + snowflake.radius < 0) {
-        snowflake.y = height + snowflake.radius;
+      if (velocityY < 0 && y + radius < 0) {
+        y = height + radius;
       }
-      if (snowflake.x - snowflake.radius > width) snowflake.x = -snowflake.radius;
-      if (snowflake.x + snowflake.radius < 0) snowflake.x = width + snowflake.radius;
+      if (x - radius > width) x = -radius;
+      if (x + radius < 0) x = width + radius;
 
-      snowflake.x += snowflake.velocityX;
-      snowflake.y += snowflake.velocityY;
-    });
+      snowflakes[index + xOffset] = x + velocityX;
+      snowflakes[index + yOffset] = y + velocityY;
+    }
   }
 
   function draw(): void {
@@ -121,13 +119,18 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
     context.fillRect(0, 0, width, height);
     context.fillStyle = options.color;
 
-    snowflakes.forEach((snowflake) => {
-      if (!context) return;
-      context.globalAlpha = snowflake.alpha;
+    for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+      context.globalAlpha = snowflakes[index + alphaOffset] ?? 1;
       context.beginPath();
-      context.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
+      context.arc(
+        snowflakes[index + xOffset] ?? 0,
+        snowflakes[index + yOffset] ?? 0,
+        snowflakes[index + radiusOffset] ?? 0,
+        0,
+        Math.PI * 2,
+      );
       context.fill();
-    });
+    }
 
     context.globalAlpha = 1;
   }
@@ -174,24 +177,24 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
     options = Object.assign({}, options, patch); // eslint-disable-line prefer-object-spread
     if (patch.number !== undefined) createSnowflakes();
     if (patch.velocityXRange) {
-      snowflakes.forEach((snowflake) => {
-        snowflake.velocityX = randomInRange(patch.velocityXRange as Range);
-      });
+      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+        snowflakes[index + velocityXOffset] = randomInRange(patch.velocityXRange);
+      }
     }
     if (patch.velocityYRange) {
-      snowflakes.forEach((snowflake) => {
-        snowflake.velocityY = randomInRange(patch.velocityYRange as Range);
-      });
+      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+        snowflakes[index + velocityYOffset] = randomInRange(patch.velocityYRange);
+      }
     }
     if (patch.radiusRange) {
-      snowflakes.forEach((snowflake) => {
-        snowflake.radius = randomInRange(patch.radiusRange as Range);
-      });
+      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+        snowflakes[index + radiusOffset] = randomInRange(patch.radiusRange);
+      }
     }
     if (patch.alphaRange) {
-      snowflakes.forEach((snowflake) => {
-        snowflake.alpha = randomInRange(patch.alphaRange as Range);
-      });
+      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+        snowflakes[index + alphaOffset] = randomInRange(patch.alphaRange);
+      }
     }
     dirty = true;
   }
