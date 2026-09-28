@@ -1,5 +1,6 @@
 export type Range = readonly [number, number];
 export type Style = Readonly<Partial<CSSStyleDeclaration>>;
+export type RendererMode = 'main' | 'worker';
 
 export interface Options {
   root?: HTMLElement;
@@ -11,4 +12,5 @@ export interface Options {
   alphaRange?: Range;
   backgroundColor?: CanvasFillStrokeStyles['fillStyle'];
   style?: Style;
+  renderer?: RendererMode;
 }

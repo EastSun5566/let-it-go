@@ -27,9 +27,28 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm type-check
-      - run: pnpm test
+      - run: pnpm test -- --run
       - run: pnpm build
+      - run: pnpm check:bundle-size
+      - name: Package import smoke tests
+        run: |
+          node --input-type=module -e "await import('./dist/index.esm.js')"
+          node -e "require('./dist/index.cjs')"
+          npm pack --dry-run
       - run: pnpm -C demo install --frozen-lockfile
       - run: pnpm -C demo lint
       - run: pnpm -C demo type-check
       - run: pnpm -C demo build
+
+  browser:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm test:browser

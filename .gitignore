@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .cache/
+playwright-report/
+test-results/
 benchmark/playwright-report/
 benchmark/test-results/
 benchmark/results/*.trace.json
