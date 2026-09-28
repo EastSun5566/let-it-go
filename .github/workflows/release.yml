@@ -24,11 +24,18 @@ jobs:
           pnpm install --frozen-lockfile
           pnpm lint
           pnpm type-check
-          pnpm test
+          pnpm test -- --run
           pnpm build
-          node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
+          pnpm check:bundle-size
+          node --input-type=module -e "await import('./dist/index.esm.js')"
+          node -e "require('./dist/index.cjs')"
           npm pack --dry-run
+          node scripts/check-release-version.mjs "${GITHUB_REF_NAME}"
           npx --yes jsr@0.14.3 publish --dry-run
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Browser integration tests
+        run: pnpm test:browser
 
   # Keep registry publishes independent so a failed registry can be retried alone.
   publish-npm:
