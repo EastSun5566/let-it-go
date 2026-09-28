@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let It Go Worker Benchmark</title>
+  </head>
+  <body>
+    <main>
+      <section id="canvas-root" aria-label="Snowfall benchmark"></section>
+      <aside id="controls">
+        <strong>Let It Go Worker Benchmark</strong>
+        <output id="status">Starting…</output>
+        <button id="interaction-probe" type="button">Interaction probe</button>
+        <button id="run-suite" type="button">Run 10s sample</button>
+        <button id="download-results" type="button" disabled>Download JSON</button>
+        <pre id="results"></pre>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
