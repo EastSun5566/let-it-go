@@ -235,6 +235,9 @@ describe('Worker renderer lifecycle', () => {
     const init = worker.messages.find(({ message }) => message.type === 'init')?.message;
     expect(init).toMatchObject({
       type: 'init',
+      frameRate: LetItGo.FRAME_RATE,
+      frameInterval: LetItGo.FRAME_INTERVAL,
+      maxCatchUpSteps: LetItGo.MAX_CATCH_UP_STEPS,
       width: 480,
       height: 270,
       options: { number: 4, velocityXRange: [2, 10] },
@@ -248,6 +251,53 @@ describe('Worker renderer lifecycle', () => {
     snow.letItGoAgain();
     expect(worker.messages.at(-1)?.message).toEqual({ type: 'start' });
     snow.clear();
+  });
+
+  describe.each(['color', 'backgroundColor'] as const)('%s with non-string fill styles', (option) => {
+    it.each([
+      ['gradient', { addColorStop: vi.fn() } as CanvasGradient],
+      ['pattern', { setTransform: vi.fn() } as CanvasPattern],
+    ] as const)('uses the original main-thread canvas at construction with a %s', (_name, style) => {
+      const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const root = createRoot();
+      const snow = new LetItGo({ root, number: 0, renderer: 'worker', [option]: style });
+
+      expect(FakeWorker.instances).toHaveLength(0);
+      expect(HTMLCanvasElement.prototype.transferControlToOffscreen).not.toHaveBeenCalled();
+      expect(snow[option]).toBe(style);
+      expect(root.querySelectorAll('canvas')).toHaveLength(1);
+      expect(warning).toHaveBeenCalledOnce();
+      expect(animationFrames.size).toBe(1);
+      snow.clear();
+      expect(root.style.position).toBe('');
+    });
+
+    it.each(['probing', 'initializing', 'ready'] as const)('falls back safely when set during %s', (phase) => {
+      const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const root = createRoot();
+      const snow = new LetItGo({ root, number: 0, renderer: 'worker' });
+      const originalCanvas = snow.canvas;
+      const worker = workerInstance();
+      if (phase !== 'probing') completeProbe(worker);
+      if (phase === 'ready') worker.emitMessage({ type: 'ready' });
+      const style = { addColorStop: vi.fn() } as CanvasGradient;
+
+      snow[option] = style;
+
+      expect(snow[option]).toBe(style);
+      expect(worker.terminated).toBe(true);
+      expect(worker.messages.some(({ message }) => message.type === 'options')).toBe(false);
+      expect(snow.canvas === originalCanvas).toBe(phase === 'probing');
+      expect(root.querySelectorAll('canvas')).toHaveLength(1);
+      expect(warning).toHaveBeenCalledOnce();
+      expect(animationFrames.size).toBe(1);
+      worker.emitMessage({ type: 'ready' });
+      snow[option] = '#abcdef';
+      expect(warning).toHaveBeenCalledOnce();
+      snow.clear();
+      expect(root.style.position).toBe('');
+      expect(animationFrames.size).toBe(0);
+    });
   });
 
   it('sends normalized option changes and resize messages after initialization', () => {

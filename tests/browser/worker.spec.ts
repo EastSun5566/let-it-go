@@ -29,15 +29,35 @@ const fixtureScript = `
       super.terminate();
     }
   };
+  window.createFillStyle = (kind) => {
+    const source = document.createElement('canvas');
+    source.width = 1;
+    source.height = 1;
+    const context = source.getContext('2d');
+    if (kind === 'gradient') {
+      const gradient = context.createLinearGradient(0, 0, 1, 1);
+      gradient.addColorStop(0, '#00ff00');
+      gradient.addColorStop(1, '#00ff00');
+      return gradient;
+    }
+    context.fillStyle = '#00ff00';
+    context.fillRect(0, 0, 1, 1);
+    return context.createPattern(source, 'repeat');
+  };
   window.startSnow = (LetItGo) => {
     const root = document.getElementById('root');
-    window.snow = new LetItGo({
+    const options = {
       root,
       renderer: 'worker',
       number: 8,
       velocityXRange: [0, 0],
       velocityYRange: [1, 1],
-    });
+    };
+    const fillStyle = new URLSearchParams(location.search).get('fillStyle');
+    if (fillStyle) {
+      options[fillStyle === 'gradient' ? 'color' : 'backgroundColor'] = window.createFillStyle(fillStyle);
+    }
+    window.snow = new LetItGo(options);
     window.__fixtureReady = true;
   };
 `;
@@ -144,6 +164,50 @@ for (const format of ['esm', 'umd']) {
   });
 }
 
+for (const fillStyle of ['gradient', 'pattern'] as const) {
+  const option = fillStyle === 'gradient' ? 'color' : 'backgroundColor';
+  test(`${fillStyle} falls back before transfer at construction and safely after transfer through a setter`, async ({ page }) => {
+    const warnings: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'warning') warnings.push(message.text());
+    });
+
+    await page.goto(`${baseURL}/?fillStyle=${fillStyle}`);
+    await page.waitForFunction(() => window.__fixtureReady);
+    expect(await page.evaluate(() => window.__workerCreated)).toBe(0);
+    expect(await page.locator('canvas').count()).toBe(1);
+
+    await page.goto(baseURL);
+    await page.waitForFunction(() => window.__fixtureReady && window.__workerReady);
+    expect(await page.evaluate(({ kind, key }) => {
+      const canvas = window.snow.canvas;
+      const style = window.createFillStyle(kind);
+      window.snow.number = 0;
+      window.snow[key] = style;
+      return {
+        replaced: canvas !== window.snow.canvas,
+        preserved: window.snow[key] === style,
+        terminated: window.__workerTerminated,
+      };
+    }, { kind: fillStyle, key: option } as const)).toEqual({ replaced: true, preserved: true, terminated: 1 });
+
+    await page.evaluate(() => new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    }));
+    expect(await page.evaluate((key) => {
+      const context = window.snow.canvas.getContext('2d');
+      if (!context) throw new Error('Fallback context is missing.');
+      return key === 'color'
+        ? context.fillStyle === window.snow.color
+        : Array.from(context.getImageData(0, 0, 1, 1).data).join(',') === '0,255,0,255';
+    }, option)).toBe(true);
+    expect(await page.locator('canvas').count()).toBe(1);
+    expect(warnings.filter((warning) => warning.includes('falling back to the main thread'))).toHaveLength(2);
+    await page.evaluate(() => window.snow.clear());
+    expect(await page.locator('canvas').count()).toBe(0);
+  });
+}
+
 test('CSP-blocked Blob Workers transparently fall back to the main thread', async ({ page }) => {
   const warnings: string[] = [];
   page.on('console', (message) => {
@@ -170,9 +234,12 @@ declare global {
     __workerCreated: number;
     __workerReady: boolean;
     __workerTerminated: number;
+    createFillStyle(kind: 'gradient' | 'pattern'): CanvasGradient | CanvasPattern;
     snow: {
       canvas: HTMLCanvasElement;
+      number: number;
       color: CanvasFillStrokeStyles['fillStyle'];
+      backgroundColor: CanvasFillStrokeStyles['fillStyle'];
       velocityXRange: readonly [number, number];
       letItStop(): void;
       letItGoAgain(): void;

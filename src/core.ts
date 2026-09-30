@@ -125,7 +125,10 @@ export class LetItGo {
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
     this.#color = color;
-    if (!this.#usesMainRenderer()) this.#sendWorkerOptions({ color });
+    if (!this.#usesMainRenderer()) {
+      if (typeof color === 'string') this.#sendWorkerOptions({ color });
+      else this.#fallbackToMain('CanvasGradient and CanvasPattern require the main-thread renderer.');
+    }
     this.#isDirty = true;
   }
 
@@ -158,7 +161,10 @@ export class LetItGo {
 
   set backgroundColor(backgroundColor: CanvasFillStrokeStyles['fillStyle']) {
     this.#backgroundColor = backgroundColor;
-    if (!this.#usesMainRenderer()) this.#sendWorkerOptions({ backgroundColor });
+    if (!this.#usesMainRenderer()) {
+      if (typeof backgroundColor === 'string') this.#sendWorkerOptions({ backgroundColor });
+      else this.#fallbackToMain('CanvasGradient and CanvasPattern require the main-thread renderer.');
+    }
     this.#isDirty = true;
   }
 
@@ -320,14 +326,19 @@ export class LetItGo {
   }
 
   #snapshotWorkerOptions(): WorkerOptions {
+    const color = this.#color;
+    const backgroundColor = this.#backgroundColor;
+    if (typeof color !== 'string' || typeof backgroundColor !== 'string') {
+      throw new Error('CanvasGradient and CanvasPattern require the main-thread renderer.');
+    }
     return {
       number: this.#number,
       velocityXRange: this.#velocityXRange,
       velocityYRange: this.#velocityYRange,
       radiusRange: this.#radiusRange,
-      color: this.#color,
+      color,
       alphaRange: this.#alphaRange,
-      backgroundColor: this.#backgroundColor,
+      backgroundColor,
     };
   }
 
@@ -338,6 +349,7 @@ export class LetItGo {
     }
 
     try {
+      this.#snapshotWorkerOptions();
       const { worker, url } = createInlineWorker();
       this.#worker = worker;
       this.#workerURL = url;
@@ -385,6 +397,7 @@ export class LetItGo {
 
   #initializeWorkerRenderer(): void {
     try {
+      const options = this.#snapshotWorkerOptions();
       const offscreenCanvas = this.canvas.transferControlToOffscreen();
       this.#canvasTransferred = true;
       this.#workerPhase = 'initializing';
@@ -394,8 +407,11 @@ export class LetItGo {
         canvas: offscreenCanvas,
         width: this.root.clientWidth,
         height: this.root.clientHeight,
-        options: this.#snapshotWorkerOptions(),
+        options,
         running: this.#isGo,
+        frameRate: LetItGo.FRAME_RATE,
+        frameInterval: LetItGo.FRAME_INTERVAL,
+        maxCatchUpSteps: LetItGo.MAX_CATCH_UP_STEPS,
       }, [offscreenCanvas]);
     } catch (error) {
       this.#fallbackToMain(error);

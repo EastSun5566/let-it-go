@@ -7,6 +7,7 @@ import {
   vi,
 } from 'vitest';
 import { workerMain } from '../src/worker';
+import { LetItGo } from '../src';
 
 import type {
   MainToWorkerMessage,
@@ -78,6 +79,12 @@ const defaultOptions: WorkerOptions = {
   color: '#ffffff',
   alphaRange: [0.5, 0.5],
   backgroundColor: 'transparent',
+};
+
+const frameSettings = {
+  frameRate: LetItGo.FRAME_RATE,
+  frameInterval: LetItGo.FRAME_INTERVAL,
+  maxCatchUpSteps: LetItGo.MAX_CATCH_UP_STEPS,
 };
 
 const createContext = () => {
@@ -152,6 +159,7 @@ describe('inline Worker renderer', () => {
 
     scope.dispatch({
       type: 'init',
+      ...frameSettings,
       canvas,
       width: 100,
       height: 100,
@@ -168,6 +176,35 @@ describe('inline Worker renderer', () => {
     expect(context.globalAlpha).toBe(1);
   });
 
+  it('uses the frame rate and catch-up limit supplied by the main renderer', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = {
+      getContext: vi.fn(() => context),
+    } as unknown as OffscreenCanvas;
+    workerMain(scope);
+    scope.dispatch({
+      type: 'init',
+      canvas,
+      width: 100,
+      height: 100,
+      options: defaultOptions,
+      running: true,
+      frameRate: 10,
+      frameInterval: 100,
+      maxCatchUpSteps: 2,
+    });
+
+    scope.runAnimationFrame(0);
+    scope.runAnimationFrame(150);
+    expect(context.arc).toHaveBeenLastCalledWith(51, 50, 1, 0, Math.PI * 2);
+    scope.runAnimationFrame(200);
+    expect(context.arc).toHaveBeenLastCalledWith(52, 50, 1, 0, Math.PI * 2);
+    scope.runAnimationFrame(10_000);
+    expect(context.arc).toHaveBeenLastCalledWith(54, 50, 1, 0, Math.PI * 2);
+  });
+
   it('wraps snowflakes and cancels animation when stopped', () => {
     vi.spyOn(Math, 'random').mockReturnValue(1);
     const scope = new FakeWorkerScope();
@@ -180,6 +217,7 @@ describe('inline Worker renderer', () => {
     workerMain(scope);
     scope.dispatch({
       type: 'init',
+      ...frameSettings,
       canvas,
       width: 100,
       height: 100,
@@ -208,6 +246,7 @@ describe('inline Worker renderer', () => {
     workerMain(scope);
     scope.dispatch({
       type: 'init',
+      ...frameSettings,
       canvas,
       width: 100,
       height: 80,

@@ -5,9 +5,9 @@ export interface WorkerOptions {
   velocityXRange: Range;
   velocityYRange: Range;
   radiusRange: Range;
-  color: CanvasFillStrokeStyles['fillStyle'];
+  color: string;
   alphaRange: Range;
-  backgroundColor: CanvasFillStrokeStyles['fillStyle'];
+  backgroundColor: string;
 }
 
 export type MainToWorkerMessage =
@@ -19,6 +19,9 @@ export type MainToWorkerMessage =
     height: number;
     options: WorkerOptions;
     running: boolean;
+    frameRate: number;
+    frameInterval: number;
+    maxCatchUpSteps: number;
   }
   | { type: 'options'; patch: Partial<WorkerOptions> }
   | { type: 'resize'; width: number; height: number }
@@ -44,9 +47,9 @@ interface InlineWorkerScope {
 // Its emitted function source must remain self-contained because it becomes the Blob Worker body.
 export function workerMain(inputScope?: InlineWorkerScope): void {
   const scope = inputScope || globalThis as unknown as InlineWorkerScope;
-  const frameRate = 30;
-  const frameInterval = 1000 / frameRate;
-  const maxCatchUpSteps = 5;
+  let frameRate = 0;
+  let frameInterval = 0;
+  let maxCatchUpSteps = 0;
   const snowflakeStride = 6;
   const xOffset = 0;
   const yOffset = 1;
@@ -223,6 +226,9 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
           break;
         }
         case 'init':
+          frameRate = data.frameRate;
+          frameInterval = data.frameInterval;
+          maxCatchUpSteps = data.maxCatchUpSteps;
           canvas = data.canvas;
           width = data.width;
           height = data.height;
