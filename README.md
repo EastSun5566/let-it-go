@@ -59,6 +59,8 @@ const snow = new LetItGo({
   backgroundColor: "transparent",
   // construction-only canvas styles; CSSStyleDeclaration values are strings
   style: { zIndex: "-999", pointerEvents: "none" },
+  // opt in to best-effort OffscreenCanvas Worker rendering; defaults to `main`
+  renderer: "worker",
 });
 
 // you can use static prop `DEFAULT_OPTIONS` to get all the default options
@@ -82,8 +84,39 @@ snow.alphaRange = [0.8, 1];
 ```
 
 Range values must be finite two-item tuples. `number` must be a non-negative
-safe integer no greater than 10,000. The `root` and `style` options are
-construction-only.
+safe integer no greater than 10,000. The `root`, `style`, and `renderer`
+options are construction-only.
+
+#### Worker rendering
+
+Worker rendering is opt-in. It keeps snowflake state, the fixed timestep, and
+canvas drawing off the main thread:
+
+```js
+const snow = new LetItGo({ renderer: "worker" });
+```
+
+The option is best-effort: unsupported browsers, blocked Worker creation, or a
+Worker initialization/runtime failure produce one warning and transparently
+fall back to the default main-thread renderer. The public `snow.canvas` remains
+an `HTMLCanvasElement` in both modes. Because support is probed before the
+canvas is transferred, the first Worker-rendered frame is asynchronous.
+
+The Worker uses a Blob URL. A strict Content Security Policy must allow Blob
+workers, for example `worker-src 'self' blob:`. If it does not, the library uses
+the main-thread renderer instead.
+
+Worker rendering supports CSS color strings for `color` and `backgroundColor`.
+`CanvasGradient` and `CanvasPattern` cannot be sent to a Worker. Supplying either
+at construction uses the main-thread renderer without transferring the canvas.
+Assigning either through a setter also falls back to the main thread; if the
+canvas was already transferred, `snow.canvas` is replaced with a new element.
+The supplied gradient or pattern is preserved, and fallback produces one warning.
+
+After a successful transfer, the Worker owns the canvas backing dimensions.
+On later resizes, `snow.canvas.width` and `snow.canvas.height` may retain their
+initial values. Read `snow.canvas.clientWidth` / `clientHeight` or
+`snow.canvas.getBoundingClientRect()` for the current displayed size.
 
 #### Some other methods
 

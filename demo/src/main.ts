@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const snow = new LetItGo({
     root,
+    renderer: 'worker',
   });
 
   setupToggle({ isShowPanel: false });
