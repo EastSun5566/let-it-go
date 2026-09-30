@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/EastSun5566/let-it-go/compare/v2.0.0...v2.1.0) (2026-10-01)
+
+### Features
+
+* add opt-in OffscreenCanvas Worker rendering for snowflake state, animation updates, and drawing ([#103](https://github.com/EastSun5566/let-it-go/pull/103))
+* fall back to main-thread rendering with one warning when Worker support, CSP, initialization, or runtime execution fails
+* preserve gradient and pattern fill styles by using the main-thread renderer; avoid transferring the canvas when these styles are supplied at construction
+
+### Usage
+
+```js
+import { LetItGo } from "let-it-go";
+
+const snow = new LetItGo({ renderer: "worker" });
+```
+
+The default renderer remains `"main"`; no migration is required from 2.0.0.
+Worker startup is asynchronous and requires CSP permission for Blob workers.
+After transfer, use `snow.canvas.clientWidth` / `clientHeight` for displayed size.
+A fallback after transfer replaces `snow.canvas` with a new `HTMLCanvasElement`.
+
 ## [2.0.0](https://github.com/EastSun5566/let-it-go/compare/v1.1.0...v2.0.0) (2026-09-28)
 
 ### Highlights
