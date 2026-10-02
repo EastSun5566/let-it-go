@@ -242,8 +242,15 @@ describe('inline Worker renderer', () => {
     const { context } = createContext();
     const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
     workerMain(scope);
-    scope.dispatch({ type: 'init', ...frameSettings, canvas, width: 100, height: 100,
-      options: { ...defaultOptions, velocityXRange: [0, 0], radiusRange: [radius, radius] }, running: false });
+    scope.dispatch({
+      type: 'init',
+      ...frameSettings,
+      canvas,
+      width: 100,
+      height: 100,
+      options: { ...defaultOptions, velocityXRange: [0, 0], radiusRange: [radius, radius] },
+      running: false,
+    });
     random.mockClear();
     scope.dispatch({ type: 'resize', width: size, height: size });
     expect(scope.callbacks.size).toBe(0);
@@ -269,9 +276,19 @@ describe('inline Worker renderer', () => {
     const { context } = createContext();
     const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
     workerMain(scope);
-    scope.dispatch({ type: 'init', ...frameSettings, canvas, width: 100, height: 100,
-      options: { ...defaultOptions, velocityXRange: [velocity[0], velocity[0]],
-        velocityYRange: [velocity[1], velocity[1]] }, running: false });
+    scope.dispatch({
+      type: 'init',
+      ...frameSettings,
+canvas,
+width: 100,
+height: 100,
+      options: {
+ ...defaultOptions,
+velocityXRange: [velocity[0], velocity[0]],
+        velocityYRange: [velocity[1], velocity[1]] 
+},
+running: false 
+});
     scope.dispatch({ type: 'resize', width: 40, height: 40 });
     scope.dispatch({ type: 'start' });
     scope.runAnimationFrame(0);

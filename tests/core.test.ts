@@ -427,7 +427,9 @@ describe('LetItGo', () => {
     });
     document.body.appendChild(root);
     const random = vi.spyOn(Math, 'random').mockReturnValue(0.8);
-    const snow = new LetItGo({ root, number: 1, velocityXRange: [0, 0], velocityYRange: [0, 0] });
+    const snow = new LetItGo({
+      root, number: 1, velocityXRange: [0, 0], velocityYRange: [0, 0],
+    });
     runAnimationFrame(0);
     snow.letItStop();
     random.mockClear();
@@ -436,13 +438,14 @@ describe('LetItGo', () => {
     size = 40;
     resize?.([], {} as ResizeObserver);
     const flake = constrain.mock.instances[0];
-    expect(flake?.p).toMatchObject({ x: 40, y: 40 });
+    if (!(flake instanceof Snowflake)) throw new Error('Missing resized snowflake.');
+    expect(flake.p).toMatchObject({ x: 40, y: 40 });
     expect(random).not.toHaveBeenCalled();
     expect(update).not.toHaveBeenCalled();
     expect(animationFrames.size).toBe(0);
     size = 100;
     resize?.([], {} as ResizeObserver);
-    expect(flake?.p).toMatchObject({ x: 40, y: 40 });
+    expect(flake.p).toMatchObject({ x: 40, y: 40 });
     snow.clear();
     vi.unstubAllGlobals();
   });

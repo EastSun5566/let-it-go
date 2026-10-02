@@ -43,11 +43,21 @@ describe('Snowflake', () => {
 
   describe('update', () => {
     it.each([
-      { position: [80, 80], size: [40, 40], radius: 1, expected: [40, 40] },
-      { position: [-1, -1], size: [40, 40], radius: 1, expected: [0, 0] },
-      { position: [80, 80], size: [0, 0], radius: 1, expected: [0, 0] },
-      { position: [80, 80], size: [2, 2], radius: 10, expected: [2, 2] },
-    ])('constrains stationary centers safely: %j', ({ position, size, radius, expected }) => {
+      {
+        position: [80, 80], size: [40, 40], radius: 1, expected: [40, 40],
+      },
+      {
+        position: [-1, -1], size: [40, 40], radius: 1, expected: [0, 0],
+      },
+      {
+        position: [80, 80], size: [0, 0], radius: 1, expected: [0, 0],
+      },
+      {
+        position: [80, 80], size: [2, 2], radius: 10, expected: [2, 2],
+      },
+    ])('constrains stationary centers safely: %j', ({
+      position, size, radius, expected,
+    }) => {
       const snowflake = new Snowflake({
         p: new Vec2D(position[0], position[1]),
         v: new Vec2D(0, 0),
@@ -66,8 +76,11 @@ describe('Snowflake', () => {
       { velocity: [1, 0], position: [80, 80], expected: [0, 40] },
       { velocity: [0, -1], position: [80, 80], expected: [40, 79] },
     ])('only constrains stationary axes: %j', ({ velocity, position, expected }) => {
-      const snowflake = new Snowflake({ p: new Vec2D(position[0], position[1]),
-        v: new Vec2D(velocity[0], velocity[1]), r: 1 });
+      const snowflake = new Snowflake({
+ p: new Vec2D(position[0], position[1]),
+        v: new Vec2D(velocity[0], velocity[1]),
+r: 1 
+});
       snowflake.update({ width: 40, height: 40 });
       expect([snowflake.p.x, snowflake.p.y]).toEqual(expected);
     });
