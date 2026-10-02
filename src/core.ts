@@ -46,6 +46,7 @@ export class LetItGo {
   }
 
   set number(number: number) {
+    if (this.#isCleared) return;
     assertIsSnowflakeNumber(number);
 
     this.#number = number;
@@ -61,6 +62,7 @@ export class LetItGo {
   }
 
   set velocityXRange(range: Range) {
+    if (this.#isCleared) return;
     assertIsRange(range);
 
     const normalizedRange = normalizeRange(range);
@@ -82,6 +84,7 @@ export class LetItGo {
   }
 
   set velocityYRange(range: Range) {
+    if (this.#isCleared) return;
     assertIsRange(range);
 
     const normalizedRange = normalizeRange(range);
@@ -103,6 +106,7 @@ export class LetItGo {
   }
 
   set radiusRange(range: Range) {
+    if (this.#isCleared) return;
     assertIsRadiusRange(range);
 
     const normalizedRange = normalizeRange(range);
@@ -124,6 +128,7 @@ export class LetItGo {
   }
 
   set color(color: CanvasFillStrokeStyles['fillStyle']) {
+    if (this.#isCleared) return;
     this.#color = color;
     if (!this.#usesMainRenderer()) {
       if (typeof color === 'string') this.#sendWorkerOptions({ color });
@@ -139,6 +144,7 @@ export class LetItGo {
   }
 
   set alphaRange(range: Range) {
+    if (this.#isCleared) return;
     assertIsAlphaRange(range);
 
     const normalizedRange = normalizeRange(range);
@@ -160,6 +166,7 @@ export class LetItGo {
   }
 
   set backgroundColor(backgroundColor: CanvasFillStrokeStyles['fillStyle']) {
+    if (this.#isCleared) return;
     this.#backgroundColor = backgroundColor;
     if (!this.#usesMainRenderer()) {
       if (typeof backgroundColor === 'string') this.#sendWorkerOptions({ backgroundColor });
