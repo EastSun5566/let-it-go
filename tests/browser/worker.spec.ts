@@ -160,6 +160,13 @@ for (const format of ['esm', 'umd']) {
 
     await page.evaluate(() => window.snow.clear());
     await expect.poll(() => page.evaluate(() => window.__workerTerminated)).toBe(1);
+    expect(await page.evaluate(() => {
+      const color = window.snow.color;
+      window.snow.number = Number.NaN;
+      window.snow.color = window.createFillStyle('gradient');
+      window.snow.letItGoAgain();
+      return { number: window.snow.number, colorUnchanged: window.snow.color === color };
+    })).toEqual({ number: 0, colorUnchanged: true });
     expect(await page.locator('canvas').count()).toBe(0);
   });
 }
