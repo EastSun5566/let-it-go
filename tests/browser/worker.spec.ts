@@ -48,12 +48,15 @@ const fixtureScript = `
     const root = document.getElementById('root');
     const options = {
       root,
-      renderer: 'worker',
+      renderer: new URLSearchParams(location.search).get('renderer') ?? 'worker',
       number: 8,
       velocityXRange: [0, 0],
       velocityYRange: [1, 1],
     };
     const fillStyle = new URLSearchParams(location.search).get('fillStyle');
+    if (new URLSearchParams(location.search).has('stationary')) {
+      Object.assign(options, { number: 1, velocityYRange: [0, 0], radiusRange: [5, 5], alphaRange: [1, 1] });
+    }
     if (fillStyle) {
       options[fillStyle === 'gradient' ? 'color' : 'backgroundColor'] = window.createFillStyle(fillStyle);
     }
@@ -161,6 +164,30 @@ for (const format of ['esm', 'umd']) {
     await page.evaluate(() => window.snow.clear());
     await expect.poll(() => page.evaluate(() => window.__workerTerminated)).toBe(1);
     expect(await page.locator('canvas').count()).toBe(0);
+  });
+}
+
+for (const renderer of ['main', 'worker']) {
+  test(`${renderer} keeps stationary snowflakes visible in a tiny resized canvas`, async ({ page }) => {
+    await page.goto(`${baseURL}/?renderer=${renderer}&stationary`);
+    await page.waitForFunction(() => window.__fixtureReady
+      && (window.__workerReady || window.__workerCreated === 0));
+    await page.evaluate(() => {
+      const root = document.getElementById('root');
+      if (!root) throw new Error('Missing fixture root.');
+      root.style.width = '1px';
+      root.style.height = '1px';
+    });
+    await expect.poll(() => page.evaluate(() => window.snow.canvas.clientWidth)).toBe(1);
+    await expect.poll(() => page.evaluate(() => {
+      const copy = document.createElement('canvas');
+      copy.width = copy.height = 1;
+      const context = copy.getContext('2d');
+      if (!context) throw new Error('Missing copy context.');
+      context.drawImage(window.snow.canvas, 0, 0);
+      return Array.from(context.getImageData(0, 0, 1, 1).data);
+    })).toEqual([255, 255, 255, 255]);
+    await page.evaluate(() => window.snow.clear());
   });
 }
 

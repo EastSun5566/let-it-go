@@ -234,6 +234,51 @@ describe('inline Worker renderer', () => {
     expect(scope.cancelledFrames.at(-1)).toBeDefined();
   });
 
+  it.each([
+    { size: 40, radius: 1 }, { size: 0, radius: 1 }, { size: 2, radius: 10 },
+  ])('constrains stationary Worker flakes on resize/update: %j', ({ size, radius }) => {
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.8);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
+    workerMain(scope);
+    scope.dispatch({ type: 'init', ...frameSettings, canvas, width: 100, height: 100,
+      options: { ...defaultOptions, velocityXRange: [0, 0], radiusRange: [radius, radius] }, running: false });
+    random.mockClear();
+    scope.dispatch({ type: 'resize', width: size, height: size });
+    expect(scope.callbacks.size).toBe(0);
+    scope.dispatch({ type: 'start' });
+    scope.runAnimationFrame(0);
+    scope.runAnimationFrame(100);
+    expect(context.arc).toHaveBeenLastCalledWith(size, size, radius, 0, Math.PI * 2);
+    scope.dispatch({ type: 'stop' });
+    scope.dispatch({ type: 'resize', width: 100, height: 100 });
+    scope.dispatch({ type: 'start' });
+    scope.runAnimationFrame(200);
+    expect(context.arc).toHaveBeenLastCalledWith(size, size, radius, 0, Math.PI * 2);
+    expect(random).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { velocity: [0, 1], expected: [40, -49] },
+    { velocity: [1, 0], expected: [0, 40] },
+    { velocity: [0, -1], expected: [40, 149] },
+  ] as const)('preserves moving Worker axes and staggered starts: %j', ({ velocity, expected }) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
+    workerMain(scope);
+    scope.dispatch({ type: 'init', ...frameSettings, canvas, width: 100, height: 100,
+      options: { ...defaultOptions, velocityXRange: [velocity[0], velocity[0]],
+        velocityYRange: [velocity[1], velocity[1]] }, running: false });
+    scope.dispatch({ type: 'resize', width: 40, height: 40 });
+    scope.dispatch({ type: 'start' });
+    scope.runAnimationFrame(0);
+    scope.runAnimationFrame(34);
+    expect(context.arc).toHaveBeenLastCalledWith(expected[0], expected[1], 1, 0, Math.PI * 2);
+  });
+
   it('updates options and backing dimensions through typed messages', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     const scope = new FakeWorkerScope();

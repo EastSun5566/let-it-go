@@ -413,6 +413,40 @@ describe('LetItGo', () => {
     snow.clear();
   });
 
+  it('constrains stationary axes during paused resize without recreating or updating flakes', () => {
+    let resize: ResizeObserverCallback | undefined;
+    vi.stubGlobal('ResizeObserver', vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+      resize = callback;
+      return { observe: vi.fn(), disconnect: vi.fn() };
+    }));
+    const root = document.createElement('div');
+    let size = 100;
+    Object.defineProperties(root, {
+      clientWidth: { get: () => size },
+      clientHeight: { get: () => size },
+    });
+    document.body.appendChild(root);
+    const random = vi.spyOn(Math, 'random').mockReturnValue(0.8);
+    const snow = new LetItGo({ root, number: 1, velocityXRange: [0, 0], velocityYRange: [0, 0] });
+    runAnimationFrame(0);
+    snow.letItStop();
+    random.mockClear();
+    const constrain = vi.spyOn(Snowflake.prototype, 'constrainStationaryPosition');
+    const update = vi.spyOn(Snowflake.prototype, 'update');
+    size = 40;
+    resize?.([], {} as ResizeObserver);
+    const flake = constrain.mock.instances[0];
+    expect(flake?.p).toMatchObject({ x: 40, y: 40 });
+    expect(random).not.toHaveBeenCalled();
+    expect(update).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    size = 100;
+    resize?.([], {} as ResizeObserver);
+    expect(flake?.p).toMatchObject({ x: 40, y: 40 });
+    snow.clear();
+    vi.unstubAllGlobals();
+  });
+
   it('should catch up multiple animation steps after a delayed frame', () => {
     const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
     const snow = new LetItGo({ number: 1 });

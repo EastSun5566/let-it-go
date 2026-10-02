@@ -92,8 +92,18 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
     }
   }
 
+  function constrainStationaryPosition(index: number): void {
+    if (snowflakes[index + velocityXOffset] === 0) {
+      snowflakes[index + xOffset] = Math.min(Math.max(snowflakes[index + xOffset] ?? 0, 0), width);
+    }
+    if (snowflakes[index + velocityYOffset] === 0) {
+      snowflakes[index + yOffset] = Math.min(Math.max(snowflakes[index + yOffset] ?? 0, 0), height);
+    }
+  }
+
   function update(): void {
     for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+      constrainStationaryPosition(index);
       const radius = snowflakes[index + radiusOffset] ?? 0;
       const velocityX = snowflakes[index + velocityXOffset] ?? 0;
       const velocityY = snowflakes[index + velocityYOffset] ?? 0;
@@ -251,6 +261,9 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
           height = data.height;
           canvas.width = width;
           canvas.height = height;
+          for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
+            constrainStationaryPosition(index);
+          }
           dirty = true;
           break;
         case 'start':
