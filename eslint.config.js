@@ -9,6 +9,16 @@ export default [
   plugins.typescriptEslint,
   ...configs.base.all,
   {
+    files: ['tests/**/*.ts'],
+    rules: {
+      // Test doubles may implement platform methods without instance state.
+      'max-classes-per-file': 'off',
+      'class-methods-use-this': 'off',
+      // Vitest constructor mocks must remain named functions, not arrows.
+      'prefer-arrow-callback': ['error', { allowNamedFunctions: true }],
+    },
+  },
+  {
     rules: {
       // Customizations for this project
       'import-x/extensions': 'off', // TypeScript uses node module resolution without extensions
@@ -28,4 +38,3 @@ export default [
     },
   },
 ];
-
