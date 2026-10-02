@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,11 +10,12 @@ const temporaryRoot = mkdtempSync(join(tmpdir(), 'let-it-go-package-'));
 const compiler = join(projectRoot, 'node_modules/typescript/bin/tsc');
 
 try {
-  const result = JSON.parse(execFileSync('npm', [
-    'pack', '--ignore-scripts', '--json', '--pack-destination', temporaryRoot,
-  ], { cwd: projectRoot, encoding: 'utf8' }));
-  const [pack] = Array.isArray(result) ? result : Object.values(result);
-  const files = pack.files.map(({ path }) => path);
+  execFileSync('npm', ['pack', '--ignore-scripts', '--pack-destination', temporaryRoot],
+    { cwd: projectRoot, stdio: 'inherit' });
+  const { name, version } = JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf8'));
+  const tarball = join(temporaryRoot, `${name.replace('@', '').replace('/', '-')}-${version}.tgz`);
+  const files = execFileSync('tar', ['-tzf', tarball], { encoding: 'utf8' })
+    .trim().split('\n').map((path) => path.replace(/^package\//, ''));
   for (const entry of ['dist/index.d.ts', 'dist/index.d.cts', 'dist/index.esm.js', 'dist/index.cjs', 'dist/index.umd.js']) {
     assert(files.includes(entry), `Missing package entry: ${entry}`);
   }
@@ -22,7 +23,7 @@ try {
 
   const installedPackage = join(temporaryRoot, 'node_modules/let-it-go');
   mkdirSync(installedPackage, { recursive: true });
-  execFileSync('tar', ['-xzf', join(temporaryRoot, pack.filename), '--strip-components=1', '-C', installedPackage]);
+  execFileSync('tar', ['-xzf', tarball, '--strip-components=1', '-C', installedPackage]);
 
   const namedImport = `import { LetItGo, type Options, type Range } from 'let-it-go';
 const range: Range = [0, 1];
