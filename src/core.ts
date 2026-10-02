@@ -286,6 +286,10 @@ export class LetItGo {
     this.canvas.width = width;
     this.canvas.height = height;
     this.#isDirty = true;
+    if (!this.#isGo && this.#rootPositionState !== null && this.#usesMainRenderer()) {
+      this.#draw();
+      this.#isDirty = false;
+    }
   }
 
   #mountCanvas(): void {

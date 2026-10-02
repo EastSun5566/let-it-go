@@ -48,7 +48,7 @@ const fixtureScript = `
     const root = document.getElementById('root');
     const options = {
       root,
-      renderer: 'worker',
+      renderer: new URLSearchParams(location.search).get('renderer') ?? 'worker',
       number: 8,
       velocityXRange: [0, 0],
       velocityYRange: [1, 1],
@@ -160,6 +160,42 @@ for (const format of ['esm', 'umd']) {
 
     await page.evaluate(() => window.snow.clear());
     await expect.poll(() => page.evaluate(() => window.__workerTerminated)).toBe(1);
+    expect(await page.locator('canvas').count()).toBe(0);
+  });
+}
+
+for (const renderer of ['main', 'worker']) {
+  test(`${renderer} keeps its paused bitmap after resize`, async ({ page }) => {
+    await page.goto(`${baseURL}/?renderer=${renderer}`);
+    await page.waitForFunction(() => window.__fixtureReady
+      && (window.__workerReady || window.__workerCreated === 0));
+    await page.evaluate(() => {
+      window.snow.number = 0;
+      window.snow.backgroundColor = '#00ff00';
+    });
+    const pixel = () => page.evaluate(() => {
+      const copy = document.createElement('canvas');
+      copy.width = copy.height = 1;
+      const context = copy.getContext('2d');
+      if (!context) throw new Error('Missing copy context.');
+      context.drawImage(window.snow.canvas, 0, 0);
+      return Array.from(context.getImageData(0, 0, 1, 1).data);
+    });
+    await expect.poll(pixel).toEqual([0, 255, 0, 255]);
+    await page.evaluate(() => {
+      window.snow.letItStop();
+      const root = document.getElementById('root');
+      if (!root) throw new Error('Missing fixture root.');
+      root.style.width = '480px';
+      root.style.height = '240px';
+    });
+    await expect.poll(() => page.evaluate(() => window.snow.canvas.clientWidth)).toBe(480);
+    // Wait until the resize observer/Worker have processed the new layout.
+    await page.evaluate(() => new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    }));
+    await expect.poll(pixel).toEqual([0, 255, 0, 255]);
+    await page.evaluate(() => window.snow.clear());
     expect(await page.locator('canvas').count()).toBe(0);
   });
 }
