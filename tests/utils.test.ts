@@ -15,7 +15,7 @@ describe('Utility Functions', () => {
   describe('assert', () => {
     it('should not throw error when condition is true', () => {
       expect(() => assert(true)).not.toThrow();
-      expect(() => assert(1 === 1)).not.toThrow();
+      expect(() => assert(1)).not.toThrow();
       expect(() => assert('string')).not.toThrow();
     });
 
@@ -145,7 +145,7 @@ describe('Utility Functions', () => {
 
   describe('getRandom', () => {
     it('should return a number within the specified range', () => {
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 100; i += 1) {
         const result = getRandom(0, 10);
         expect(result).toBeGreaterThanOrEqual(0);
         expect(result).toBeLessThanOrEqual(10);
@@ -153,7 +153,7 @@ describe('Utility Functions', () => {
     });
 
     it('should return a number within negative range', () => {
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 100; i += 1) {
         const result = getRandom(-10, -5);
         expect(result).toBeGreaterThanOrEqual(-10);
         expect(result).toBeLessThanOrEqual(-5);
@@ -166,7 +166,7 @@ describe('Utility Functions', () => {
     });
 
     it('should return a number within decimal range', () => {
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 100; i += 1) {
         const result = getRandom(0.5, 1.5);
         expect(result).toBeGreaterThanOrEqual(0.5);
         expect(result).toBeLessThanOrEqual(1.5);
@@ -174,7 +174,7 @@ describe('Utility Functions', () => {
     });
 
     it('should handle very large ranges', () => {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 10; i += 1) {
         const result = getRandom(0, 1000000);
         expect(result).toBeGreaterThanOrEqual(0);
         expect(result).toBeLessThanOrEqual(1000000);
@@ -183,7 +183,7 @@ describe('Utility Functions', () => {
 
     it('should produce different values on multiple calls', () => {
       const results = new Set();
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 20; i += 1) {
         results.add(getRandom(0, 1000));
       }
       // With a large range, we should get many unique values
@@ -194,13 +194,13 @@ describe('Utility Functions', () => {
   describe('setStyleProps', () => {
     it('should set style properties on element', () => {
       const element = document.createElement('div');
-      
+
       setStyleProps(element, {
         position: 'absolute',
         top: '10px',
         left: '20px',
       });
-      
+
       expect(element.style.position).toBe('absolute');
       expect(element.style.top).toBe('10px');
       expect(element.style.left).toBe('20px');
@@ -208,26 +208,26 @@ describe('Utility Functions', () => {
 
     it('should handle empty style object', () => {
       const element = document.createElement('div');
-      
+
       expect(() => setStyleProps(element, {})).not.toThrow();
     });
 
     it('should use default empty object when no style provided', () => {
       const element = document.createElement('div');
-      
+
       expect(() => setStyleProps(element)).not.toThrow();
     });
 
     it('should set multiple style properties', () => {
       const element = document.createElement('div');
-      
+
       setStyleProps(element, {
         width: '100px',
         height: '200px',
         backgroundColor: 'red',
         zIndex: '10',
       });
-      
+
       expect(element.style.width).toBe('100px');
       expect(element.style.height).toBe('200px');
       expect(element.style.backgroundColor).toBe('red');
@@ -236,33 +236,33 @@ describe('Utility Functions', () => {
 
     it('should handle numeric style values', () => {
       const element = document.createElement('div');
-      
+
       setStyleProps(element, {
         opacity: '0.5',
       });
-      
+
       expect(element.style.opacity).toBe('0.5');
     });
 
     it('should clear style property when value is empty or undefined', () => {
       const element = document.createElement('div');
       element.style.color = 'blue';
-      
+
       setStyleProps(element, {
         color: '',
       });
-      
+
       expect(element.style.color).toBe('');
     });
 
     it('should overwrite existing style properties', () => {
       const element = document.createElement('div');
       element.style.position = 'relative';
-      
+
       setStyleProps(element, {
         position: 'absolute',
       });
-      
+
       expect(element.style.position).toBe('absolute');
     });
   });
