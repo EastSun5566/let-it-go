@@ -240,8 +240,15 @@ describe('inline Worker renderer', () => {
     const { context } = createContext();
     const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
     workerMain(scope);
-    scope.dispatch({ type: 'init', ...frameSettings, canvas, width: 100, height: 100,
-      options: defaultOptions, running: started });
+    scope.dispatch({
+      type: 'init',
+      ...frameSettings,
+      canvas,
+      width: 100,
+      height: 100,
+      options: defaultOptions,
+      running: started,
+    });
     if (started) {
       scope.runAnimationFrame(0);
       scope.dispatch({ type: 'stop' });

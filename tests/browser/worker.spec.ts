@@ -175,7 +175,8 @@ for (const renderer of ['main', 'worker']) {
     });
     const pixel = () => page.evaluate(() => {
       const copy = document.createElement('canvas');
-      copy.width = copy.height = 1;
+      copy.width = 1;
+      copy.height = 1;
       const context = copy.getContext('2d');
       if (!context) throw new Error('Missing copy context.');
       context.drawImage(window.snow.canvas, 0, 0);
