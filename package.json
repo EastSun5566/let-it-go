@@ -14,9 +14,14 @@
   "jsdelivr": "dist/index.umd.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.esm.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
       "default": "./dist/index.esm.js"
     },
     "./package.json": "./package.json"
@@ -34,6 +39,7 @@
     "build:js": "rollup -c",
     "build": "rimraf dist && pnpm build:types && pnpm build:js",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "check:package": "node scripts/check-package.mjs",
     "lint": "eslint src",
     "lint:fix": "pnpm lint --fix",
     "prepare": "husky install",
