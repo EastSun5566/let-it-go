@@ -413,6 +413,50 @@ describe('LetItGo', () => {
     snow.clear();
   });
 
+  it('redraws changed dimensions while paused without updating or scheduling frames', () => {
+    let resize: ResizeObserverCallback | undefined;
+    vi.stubGlobal('ResizeObserver', vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+      resize = callback;
+      return { observe: vi.fn(), disconnect: vi.fn() };
+    }));
+    const root = document.createElement('div');
+    let width = 100;
+    Object.defineProperties(root, {
+      clientWidth: { get: () => width },
+      clientHeight: { value: 100 },
+    });
+    document.body.appendChild(root);
+    const snow = new LetItGo({ root, number: 1 });
+    runAnimationFrame(0);
+    snow.letItStop();
+    const previousArc = mockCanvasContext.arc.mock.calls.at(-1);
+    const update = vi.spyOn(Snowflake.prototype, 'update');
+    mockCanvasContext.clearRect.mockClear();
+
+    snow.color = '#ff0000';
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).not.toHaveBeenCalled();
+    width = 40;
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).toHaveBeenCalledOnce();
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(...(previousArc ?? []));
+    expect(mockCanvasContext.fillStyle).toBe('#ff0000');
+    expect(update).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).toHaveBeenCalledOnce();
+
+    snow.letItGoAgain();
+    expect(animationFrames.size).toBe(1);
+    snow.clear();
+    mockCanvasContext.clearRect.mockClear();
+    width = 20;
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    vi.unstubAllGlobals();
+  });
+
   it('should catch up multiple animation steps after a delayed frame', () => {
     const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
     const snow = new LetItGo({ number: 1 });

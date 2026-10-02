@@ -234,6 +234,41 @@ describe('inline Worker renderer', () => {
     expect(scope.cancelledFrames.at(-1)).toBeDefined();
   });
 
+  it.each([false, true])('redraws paused resize without advancing positions (started: %s)', (started) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
+    workerMain(scope);
+    scope.dispatch({
+      type: 'init',
+      ...frameSettings,
+      canvas,
+      width: 100,
+      height: 100,
+      options: defaultOptions,
+      running: started,
+    });
+    if (started) {
+      scope.runAnimationFrame(0);
+      scope.dispatch({ type: 'stop' });
+    }
+    const previousArc = context.arc.mock.calls.at(-1);
+    context.clearRect.mockClear();
+    scope.dispatch({ type: 'options', patch: { color: '#ff0000' } });
+    scope.dispatch({ type: 'resize', width: 100, height: 100 });
+    expect(context.clearRect).not.toHaveBeenCalled();
+    scope.dispatch({ type: 'resize', width: 40, height: 40 });
+    expect(context.clearRect).toHaveBeenCalledOnce();
+    expect(context.arc).toHaveBeenLastCalledWith(...(previousArc ?? []));
+    expect(context.fillStyle).toBe('#ff0000');
+    expect(scope.callbacks.size).toBe(0);
+    scope.dispatch({ type: 'resize', width: 40, height: 40 });
+    expect(context.clearRect).toHaveBeenCalledOnce();
+    scope.dispatch({ type: 'start' });
+    expect(scope.callbacks.size).toBe(1);
+  });
+
   it('updates options and backing dimensions through typed messages', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     const scope = new FakeWorkerScope();
@@ -262,6 +297,6 @@ describe('inline Worker renderer', () => {
     expect(canvas.width).toBe(320);
     expect(canvas.height).toBe(240);
     expect(context.fillStyle).toBe('#123456');
-    expect(context.arc).toHaveBeenCalledTimes(3);
+    expect(context.arc).toHaveBeenCalledTimes(4);
   });
 });
