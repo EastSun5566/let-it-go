@@ -285,6 +285,7 @@ export class LetItGo {
     if (this.canvas.width === width && this.canvas.height === height) return;
     this.canvas.width = width;
     this.canvas.height = height;
+    this.#snowflakes.forEach((snowflake) => snowflake.constrainStationaryPosition(width, height));
     this.#isDirty = true;
   }
 

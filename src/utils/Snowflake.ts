@@ -28,7 +28,13 @@ export class Snowflake {
     this.alpha = alpha;
   }
 
+  constrainStationaryPosition(width: number, height: number): void {
+    if (this.v.x === 0) this.p.x = Math.min(Math.max(this.p.x, 0), width);
+    if (this.v.y === 0) this.p.y = Math.min(Math.max(this.p.y, 0), height);
+  }
+
   update({ width = 0, height = 0 } = {}): void {
+    this.constrainStationaryPosition(width, height);
     const { p, r, v } = this;
 
     if (v.y >= 0 && p.y - r > height) {
