@@ -22,7 +22,7 @@ export function assertIsRange(range: unknown): asserts range is Range {
 
 export function assertIsRadiusRange(range: unknown): asserts range is Range {
   assertIsRange(range);
-  assert(range.every((value) => value >= 0), 'Radius range value must be positive.');
+  assert(range.every((value) => value >= 0), 'Radius range value must be non-negative.');
 }
 
 export function assertIsAlphaRange(range: unknown): asserts range is Range {

@@ -257,6 +257,7 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
           break;
         case 'resize':
           if (!canvas) break;
+          if (width === data.width && height === data.height) break;
           width = data.width;
           height = data.height;
           canvas.width = width;
@@ -265,6 +266,10 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
             constrainStationaryPosition(index);
           }
           dirty = true;
+          if (!running) {
+            draw();
+            dirty = false;
+          }
           break;
         case 'start':
           start();

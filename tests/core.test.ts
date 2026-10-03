@@ -154,6 +154,43 @@ describe('LetItGo', () => {
     expect(animationFrames.size).toBe(0);
   });
 
+  it('ignores every setter after clear, including invalid values, without allocating or drawing', () => {
+    const snow = new LetItGo({ number: 1 });
+    const before = {
+      number: 0,
+      velocityXRange: snow.velocityXRange,
+      velocityYRange: snow.velocityYRange,
+      radiusRange: snow.radiusRange,
+      alphaRange: snow.alphaRange,
+      color: snow.color,
+      backgroundColor: snow.backgroundColor,
+    };
+    snow.clear();
+    const random = vi.spyOn(Math, 'random');
+    mockCanvasContext.clearRect.mockClear();
+    mockCanvasContext.fill.mockClear();
+    for (const invalid of [false, true]) {
+      expect(() => {
+        snow.number = invalid ? Number.NaN : 100;
+        snow.velocityXRange = [invalid ? Number.NaN : 1, 2];
+        snow.velocityYRange = [invalid ? Number.POSITIVE_INFINITY : 1, 2];
+        snow.radiusRange = [invalid ? -1 : 1, 2];
+        snow.alphaRange = [invalid ? 2 : 0, 1];
+        snow.color = '#ff0000';
+        snow.backgroundColor = '#00ff00';
+      }).not.toThrow();
+    }
+    expect(snow).toMatchObject(before);
+    expect(random).not.toHaveBeenCalled();
+    expect(mockCanvasContext.clearRect).not.toHaveBeenCalled();
+    expect(mockCanvasContext.fill).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    snow.clear();
+    snow.letItGoAgain();
+    expect(snow.canvas.isConnected).toBe(false);
+    expect(animationFrames.size).toBe(0);
+  });
+
   it('should update velocity ranges correctly', () => {
     const snow = new LetItGo();
     const newVelocityX: [number, number] = [-2, 2];
@@ -411,6 +448,51 @@ describe('LetItGo', () => {
     expect(snow.canvas.height).toBe(240);
     expect(mockCanvasContext.clearRect).toHaveBeenCalledTimes(2);
     snow.clear();
+  });
+
+  it.each(['', 'relative'])('redraws changed dimensions while paused without updating or scheduling frames (root position: %j)', (position) => {
+    let resize: ResizeObserverCallback | undefined;
+    vi.stubGlobal('ResizeObserver', vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+      resize = callback;
+      return { observe: vi.fn(), disconnect: vi.fn() };
+    }));
+    const root = document.createElement('div');
+    root.style.position = position;
+    let width = 100;
+    Object.defineProperties(root, {
+      clientWidth: { get: () => width },
+      clientHeight: { value: 100 },
+    });
+    document.body.appendChild(root);
+    const snow = new LetItGo({ root, number: 1 });
+    runAnimationFrame(0);
+    snow.letItStop();
+    const previousArc = mockCanvasContext.arc.mock.calls.at(-1);
+    const update = vi.spyOn(Snowflake.prototype, 'update');
+    mockCanvasContext.clearRect.mockClear();
+
+    snow.color = '#ff0000';
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).not.toHaveBeenCalled();
+    width = 40;
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).toHaveBeenCalledOnce();
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(...(previousArc ?? []));
+    expect(mockCanvasContext.fillStyle).toBe('#ff0000');
+    expect(update).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).toHaveBeenCalledOnce();
+
+    snow.letItGoAgain();
+    expect(animationFrames.size).toBe(1);
+    snow.clear();
+    mockCanvasContext.clearRect.mockClear();
+    width = 20;
+    resize?.([], {} as ResizeObserver);
+    expect(mockCanvasContext.clearRect).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    vi.unstubAllGlobals();
   });
 
   it('constrains stationary axes during paused resize without recreating or updating flakes', () => {

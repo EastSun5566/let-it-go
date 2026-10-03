@@ -130,4 +130,7 @@ snow.letItGoAgain();
 // permanently stop animation and remove the mounted `canvas` element
 // create a new instance if you need to mount the effect again
 snow.clear();
+
+// Setters, stop and restart are no-ops after clear(), even for invalid values.
+snow.number = 100; // remains 0; no snowflakes are allocated
 ```

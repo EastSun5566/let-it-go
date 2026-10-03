@@ -1,4 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import {
+  describe, it, expect, vi, beforeEach,
+} from 'vitest';
 import { Snowflake } from '../src/utils/Snowflake';
 import { Vec2D } from '../src/utils/Vector';
 
@@ -14,7 +16,7 @@ beforeEach(() => {
 describe('Snowflake', () => {
   it('should create a snowflake with default values', () => {
     const snowflake = new Snowflake();
-    
+
     expect(snowflake.p).toBeInstanceOf(Vec2D);
     expect(snowflake.p.x).toBe(0);
     expect(snowflake.p.y).toBe(0);
@@ -77,10 +79,10 @@ describe('Snowflake', () => {
       { velocity: [0, -1], position: [80, 80], expected: [40, 79] },
     ])('only constrains stationary axes: %j', ({ velocity, position, expected }) => {
       const snowflake = new Snowflake({
- p: new Vec2D(position[0], position[1]),
+        p: new Vec2D(position[0], position[1]),
         v: new Vec2D(velocity[0], velocity[1]),
-r: 1 
-});
+        r: 1,
+      });
       snowflake.update({ width: 40, height: 40 });
       expect([snowflake.p.x, snowflake.p.y]).toEqual(expected);
     });
@@ -90,9 +92,9 @@ r: 1
         p: new Vec2D(10, 20),
         v: new Vec2D(1, 2),
       });
-      
+
       snowflake.update({ width: 100, height: 100 });
-      
+
       expect(snowflake.p.x).toBe(11);
       expect(snowflake.p.y).toBe(22);
     });
@@ -103,9 +105,9 @@ r: 1
         v: new Vec2D(0, 1),
         r: 5,
       });
-      
+
       snowflake.update({ width: 100, height: 100 });
-      
+
       // Position is reset to -r, then velocity is added
       expect(snowflake.p.y).toBe(-4); // -5 + 1
     });
@@ -140,9 +142,9 @@ r: 1
         v: new Vec2D(1, 0),
         r: 5,
       });
-      
+
       snowflake.update({ width: 100, height: 100 });
-      
+
       // Position is reset to -r, then velocity is added
       expect(snowflake.p.x).toBe(-4); // -5 + 1
     });
@@ -153,9 +155,9 @@ r: 1
         v: new Vec2D(-1, 0),
         r: 5,
       });
-      
+
       snowflake.update({ width: 100, height: 100 });
-      
+
       // Position is reset to width + r, then velocity is added
       expect(snowflake.p.x).toBe(104); // 105 - 1
     });
@@ -166,9 +168,9 @@ r: 1
         v: new Vec2D(1, 2),
         r: 0.5,
       });
-      
+
       snowflake.update();
-      
+
       // When width and height default to 0:
       // p.y - r (20 - 0.5) > 0 -> true, so p.y = 0 - 0.5 = -0.5
       // p.x - r (10 - 0.5) > 0 -> true, so p.x = 0 - 0.5 = -0.5
@@ -183,9 +185,9 @@ r: 1
         v: new Vec2D(1, 1),
         r: 2,
       });
-      
+
       snowflake.update({ width: 100, height: 100 });
-      
+
       expect(snowflake.p.x).toBe(51);
       expect(snowflake.p.y).toBe(51);
     });
