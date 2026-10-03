@@ -247,11 +247,16 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
           break;
         case 'resize':
           if (!canvas) break;
+          if (width === data.width && height === data.height) break;
           width = data.width;
           height = data.height;
           canvas.width = width;
           canvas.height = height;
           dirty = true;
+          if (!running) {
+            draw();
+            dirty = false;
+          }
           break;
         case 'start':
           start();

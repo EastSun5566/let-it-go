@@ -48,7 +48,7 @@ const fixtureScript = `
     const root = document.getElementById('root');
     const options = {
       root,
-      renderer: 'worker',
+      renderer: new URLSearchParams(location.search).get('renderer') ?? 'worker',
       number: 8,
       velocityXRange: [0, 0],
       velocityYRange: [1, 1],
@@ -171,6 +171,40 @@ for (const format of ['esm', 'umd']) {
       window.snow.letItGoAgain();
       return { number: window.snow.number, colorUnchanged: window.snow.color === color };
     })).toEqual({ number: 0, colorUnchanged: true });
+    expect(await page.locator('canvas').count()).toBe(0);
+  });
+}
+
+for (const renderer of ['main', 'worker']) {
+  test(`${renderer} keeps its paused bitmap after resize`, async ({ page }) => {
+    await page.goto(`${fixtureURL()}/?renderer=${renderer}`);
+    await page.waitForFunction(() => window.__fixtureReady
+      && (window.__workerReady || window.__workerCreated === 0));
+    await page.evaluate(() => {
+      window.snow.number = 0;
+      window.snow.backgroundColor = '#00ff00';
+    });
+    const pixel = (x: number, y: number) => page.evaluate(([left, top]) => {
+      const copy = document.createElement('canvas');
+      copy.width = 1;
+      copy.height = 1;
+      const context = copy.getContext('2d');
+      if (!context) throw new Error('Missing copy context.');
+      context.drawImage(window.snow.canvas, -left, -top);
+      return Array.from(context.getImageData(0, 0, 1, 1).data);
+    }, [x, y] as const);
+    await expect.poll(() => pixel(0, 0)).toEqual([0, 255, 0, 255]);
+    await page.evaluate(() => {
+      window.snow.letItStop();
+      const root = document.getElementById('root');
+      if (!root) throw new Error('Missing fixture root.');
+      root.style.width = '480px';
+      root.style.height = '240px';
+    });
+    // (400, 200) lies outside the original 320x180 bitmap, so it only turns
+    // green once the backing bitmap has been resized and redrawn while paused.
+    await expect.poll(() => pixel(400, 200)).toEqual([0, 255, 0, 255]);
+    await page.evaluate(() => window.snow.clear());
     expect(await page.locator('canvas').count()).toBe(0);
   });
 }
