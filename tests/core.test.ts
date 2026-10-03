@@ -154,6 +154,43 @@ describe('LetItGo', () => {
     expect(animationFrames.size).toBe(0);
   });
 
+  it('ignores every setter after clear, including invalid values, without allocating or drawing', () => {
+    const snow = new LetItGo({ number: 1 });
+    const before = {
+      number: 0,
+      velocityXRange: snow.velocityXRange,
+      velocityYRange: snow.velocityYRange,
+      radiusRange: snow.radiusRange,
+      alphaRange: snow.alphaRange,
+      color: snow.color,
+      backgroundColor: snow.backgroundColor,
+    };
+    snow.clear();
+    const random = vi.spyOn(Math, 'random');
+    mockCanvasContext.clearRect.mockClear();
+    mockCanvasContext.fill.mockClear();
+    for (const invalid of [false, true]) {
+      expect(() => {
+        snow.number = invalid ? Number.NaN : 100;
+        snow.velocityXRange = [invalid ? Number.NaN : 1, 2];
+        snow.velocityYRange = [invalid ? Number.POSITIVE_INFINITY : 1, 2];
+        snow.radiusRange = [invalid ? -1 : 1, 2];
+        snow.alphaRange = [invalid ? 2 : 0, 1];
+        snow.color = '#ff0000';
+        snow.backgroundColor = '#00ff00';
+      }).not.toThrow();
+    }
+    expect(snow).toMatchObject(before);
+    expect(random).not.toHaveBeenCalled();
+    expect(mockCanvasContext.clearRect).not.toHaveBeenCalled();
+    expect(mockCanvasContext.fill).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    snow.clear();
+    snow.letItGoAgain();
+    expect(snow.canvas.isConnected).toBe(false);
+    expect(animationFrames.size).toBe(0);
+  });
+
   it('should update velocity ranges correctly', () => {
     const snow = new LetItGo();
     const newVelocityX: [number, number] = [-2, 2];

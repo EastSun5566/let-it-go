@@ -113,9 +113,9 @@ describe('Utility Functions', () => {
     });
 
     it('should throw error when radius values are negative', () => {
-      expect(() => assertIsRadiusRange([-1, 5])).toThrow('Radius range value must be positive.');
-      expect(() => assertIsRadiusRange([1, -5])).toThrow('Radius range value must be positive.');
-      expect(() => assertIsRadiusRange([-1, -5])).toThrow('Radius range value must be positive.');
+      expect(() => assertIsRadiusRange([-1, 5])).toThrow('Radius range value must be non-negative.');
+      expect(() => assertIsRadiusRange([1, -5])).toThrow('Radius range value must be non-negative.');
+      expect(() => assertIsRadiusRange([-1, -5])).toThrow('Radius range value must be non-negative.');
     });
 
     it('should allow zero as radius value', () => {
