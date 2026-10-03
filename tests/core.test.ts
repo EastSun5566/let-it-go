@@ -450,13 +450,14 @@ describe('LetItGo', () => {
     snow.clear();
   });
 
-  it('redraws changed dimensions while paused without updating or scheduling frames', () => {
+  it.each(['', 'relative'])('redraws changed dimensions while paused without updating or scheduling frames (root position: %j)', (position) => {
     let resize: ResizeObserverCallback | undefined;
     vi.stubGlobal('ResizeObserver', vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
       resize = callback;
       return { observe: vi.fn(), disconnect: vi.fn() };
     }));
     const root = document.createElement('div');
+    root.style.position = position;
     let width = 100;
     Object.defineProperties(root, {
       clientWidth: { get: () => width },

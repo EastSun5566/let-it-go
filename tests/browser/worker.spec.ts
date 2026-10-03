@@ -177,23 +177,23 @@ for (const format of ['esm', 'umd']) {
 
 for (const renderer of ['main', 'worker']) {
   test(`${renderer} keeps its paused bitmap after resize`, async ({ page }) => {
-    await page.goto(`${baseURL}/?renderer=${renderer}`);
+    await page.goto(`${fixtureURL()}/?renderer=${renderer}`);
     await page.waitForFunction(() => window.__fixtureReady
       && (window.__workerReady || window.__workerCreated === 0));
     await page.evaluate(() => {
       window.snow.number = 0;
       window.snow.backgroundColor = '#00ff00';
     });
-    const pixel = () => page.evaluate(() => {
+    const pixel = (x: number, y: number) => page.evaluate(([left, top]) => {
       const copy = document.createElement('canvas');
       copy.width = 1;
       copy.height = 1;
       const context = copy.getContext('2d');
       if (!context) throw new Error('Missing copy context.');
-      context.drawImage(window.snow.canvas, 0, 0);
+      context.drawImage(window.snow.canvas, -left, -top);
       return Array.from(context.getImageData(0, 0, 1, 1).data);
-    });
-    await expect.poll(pixel).toEqual([0, 255, 0, 255]);
+    }, [x, y] as const);
+    await expect.poll(() => pixel(0, 0)).toEqual([0, 255, 0, 255]);
     await page.evaluate(() => {
       window.snow.letItStop();
       const root = document.getElementById('root');
@@ -201,12 +201,9 @@ for (const renderer of ['main', 'worker']) {
       root.style.width = '480px';
       root.style.height = '240px';
     });
-    await expect.poll(() => page.evaluate(() => window.snow.canvas.clientWidth)).toBe(480);
-    // Wait until the resize observer/Worker have processed the new layout.
-    await page.evaluate(() => new Promise<void>((resolve) => {
-      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-    }));
-    await expect.poll(pixel).toEqual([0, 255, 0, 255]);
+    // (400, 200) lies outside the original 320x180 bitmap, so it only turns
+    // green once the backing bitmap has been resized and redrawn while paused.
+    await expect.poll(() => pixel(400, 200)).toEqual([0, 255, 0, 255]);
     await page.evaluate(() => window.snow.clear());
     expect(await page.locator('canvas').count()).toBe(0);
   });
