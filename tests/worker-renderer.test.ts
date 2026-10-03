@@ -260,7 +260,9 @@ describe('Worker renderer lifecycle', () => {
     ] as const)('uses the original main-thread canvas at construction with a %s', (_name, style) => {
       const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
       const root = createRoot();
-      const snow = new LetItGo({ root, number: 0, renderer: 'worker', [option]: style });
+      const snow = new LetItGo({
+        root, number: 0, renderer: 'worker', [option]: style,
+      });
 
       expect(FakeWorker.instances).toHaveLength(0);
       expect(HTMLCanvasElement.prototype.transferControlToOffscreen).not.toHaveBeenCalled();
