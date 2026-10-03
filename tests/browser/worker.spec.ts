@@ -84,7 +84,6 @@ const fixtureHtml = (format: string): string => {
     </html>`;
 };
 
-let baseURL = '';
 const server = createServer(async (request, response) => {
   const url = new URL(request.url ?? '/', 'http://localhost');
   const modulePath = modulePaths.get(url.pathname);
@@ -110,10 +109,15 @@ const server = createServer(async (request, response) => {
   response.end('Not found');
 });
 
-test.beforeAll(async () => {
-  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+const fixtureURL = (): string => {
   const address = server.address() as AddressInfo;
-  baseURL = `http://127.0.0.1:${address.port}`;
+  return `http://127.0.0.1:${address.port}`;
+};
+
+test.beforeAll(async () => {
+  await new Promise<void>((resolve) => {
+    server.listen(0, '127.0.0.1', resolve);
+  });
 });
 
 test.afterAll(async () => {
@@ -124,7 +128,7 @@ test.afterAll(async () => {
 
 for (const format of ['esm', 'umd']) {
   test(`${format.toUpperCase()} starts and controls a real Worker renderer`, async ({ page }) => {
-    await page.goto(`${baseURL}/?format=${format}`);
+    await page.goto(`${fixtureURL()}/?format=${format}`);
     await page.waitForFunction(() => window.__fixtureReady && window.__workerReady);
 
     const initial = await page.evaluate(() => ({
@@ -160,6 +164,13 @@ for (const format of ['esm', 'umd']) {
 
     await page.evaluate(() => window.snow.clear());
     await expect.poll(() => page.evaluate(() => window.__workerTerminated)).toBe(1);
+    expect(await page.evaluate(() => {
+      const { color } = window.snow;
+      window.snow.number = Number.NaN;
+      window.snow.color = window.createFillStyle('gradient');
+      window.snow.letItGoAgain();
+      return { number: window.snow.number, colorUnchanged: window.snow.color === color };
+    })).toEqual({ number: 0, colorUnchanged: true });
     expect(await page.locator('canvas').count()).toBe(0);
   });
 }
@@ -172,15 +183,15 @@ for (const fillStyle of ['gradient', 'pattern'] as const) {
       if (message.type() === 'warning') warnings.push(message.text());
     });
 
-    await page.goto(`${baseURL}/?fillStyle=${fillStyle}`);
+    await page.goto(`${fixtureURL()}/?fillStyle=${fillStyle}`);
     await page.waitForFunction(() => window.__fixtureReady);
     expect(await page.evaluate(() => window.__workerCreated)).toBe(0);
     expect(await page.locator('canvas').count()).toBe(1);
 
-    await page.goto(baseURL);
+    await page.goto(fixtureURL());
     await page.waitForFunction(() => window.__fixtureReady && window.__workerReady);
     expect(await page.evaluate(({ kind, key }) => {
-      const canvas = window.snow.canvas;
+      const { canvas } = window.snow;
       const style = window.createFillStyle(kind);
       window.snow.number = 0;
       window.snow[key] = style;
@@ -214,7 +225,7 @@ test('CSP-blocked Blob Workers transparently fall back to the main thread', asyn
     if (message.type() === 'warning') warnings.push(message.text());
   });
 
-  await page.goto(`${baseURL}/?format=esm&csp=blocked`);
+  await page.goto(`${fixtureURL()}/?format=esm&csp=blocked`);
   await page.waitForFunction(() => window.__fixtureReady && window.__workerTerminated === 1);
 
   expect(await page.evaluate(() => ({

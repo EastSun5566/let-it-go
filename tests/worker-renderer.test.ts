@@ -260,7 +260,9 @@ describe('Worker renderer lifecycle', () => {
     ] as const)('uses the original main-thread canvas at construction with a %s', (_name, style) => {
       const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
       const root = createRoot();
-      const snow = new LetItGo({ root, number: 0, renderer: 'worker', [option]: style });
+      const snow = new LetItGo({
+        root, number: 0, renderer: 'worker', [option]: style,
+      });
 
       expect(FakeWorker.instances).toHaveLength(0);
       expect(HTMLCanvasElement.prototype.transferControlToOffscreen).not.toHaveBeenCalled();
@@ -325,6 +327,57 @@ describe('Worker renderer lifecycle', () => {
     expect(snow.canvas.width).toBe(640);
     expect(snow.canvas.style.width).toBe('100%');
     snow.clear();
+  });
+
+  it.each(['probing', 'initializing', 'ready', 'fallback'] as const)('ignores setters and late events after clear during %s', (phase) => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const root = createRoot();
+    const snow = new LetItGo({ root, number: 1, renderer: 'worker' });
+    const worker = workerInstance();
+    if (phase !== 'probing') completeProbe(worker);
+    if (phase === 'ready') worker.emitMessage({ type: 'ready' });
+    if (phase === 'fallback') worker.emitError();
+    const before = {
+      number: 0,
+      velocityXRange: snow.velocityXRange,
+      velocityYRange: snow.velocityYRange,
+      radiusRange: snow.radiusRange,
+      alphaRange: snow.alphaRange,
+      color: snow.color,
+      backgroundColor: snow.backgroundColor,
+    };
+    snow.clear();
+    const messageCount = worker.messages.length;
+    const random = vi.spyOn(Math, 'random');
+    warning.mockClear();
+    context.clearRect.mockClear();
+    context.fill.mockClear();
+    for (const invalid of [false, true]) {
+      expect(() => {
+        snow.number = invalid ? Number.NaN : 100;
+        snow.velocityXRange = [invalid ? Number.NaN : 1, 2];
+        snow.velocityYRange = [invalid ? Number.POSITIVE_INFINITY : 1, 2];
+        snow.radiusRange = [invalid ? -1 : 1, 2];
+        snow.alphaRange = [invalid ? 2 : 0, 1];
+        snow.color = { addColorStop: vi.fn() } as CanvasGradient;
+        snow.backgroundColor = { setTransform: vi.fn() } as CanvasPattern;
+      }).not.toThrow();
+    }
+    snow.clear();
+    snow.letItGoAgain();
+    worker.emitMessage({ type: 'probe-result', supported: true, reason: null });
+    worker.emitMessage({ type: 'ready' });
+    worker.emitError();
+    resizeCallback?.([], {} as ResizeObserver);
+    expect(snow).toMatchObject(before);
+    expect(random).not.toHaveBeenCalled();
+    expect(worker.messages).toHaveLength(messageCount);
+    expect(context.clearRect).not.toHaveBeenCalled();
+    expect(context.fill).not.toHaveBeenCalled();
+    expect(warning).not.toHaveBeenCalled();
+    expect(animationFrames.size).toBe(0);
+    expect(root.querySelectorAll('canvas')).toHaveLength(0);
+    expect(worker.terminated).toBe(true);
   });
 
   it('clear is repeatable and ignores late Worker messages', () => {
