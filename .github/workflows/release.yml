@@ -27,6 +27,7 @@ jobs:
           pnpm test -- --run
           pnpm build
           pnpm check:bundle-size
+          pnpm check:package
           node --input-type=module -e "await import('./dist/index.esm.js')"
           node -e "require('./dist/index.cjs')"
           npm pack --dry-run
