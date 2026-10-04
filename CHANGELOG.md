@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/EastSun5566/let-it-go/compare/v2.1.0...v2.1.1) (2026-10-04)
+
+
+### Bug Fixes
+
+* constrain stationary snowflakes after resizing ([#113](https://github.com/EastSun5566/let-it-go/issues/113)) ([76c0f4d](https://github.com/EastSun5566/let-it-go/commit/76c0f4d95bbf14efef5af434eb62da4da1444726))
+* ignore option assignments after clear ([#112](https://github.com/EastSun5566/let-it-go/issues/112)) ([cfd44f9](https://github.com/EastSun5566/let-it-go/commit/cfd44f9161b4e1dc4628d92d7728d78a90c6eb3c))
+* preserve paused rendering after resize ([#111](https://github.com/EastSun5566/let-it-go/issues/111)) ([50920ae](https://github.com/EastSun5566/let-it-go/commit/50920ae82f133c0dca34d75e0622c9f90f826aff))
+* provide correct CommonJS declarations ([#110](https://github.com/EastSun5566/let-it-go/issues/110)) ([8c7d1af](https://github.com/EastSun5566/let-it-go/commit/8c7d1af09eff05620dc36cbdad017435932a2fb9))
+
 ## [2.1.0](https://github.com/EastSun5566/let-it-go/compare/v2.0.0...v2.1.0) (2026-10-01)
 
 ### Features
