@@ -237,7 +237,8 @@ export class LetItGo {
     this.#color = color;
     this.#alphaRange = normalizeRange(alphaRange);
     this.#backgroundColor = backgroundColor;
-    this.style = Object.freeze({ ...style });
+    // Custom styles extend the defaults, so the canvas keeps `pointerEvents: 'none'` unless overridden.
+    this.style = Object.freeze({ ...DEFAULT_OPTIONS.style, ...style });
 
     if (renderer === 'main') {
       const context = this.#canvas.getContext('2d');

@@ -363,6 +363,23 @@ describe('LetItGo', () => {
     expect(trackedContext.globalAlpha).toBe(1);
   });
 
+  it('should keep default canvas styles when a custom style is given', () => {
+    const snow = new LetItGo({ number: 0, style: { zIndex: '9999' } });
+
+    expect(snow.style).toEqual({ zIndex: '9999', pointerEvents: 'none' });
+    expect(snow.canvas.style.zIndex).toBe('9999');
+    expect(snow.canvas.style.pointerEvents).toBe('none');
+    snow.clear();
+  });
+
+  it('should let a custom style override a default canvas style', () => {
+    const snow = new LetItGo({ number: 0, style: { pointerEvents: 'auto' } });
+
+    expect(snow.canvas.style.pointerEvents).toBe('auto');
+    expect(snow.canvas.style.zIndex).toBe('-1');
+    snow.clear();
+  });
+
   it('should use custom root element', () => {
     const customRoot = document.createElement('div');
     document.body.appendChild(customRoot);
