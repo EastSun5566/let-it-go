@@ -282,9 +282,13 @@ export class LetItGo {
     }
 
     if (this.canvas.width === width && this.canvas.height === height) return;
+    const wasEmpty = this.canvas.width === 0 || this.canvas.height === 0;
     this.canvas.width = width;
     this.canvas.height = height;
-    this.#field.constrain(width, height);
+    // Snowflakes seeded in an empty canvas all start at (0, 0), so spread them out again
+    // once the root has a real size (for example after leaving `display: none`).
+    if (wasEmpty && width > 0 && height > 0 && this.#usesMainRenderer()) this.#createSnowflakes();
+    else this.#field.constrain(width, height);
     this.#isDirty = true;
     if (!this.#isGo && this.canvas.isConnected && this.#usesMainRenderer()) {
       this.#draw();

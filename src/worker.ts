@@ -165,20 +165,24 @@ export function workerMain(
         case 'options':
           setOptions(data.patch);
           break;
-        case 'resize':
-          if (!canvas) break;
+        case 'resize': {
+          if (!canvas || !options) break;
           if (width === data.width && height === data.height) break;
+          const wasEmpty = width === 0 || height === 0;
           width = data.width;
           height = data.height;
           canvas.width = width;
           canvas.height = height;
-          field.constrain(width, height);
+          // Snowflakes seeded in an empty canvas all start at (0, 0), so spread them out again.
+          if (wasEmpty && width > 0 && height > 0) field.allocate(options, width, height);
+          else field.constrain(width, height);
           dirty = true;
           if (!running) {
             draw();
             dirty = false;
           }
           break;
+        }
         case 'start':
           start();
           break;

@@ -568,6 +568,34 @@ describe('LetItGo', () => {
     vi.unstubAllGlobals();
   });
 
+  it('spreads snowflakes out once an empty root gets a size', () => {
+    let resize: ResizeObserverCallback | undefined;
+    vi.stubGlobal('ResizeObserver', vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+      resize = callback;
+      return { observe: vi.fn(), disconnect: vi.fn() };
+    }));
+    const root = document.createElement('div');
+    let size = 0;
+    Object.defineProperties(root, {
+      clientWidth: { get: () => size },
+      clientHeight: { get: () => size },
+    });
+    document.body.appendChild(root);
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockCanvasContext.arc.mockClear();
+    const snow = new LetItGo({ root, ...movingFlakeOptions });
+    runAnimationFrame(0);
+    snow.letItStop();
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(0, 0, 1, 0, Math.PI * 2);
+
+    size = 100;
+    resize?.([], {} as ResizeObserver);
+
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
+    snow.clear();
+    vi.unstubAllGlobals();
+  });
+
   it('should catch up multiple animation steps after a delayed frame', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     mockCanvasContext.arc.mockClear();
