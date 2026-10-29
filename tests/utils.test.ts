@@ -6,7 +6,6 @@ import {
   assertIsRadiusRange,
   assertIsAlphaRange,
   assertIsSnowflakeNumber,
-  getRandom,
   normalizeRange,
   setStyleProps,
 } from '../src/utils';
@@ -140,54 +139,6 @@ describe('Utility Functions', () => {
       expect(() => assertIsAlphaRange([0, 1])).not.toThrow();
       expect(() => assertIsAlphaRange([0, 0])).not.toThrow();
       expect(() => assertIsAlphaRange([1, 1])).not.toThrow();
-    });
-  });
-
-  describe('getRandom', () => {
-    it('should return a number within the specified range', () => {
-      for (let i = 0; i < 100; i += 1) {
-        const result = getRandom(0, 10);
-        expect(result).toBeGreaterThanOrEqual(0);
-        expect(result).toBeLessThanOrEqual(10);
-      }
-    });
-
-    it('should return a number within negative range', () => {
-      for (let i = 0; i < 100; i += 1) {
-        const result = getRandom(-10, -5);
-        expect(result).toBeGreaterThanOrEqual(-10);
-        expect(result).toBeLessThanOrEqual(-5);
-      }
-    });
-
-    it('should return the same number when min equals max', () => {
-      const result = getRandom(5, 5);
-      expect(result).toBe(5);
-    });
-
-    it('should return a number within decimal range', () => {
-      for (let i = 0; i < 100; i += 1) {
-        const result = getRandom(0.5, 1.5);
-        expect(result).toBeGreaterThanOrEqual(0.5);
-        expect(result).toBeLessThanOrEqual(1.5);
-      }
-    });
-
-    it('should handle very large ranges', () => {
-      for (let i = 0; i < 10; i += 1) {
-        const result = getRandom(0, 1000000);
-        expect(result).toBeGreaterThanOrEqual(0);
-        expect(result).toBeLessThanOrEqual(1000000);
-      }
-    });
-
-    it('should produce different values on multiple calls', () => {
-      const results = new Set();
-      for (let i = 0; i < 20; i += 1) {
-        results.add(getRandom(0, 1000));
-      }
-      // With a large range, we should get many unique values
-      expect(results.size).toBeGreaterThan(1);
     });
   });
 

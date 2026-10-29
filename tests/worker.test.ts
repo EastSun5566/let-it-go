@@ -6,6 +6,7 @@ import {
   it,
   vi,
 } from 'vitest';
+import { createSnowflakeField } from '../src/snowflake-field';
 import { workerMain } from '../src/worker';
 import { LetItGo } from '../src';
 
@@ -120,7 +121,7 @@ afterEach(() => {
 describe('inline Worker renderer', () => {
   it('probes Worker RAF and the OffscreenCanvas 2D context', () => {
     const scope = new FakeWorkerScope();
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
 
     scope.dispatch({ type: 'probe' });
 
@@ -139,7 +140,7 @@ describe('inline Worker renderer', () => {
     }
     vi.stubGlobal('OffscreenCanvas', UnsupportedOffscreenCanvas);
     const scope = new FakeWorkerScope();
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
 
     scope.dispatch({ type: 'probe' });
 
@@ -155,7 +156,7 @@ describe('inline Worker renderer', () => {
       height: 0,
       getContext: vi.fn(() => context),
     } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
 
     scope.dispatch({
       type: 'init',
@@ -183,7 +184,7 @@ describe('inline Worker renderer', () => {
     const canvas = {
       getContext: vi.fn(() => context),
     } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
       canvas,
@@ -214,7 +215,7 @@ describe('inline Worker renderer', () => {
       height: 0,
       getContext: vi.fn(() => context),
     } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
       ...frameSettings,
@@ -239,7 +240,7 @@ describe('inline Worker renderer', () => {
     const scope = new FakeWorkerScope();
     const { context } = createContext();
     const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
       ...frameSettings,
@@ -276,7 +277,7 @@ describe('inline Worker renderer', () => {
     const scope = new FakeWorkerScope();
     const { context } = createContext();
     const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
       ...frameSettings,
@@ -310,7 +311,7 @@ describe('inline Worker renderer', () => {
     const scope = new FakeWorkerScope();
     const { context } = createContext();
     const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
       ...frameSettings,
@@ -340,7 +341,7 @@ describe('inline Worker renderer', () => {
       height: 0,
       getContext: vi.fn(() => context),
     } as unknown as OffscreenCanvas;
-    workerMain(scope);
+    workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
       ...frameSettings,

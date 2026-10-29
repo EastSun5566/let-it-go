@@ -2,7 +2,6 @@ import {
   describe, it, expect, vi, beforeEach, afterEach,
 } from 'vitest';
 import { LetItGo, MAX_SNOWFLAKES } from '../src';
-import { Snowflake } from '../src/utils/Snowflake';
 
 // Mock canvas context
 const mockCanvasContext = {
@@ -13,6 +12,26 @@ const mockCanvasContext = {
   fill: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000',
+};
+
+// With Math.random mocked to 0.5 in a 100x100 root, this flake starts at (50, 50)
+// and moves one pixel right per update.
+const movingFlakeOptions = {
+  number: 1,
+  velocityXRange: [1, 1],
+  velocityYRange: [0, 0],
+  radiusRange: [1, 1],
+  alphaRange: [1, 1],
+} as const;
+
+const createSizedRoot = (width: number, height: number): HTMLDivElement => {
+  const root = document.createElement('div');
+  Object.defineProperties(root, {
+    clientWidth: { value: width },
+    clientHeight: { value: height },
+  });
+  document.body.appendChild(root);
+  return root;
 };
 
 let animationFrames: Map<number, FrameRequestCallback>;
@@ -257,17 +276,19 @@ describe('LetItGo', () => {
   });
 
   it('should update snowflakes inside the animation frame', () => {
-    const snow = new LetItGo();
-    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockCanvasContext.arc.mockClear();
+    const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
 
     // First frame initializes the timing baseline.
     runAnimationFrame(0);
-    // Second frame has enough elapsed time to trigger an update.
-    runAnimationFrame(100);
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
+    // Second frame has enough elapsed time for one update.
+    runAnimationFrame(34);
 
     snow.letItStop();
 
-    expect(updateSpy).toHaveBeenCalled();
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(51, 50, 1, 0, Math.PI * 2);
   });
 
   it('should draw snowflakes inside the animation frame', () => {
@@ -468,7 +489,6 @@ describe('LetItGo', () => {
     runAnimationFrame(0);
     snow.letItStop();
     const previousArc = mockCanvasContext.arc.mock.calls.at(-1);
-    const update = vi.spyOn(Snowflake.prototype, 'update');
     mockCanvasContext.clearRect.mockClear();
 
     snow.color = '#ff0000';
@@ -479,7 +499,6 @@ describe('LetItGo', () => {
     expect(mockCanvasContext.clearRect).toHaveBeenCalledOnce();
     expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(...(previousArc ?? []));
     expect(mockCanvasContext.fillStyle).toBe('#ff0000');
-    expect(update).not.toHaveBeenCalled();
     expect(animationFrames.size).toBe(0);
     resize?.([], {} as ResizeObserver);
     expect(mockCanvasContext.clearRect).toHaveBeenCalledOnce();
@@ -514,44 +533,48 @@ describe('LetItGo', () => {
     });
     runAnimationFrame(0);
     snow.letItStop();
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(80, 80, expect.any(Number), 0, Math.PI * 2);
     random.mockClear();
-    const constrain = vi.spyOn(Snowflake.prototype, 'constrainStationaryPosition');
-    const update = vi.spyOn(Snowflake.prototype, 'update');
     size = 40;
     resize?.([], {} as ResizeObserver);
-    const flake = constrain.mock.instances[0];
-    if (!(flake instanceof Snowflake)) throw new Error('Missing resized snowflake.');
-    expect(flake.p).toMatchObject({ x: 40, y: 40 });
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(40, 40, expect.any(Number), 0, Math.PI * 2);
     expect(random).not.toHaveBeenCalled();
-    expect(update).not.toHaveBeenCalled();
     expect(animationFrames.size).toBe(0);
     size = 100;
     resize?.([], {} as ResizeObserver);
-    expect(flake.p).toMatchObject({ x: 40, y: 40 });
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(40, 40, expect.any(Number), 0, Math.PI * 2);
     snow.clear();
     vi.unstubAllGlobals();
   });
 
   it('should catch up multiple animation steps after a delayed frame', () => {
-    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
-    const snow = new LetItGo({ number: 1 });
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockCanvasContext.arc.mockClear();
+    const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
 
     runAnimationFrame(0);
     runAnimationFrame(100);
     snow.letItStop();
 
-    expect(updateSpy).toHaveBeenCalledTimes(3);
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(53, 50, 1, 0, Math.PI * 2);
   });
 
   it('should cap animation catch-up work after a long delay', () => {
-    const updateSpy = vi.spyOn(Snowflake.prototype, 'update');
-    const snow = new LetItGo({ number: 1 });
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockCanvasContext.arc.mockClear();
+    const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
 
     runAnimationFrame(0);
     runAnimationFrame(10_000);
     snow.letItStop();
 
-    expect(updateSpy).toHaveBeenCalledTimes(LetItGo.MAX_CATCH_UP_STEPS);
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(
+      50 + LetItGo.MAX_CATCH_UP_STEPS,
+      50,
+      1,
+      0,
+      Math.PI * 2,
+    );
   });
 
   it('should skip drawing clean frames and redraw after an option changes', () => {
