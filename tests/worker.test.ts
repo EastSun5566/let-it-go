@@ -96,6 +96,7 @@ const createContext = () => {
       fillRectAlphas.push(this.globalAlpha);
     }),
     beginPath: vi.fn(),
+    moveTo: vi.fn(),
     arc: vi.fn(),
     fill: vi.fn(),
     globalAlpha: 1,

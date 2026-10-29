@@ -175,38 +175,91 @@ describe('createSnowflakeField', () => {
     });
   });
 
-  it('draws the background and each snowflake with its own alpha', () => {
-    const alphas: number[] = [];
-    const context = {
-      clearRect: vi.fn(),
-      fillRect: vi.fn(),
-      beginPath: vi.fn(),
-      arc: vi.fn(),
-      fill: vi.fn(function fill(this: { globalAlpha: number }) {
-        alphas.push(this.globalAlpha);
-      }),
-      globalAlpha: 1,
-      fillStyle: '' as CanvasFillStrokeStyles['fillStyle'],
+  describe('draw', () => {
+    // Records each filled path as its alpha plus the circles it contains.
+    const createContext = () => {
+      const fills: { alpha: number; circles: number[][] }[] = [];
+      let circles: number[][] = [];
+      const context = {
+        clearRect: vi.fn(),
+        fillRect: vi.fn(),
+        beginPath: vi.fn(() => {
+          circles = [];
+        }),
+        moveTo: vi.fn(),
+        arc: vi.fn((x: number, y: number, radius: number) => {
+          circles.push([x, y, radius]);
+        }),
+        fill: vi.fn(function fill(this: { globalAlpha: number }) {
+          fills.push({ alpha: this.globalAlpha, circles });
+        }),
+        globalAlpha: 1,
+        fillStyle: '' as CanvasFillStrokeStyles['fillStyle'],
+      };
+      return { context, fills };
     };
-    const field = createSnowflakeField();
-    field.allocate({ ...seed, number: 2 }, 100, 100);
-    field.write(0, {
-      x: 10, y: 20, velocityX: 0, velocityY: 0, radius: 3, alpha: 0.25,
-    });
-    field.write(1, {
-      x: 30, y: 40, velocityX: 0, velocityY: 0, radius: 4, alpha: 0.75,
+
+    const createFieldWithAlphas = (alphas: number[]) => {
+      const field = createSnowflakeField();
+      field.allocate({ ...seed, number: alphas.length }, 100, 100);
+      alphas.forEach((alpha, index) => {
+        field.write(index, {
+          x: index * 10, y: index * 20, velocityX: 0, velocityY: 0, radius: index + 1, alpha,
+        });
+      });
+      return field;
+    };
+
+    const draw = (
+      field: ReturnType<typeof createSnowflakeField>,
+      context: ReturnType<typeof createContext>['context'],
+    ) => field.draw(context as unknown as CanvasRenderingContext2D, 100, 100, '#fff', '#000');
+
+    it('draws the background, then the snowflakes in the snowflake color', () => {
+      const { context } = createContext();
+      draw(createFieldWithAlphas([1]), context);
+
+      expect(context.clearRect).toHaveBeenCalledWith(0, 0, 100, 100);
+      expect(context.fillRect).toHaveBeenCalledWith(0, 0, 100, 100);
+      expect(context.fillStyle).toBe('#fff');
+      expect(context.globalAlpha).toBe(1);
     });
 
-    field.draw(context as unknown as CanvasRenderingContext2D, 100, 100, '#fff', '#000');
+    it('fills snowflakes that share a rounded alpha level with one path', () => {
+      const { context, fills } = createContext();
+      // 0.51 rounds to the same 1/32 level as 0.5.
+      draw(createFieldWithAlphas([0.5, 0.25, 0.51]), context);
 
-    expect(context.clearRect).toHaveBeenCalledWith(0, 0, 100, 100);
-    expect(context.fillRect).toHaveBeenCalledWith(0, 0, 100, 100);
-    expect(context.arc.mock.calls).toEqual([
-      [10, 20, 3, 0, Math.PI * 2],
-      [30, 40, 4, 0, Math.PI * 2],
-    ]);
-    expect(alphas).toEqual([0.25, 0.75]);
-    expect(context.fillStyle).toBe('#fff');
-    expect(context.globalAlpha).toBe(1);
+      expect(fills).toEqual([
+        { alpha: 0.25, circles: [[10, 20, 2]] },
+        { alpha: 0.5, circles: [[0, 0, 1], [20, 40, 3]] },
+      ]);
+    });
+
+    it('starts each circle at its own edge so circles are not joined by lines', () => {
+      const { context } = createContext();
+      draw(createFieldWithAlphas([1, 1]), context);
+
+      expect(context.moveTo.mock.calls).toEqual([[1, 0], [12, 20]]);
+    });
+
+    it('regroups after alpha values change', () => {
+      vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      const field = createFieldWithAlphas([0.25, 0.75]);
+      const first = createContext();
+      draw(field, first.context);
+      expect(first.fills.map(({ alpha }) => alpha)).toEqual([0.25, 0.75]);
+
+      field.randomize('alpha', [1, 1]);
+      const second = createContext();
+      draw(field, second.context);
+      expect(second.fills).toEqual([{ alpha: 1, circles: [[0, 0, 1], [10, 20, 2]] }]);
+
+      field.allocate({ ...seed, number: 3, alphaRange: [0.5, 0.5] }, 100, 100);
+      const third = createContext();
+      draw(field, third.context);
+      expect(third.fills).toHaveLength(1);
+      expect(third.fills[0]?.circles).toHaveLength(3);
+    });
   });
 });
