@@ -8,6 +8,7 @@ const mockCanvasContext = {
   clearRect: vi.fn(),
   fillRect: vi.fn(),
   beginPath: vi.fn(),
+  moveTo: vi.fn(),
   arc: vi.fn(),
   fill: vi.fn(),
   globalAlpha: 1,
@@ -293,16 +294,19 @@ describe('LetItGo', () => {
 
   it('should draw snowflakes inside the animation frame', () => {
     mockCanvasContext.beginPath.mockClear();
+    mockCanvasContext.arc.mockClear();
     mockCanvasContext.fill.mockClear();
 
-    const snow = new LetItGo({ number: 3 });
+    // Same alpha, so all three snowflakes share one path and one fill.
+    const snow = new LetItGo({ number: 3, alphaRange: [1, 1] });
     // Run one frame to exercise the draw loop with the existing RAF mock.
     runAnimationFrame(0);
     snow.letItStop();
 
     expect(mockCanvasContext.fillStyle).toBe(snow.color);
-    expect(mockCanvasContext.beginPath).toHaveBeenCalledTimes(3);
-    expect(mockCanvasContext.fill).toHaveBeenCalledTimes(3);
+    expect(mockCanvasContext.arc).toHaveBeenCalledTimes(3);
+    expect(mockCanvasContext.beginPath).toHaveBeenCalledOnce();
+    expect(mockCanvasContext.fill).toHaveBeenCalledOnce();
   });
 
   it('should reset globalAlpha before drawing the background each frame', () => {

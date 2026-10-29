@@ -14,6 +14,7 @@ const context = {
   clearRect: vi.fn(),
   fillRect: vi.fn(),
   beginPath: vi.fn(),
+  moveTo: vi.fn(),
   arc: vi.fn(),
   fill: vi.fn(),
   globalAlpha: 1,

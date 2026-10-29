@@ -59,7 +59,7 @@ const snow = new LetItGo({
   radiusRange: [0.5, 1],
   // color of snowflake color, defaults to `#ffffff`
   color: "#ffffff",
-  // opacity range of snowflake, defaults to `[0.8, 1]`
+  // opacity range of snowflake, defaults to `[0.8, 1]`; drawn opacity is rounded to 1/32 steps
   alphaRange: [0.8, 1],
   // background color of `canvas` element, defaults to `transparent`
   backgroundColor: "transparent",
