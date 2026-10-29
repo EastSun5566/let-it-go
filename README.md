@@ -19,6 +19,12 @@
 npm i let-it-go
 ```
 
+### Browser support
+
+The published bundles target Chrome / Edge 91+, Firefox 90+, and Safari /
+iOS Safari 15+ (see `browserslist` in `package.json`). They use modern syntax
+such as private class fields, so a bundler must be able to parse ES2022.
+
 ## 🚀 Usage
 
 ### Basic
