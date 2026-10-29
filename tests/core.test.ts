@@ -363,6 +363,23 @@ describe('LetItGo', () => {
     expect(trackedContext.globalAlpha).toBe(1);
   });
 
+  it('should keep default canvas styles when a custom style is given', () => {
+    const snow = new LetItGo({ number: 0, style: { zIndex: '9999' } });
+
+    expect(snow.style).toEqual({ zIndex: '9999', pointerEvents: 'none' });
+    expect(snow.canvas.style.zIndex).toBe('9999');
+    expect(snow.canvas.style.pointerEvents).toBe('none');
+    snow.clear();
+  });
+
+  it('should let a custom style override a default canvas style', () => {
+    const snow = new LetItGo({ number: 0, style: { pointerEvents: 'auto' } });
+
+    expect(snow.canvas.style.pointerEvents).toBe('auto');
+    expect(snow.canvas.style.zIndex).toBe('-1');
+    snow.clear();
+  });
+
   it('should use custom root element', () => {
     const customRoot = document.createElement('div');
     document.body.appendChild(customRoot);
@@ -547,6 +564,34 @@ describe('LetItGo', () => {
     size = 100;
     resize?.([], {} as ResizeObserver);
     expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(40, 40, expect.any(Number), 0, Math.PI * 2);
+    snow.clear();
+    vi.unstubAllGlobals();
+  });
+
+  it('spreads snowflakes out once an empty root gets a size', () => {
+    let resize: ResizeObserverCallback | undefined;
+    vi.stubGlobal('ResizeObserver', vi.fn(function ResizeObserver(callback: ResizeObserverCallback) {
+      resize = callback;
+      return { observe: vi.fn(), disconnect: vi.fn() };
+    }));
+    const root = document.createElement('div');
+    let size = 0;
+    Object.defineProperties(root, {
+      clientWidth: { get: () => size },
+      clientHeight: { get: () => size },
+    });
+    document.body.appendChild(root);
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    mockCanvasContext.arc.mockClear();
+    const snow = new LetItGo({ root, ...movingFlakeOptions });
+    runAnimationFrame(0);
+    snow.letItStop();
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(0, 0, 1, 0, Math.PI * 2);
+
+    size = 100;
+    resize?.([], {} as ResizeObserver);
+
+    expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
     snow.clear();
     vi.unstubAllGlobals();
   });

@@ -63,7 +63,8 @@ const snow = new LetItGo({
   alphaRange: [0.8, 1],
   // background color of `canvas` element, defaults to `transparent`
   backgroundColor: "transparent",
-  // construction-only canvas styles; CSSStyleDeclaration values are strings
+  // construction-only canvas styles, merged over the default `{ zIndex: "-1", pointerEvents: "none" }`;
+  // CSSStyleDeclaration values are strings
   style: { zIndex: "-999", pointerEvents: "none" },
   // opt in to best-effort OffscreenCanvas Worker rendering; defaults to `main`
   renderer: "worker",

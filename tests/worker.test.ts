@@ -299,8 +299,37 @@ describe('inline Worker renderer', () => {
     scope.dispatch({ type: 'resize', width: 100, height: 100 });
     scope.dispatch({ type: 'start' });
     scope.runAnimationFrame(200);
-    expect(context.arc).toHaveBeenLastCalledWith(size, size, radius, 0, Math.PI * 2);
-    expect(random).not.toHaveBeenCalled();
+    if (size === 0) {
+      // Growing from an empty canvas spreads the snowflakes out again (#119).
+      expect(context.arc).toHaveBeenLastCalledWith(80, 80, radius, 0, Math.PI * 2);
+      expect(random).toHaveBeenCalled();
+    } else {
+      expect(context.arc).toHaveBeenLastCalledWith(size, size, radius, 0, Math.PI * 2);
+      expect(random).not.toHaveBeenCalled();
+    }
+  });
+
+  it.each([
+    { width: 0, height: 0 }, { width: 100, height: 0 }, { width: 0, height: 100 },
+  ])('spreads snowflakes out once an empty canvas gets a size: %j', ({ width, height }) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
+    workerMain(createSnowflakeField, scope);
+    scope.dispatch({
+      type: 'init',
+      ...frameSettings,
+      canvas,
+      width,
+      height,
+      options: defaultOptions,
+      running: false,
+    });
+
+    scope.dispatch({ type: 'resize', width: 100, height: 100 });
+
+    expect(context.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
   });
 
   it.each([
