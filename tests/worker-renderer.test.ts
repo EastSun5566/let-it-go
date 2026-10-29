@@ -140,6 +140,7 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   delete (HTMLCanvasElement.prototype as Partial<HTMLCanvasElement>).transferControlToOffscreen;
+  delete (window as Partial<Window>).matchMedia;
   document.body.innerHTML = '';
 });
 
@@ -436,6 +437,5 @@ describe('Worker renderer lifecycle', () => {
     expect(worker.messages.at(-1)?.message).toEqual({ type: 'stop' });
 
     snow.clear();
-    delete (window as Partial<Window>).matchMedia;
   });
 });
