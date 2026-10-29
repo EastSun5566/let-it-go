@@ -1,9 +1,6 @@
 import type { Range, Style } from '../types';
 import { MAX_SNOWFLAKES } from '../constants';
 
-export * from './Vector';
-export * from './Snowflake';
-
 export function assert<TCond = unknown>(condition: TCond, message = 'internal error.'): asserts condition {
   if (!condition) throw Error(`[let-it-go] ${message}`);
 }
@@ -43,13 +40,6 @@ export function assertIsSnowflakeNumber(number: unknown): asserts number is numb
 export function normalizeRange(range: Range): Range {
   const [first, second] = range;
   return Object.freeze(first <= second ? [first, second] : [second, first]) as Range;
-}
-
-export function getRandom(
-  min: number,
-  max: number,
-): number {
-  return Math.random() * (max - min) + min;
 }
 
 export function setStyleProps(

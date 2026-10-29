@@ -1,12 +1,9 @@
 import {
-  Vec2D,
-  Snowflake,
   assert,
   assertIsAlphaRange,
   assertIsRadiusRange,
   assertIsRange,
   assertIsSnowflakeNumber,
-  getRandom,
   normalizeRange,
   setStyleProps,
 } from './utils';
@@ -14,8 +11,10 @@ import {
   DEFAULT_OPTIONS,
   MAX_SNOWFLAKES as MAX_SNOWFLAKE_COUNT,
 } from './constants';
+import { createSnowflakeField } from './snowflake-field';
 import { createInlineWorker } from './worker';
 
+import type { SnowflakeField } from './snowflake-field';
 import type { Options, Range } from './types';
 import type {
   MainToWorkerMessage,
@@ -68,9 +67,7 @@ export class LetItGo {
     const normalizedRange = normalizeRange(range);
     this.#velocityXRange = normalizedRange;
     if (this.#usesMainRenderer()) {
-      this.#snowflakes.forEach((snowflake) => {
-        snowflake.v.x = getRandom(...normalizedRange);
-      });
+      this.#field.randomize('velocityX', normalizedRange);
     } else {
       this.#sendWorkerOptions({ velocityXRange: normalizedRange });
     }
@@ -90,9 +87,7 @@ export class LetItGo {
     const normalizedRange = normalizeRange(range);
     this.#velocityYRange = normalizedRange;
     if (this.#usesMainRenderer()) {
-      this.#snowflakes.forEach((snowflake) => {
-        snowflake.v.y = getRandom(...normalizedRange);
-      });
+      this.#field.randomize('velocityY', normalizedRange);
     } else {
       this.#sendWorkerOptions({ velocityYRange: normalizedRange });
     }
@@ -112,9 +107,7 @@ export class LetItGo {
     const normalizedRange = normalizeRange(range);
     this.#radiusRange = normalizedRange;
     if (this.#usesMainRenderer()) {
-      this.#snowflakes.forEach((snowflake) => {
-        snowflake.r = getRandom(...normalizedRange);
-      });
+      this.#field.randomize('radius', normalizedRange);
     } else {
       this.#sendWorkerOptions({ radiusRange: normalizedRange });
     }
@@ -150,9 +143,7 @@ export class LetItGo {
     const normalizedRange = normalizeRange(range);
     this.#alphaRange = normalizedRange;
     if (this.#usesMainRenderer()) {
-      this.#snowflakes.forEach((snowflake) => {
-        snowflake.alpha = getRandom(...normalizedRange);
-      });
+      this.#field.randomize('alpha', normalizedRange);
     } else {
       this.#sendWorkerOptions({ alphaRange: normalizedRange });
     }
@@ -185,7 +176,7 @@ export class LetItGo {
 
   #ctx: CanvasRenderingContext2D | null = null;
 
-  #snowflakes: Snowflake[] = [];
+  #field: SnowflakeField = createSnowflakeField();
 
   #lastUpdate: number | null = null;
 
@@ -292,7 +283,7 @@ export class LetItGo {
     if (this.canvas.width === width && this.canvas.height === height) return;
     this.canvas.width = width;
     this.canvas.height = height;
-    this.#snowflakes.forEach((snowflake) => snowflake.constrainStationaryPosition(width, height));
+    this.#field.constrain(width, height);
     this.#isDirty = true;
     if (!this.#isGo && this.canvas.isConnected && this.#usesMainRenderer()) {
       this.#draw();
@@ -523,60 +514,24 @@ export class LetItGo {
   }
 
   #createSnowflakes(): void {
-    const { canvas } = this;
-
-    this.#snowflakes = Array.from(
-      { length: this.#number },
-      () => {
-        const velocity = new Vec2D(
-          getRandom(...this.#velocityXRange),
-          getRandom(...this.#velocityYRange),
-        );
-        let verticalStart: number;
-        if (velocity.y > 0) {
-          verticalStart = getRandom(-canvas.height, 0);
-        } else if (velocity.y < 0) {
-          verticalStart = getRandom(canvas.height, canvas.height * 2);
-        } else {
-          verticalStart = getRandom(0, canvas.height);
-        }
-
-        return new Snowflake({
-          p: new Vec2D(getRandom(0, canvas.width), verticalStart),
-          v: velocity,
-          r: getRandom(...this.#radiusRange),
-          alpha: getRandom(...this.#alphaRange),
-        });
-      },
-    );
+    this.#field.allocate({
+      number: this.#number,
+      velocityXRange: this.#velocityXRange,
+      velocityYRange: this.#velocityYRange,
+      radiusRange: this.#radiusRange,
+      alphaRange: this.#alphaRange,
+    }, this.canvas.width, this.canvas.height);
   }
 
   #update = (): void => {
-    this.#snowflakes.forEach(
-      (snowflake) => snowflake.update(this.canvas),
-    );
+    this.#field.update(this.canvas.width, this.canvas.height);
   };
 
   #draw = (): void => {
     if (!this.#ctx) return;
 
     const { width, height } = this.canvas;
-    const context = this.#ctx;
-
-    context.globalAlpha = 1;
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = this.backgroundColor;
-    context.fillRect(0, 0, width, height);
-    context.fillStyle = this.#color;
-
-    for (const snowflake of this.#snowflakes) {
-      context.globalAlpha = snowflake.alpha;
-      context.beginPath();
-      snowflake.draw(context);
-      context.fill();
-    }
-
-    context.globalAlpha = 1;
+    this.#field.draw(this.#ctx, width, height, this.#color, this.#backgroundColor);
   };
 
   #animate = (timestamp: number): void => {
@@ -642,7 +597,7 @@ export class LetItGo {
     if (this.#requestID !== null) cancelAnimationFrame(this.#requestID);
     this.#requestID = null;
     this.#disposeWorker();
-    this.#snowflakes = [];
+    this.#field = createSnowflakeField();
 
     if (this.#resizeObserver) {
       this.#resizeObserver.disconnect();

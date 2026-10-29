@@ -1,4 +1,7 @@
+import { createSnowflakeField } from './snowflake-field';
+
 import type { Range } from './types';
+import type { SnowflakeFieldFactory } from './snowflake-field';
 
 export interface WorkerOptions {
   number: number;
@@ -45,23 +48,20 @@ interface InlineWorkerScope {
 
 // The implementation deliberately avoids syntax that Babel rewrites using outer helpers.
 // Its emitted function source must remain self-contained because it becomes the Blob Worker body.
-export function workerMain(inputScope?: InlineWorkerScope): void {
+// The snowflake field factory is passed in as a parameter for the same reason.
+export function workerMain(
+  createField: SnowflakeFieldFactory,
+  inputScope?: InlineWorkerScope,
+): void {
   const scope = inputScope || globalThis as unknown as InlineWorkerScope;
   let frameRate = 0;
   let frameInterval = 0;
   let maxCatchUpSteps = 0;
-  const snowflakeStride = 6;
-  const xOffset = 0;
-  const yOffset = 1;
-  const velocityXOffset = 2;
-  const velocityYOffset = 3;
-  const radiusOffset = 4;
-  const alphaOffset = 5;
 
+  const field = createField();
   let canvas: OffscreenCanvas | null = null;
   let context: OffscreenCanvasRenderingContext2D | null = null;
   let options: WorkerOptions | null = null;
-  let snowflakes = new Float32Array(0);
   let width = 0;
   let height = 0;
   let requestId: number | null = null;
@@ -69,83 +69,9 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
   let running = false;
   let dirty = true;
 
-  function randomInRange(range: Range): number {
-    return Math.random() * (range[1] - range[0]) + range[0];
-  }
-
-  function createSnowflakes(): void {
-    if (!options) return;
-    snowflakes = new Float32Array(options.number * snowflakeStride);
-    for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-      const velocityY = randomInRange(options.velocityYRange);
-      let y: number;
-      if (velocityY > 0) y = randomInRange([-height, 0]);
-      else if (velocityY < 0) y = randomInRange([height, height * 2]);
-      else y = randomInRange([0, height]);
-
-      snowflakes[index + xOffset] = randomInRange([0, width]);
-      snowflakes[index + yOffset] = y;
-      snowflakes[index + velocityXOffset] = randomInRange(options.velocityXRange);
-      snowflakes[index + velocityYOffset] = velocityY;
-      snowflakes[index + radiusOffset] = randomInRange(options.radiusRange);
-      snowflakes[index + alphaOffset] = randomInRange(options.alphaRange);
-    }
-  }
-
-  function constrainStationaryPosition(index: number): void {
-    if (snowflakes[index + velocityXOffset] === 0) {
-      snowflakes[index + xOffset] = Math.min(Math.max(snowflakes[index + xOffset] ?? 0, 0), width);
-    }
-    if (snowflakes[index + velocityYOffset] === 0) {
-      snowflakes[index + yOffset] = Math.min(Math.max(snowflakes[index + yOffset] ?? 0, 0), height);
-    }
-  }
-
-  function update(): void {
-    for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-      constrainStationaryPosition(index);
-      const radius = snowflakes[index + radiusOffset] ?? 0;
-      const velocityX = snowflakes[index + velocityXOffset] ?? 0;
-      const velocityY = snowflakes[index + velocityYOffset] ?? 0;
-      let x = snowflakes[index + xOffset] ?? 0;
-      let y = snowflakes[index + yOffset] ?? 0;
-      if (velocityY >= 0 && y - radius > height) {
-        y = -radius;
-      }
-      if (velocityY < 0 && y + radius < 0) {
-        y = height + radius;
-      }
-      if (x - radius > width) x = -radius;
-      if (x + radius < 0) x = width + radius;
-
-      snowflakes[index + xOffset] = x + velocityX;
-      snowflakes[index + yOffset] = y + velocityY;
-    }
-  }
-
   function draw(): void {
     if (!context || !options) return;
-
-    context.globalAlpha = 1;
-    context.clearRect(0, 0, width, height);
-    context.fillStyle = options.backgroundColor;
-    context.fillRect(0, 0, width, height);
-    context.fillStyle = options.color;
-
-    for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-      context.globalAlpha = snowflakes[index + alphaOffset] ?? 1;
-      context.beginPath();
-      context.arc(
-        snowflakes[index + xOffset] ?? 0,
-        snowflakes[index + yOffset] ?? 0,
-        snowflakes[index + radiusOffset] ?? 0,
-        0,
-        Math.PI * 2,
-      );
-      context.fill();
-    }
-
-    context.globalAlpha = 1;
+    field.draw(context, width, height, options.color, options.backgroundColor);
   }
 
   function animate(timestamp: number): void {
@@ -156,7 +82,7 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
     const elapsed = timestamp - lastUpdate;
     const dueSteps = Math.floor((elapsed * frameRate) / 1000);
     const steps = Math.min(dueSteps, maxCatchUpSteps);
-    for (let index = 0; index < steps; index += 1) update();
+    for (let index = 0; index < steps; index += 1) field.update(width, height);
     if (steps > 0) {
       dirty = true;
       lastUpdate = timestamp - (elapsed % frameInterval);
@@ -188,27 +114,11 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
     if (!options) return;
     // Object spread would make the serialized function depend on a Babel helper outside the Worker body.
     options = Object.assign({}, options, patch); // eslint-disable-line prefer-object-spread
-    if (patch.number !== undefined) createSnowflakes();
-    if (patch.velocityXRange) {
-      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-        snowflakes[index + velocityXOffset] = randomInRange(patch.velocityXRange);
-      }
-    }
-    if (patch.velocityYRange) {
-      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-        snowflakes[index + velocityYOffset] = randomInRange(patch.velocityYRange);
-      }
-    }
-    if (patch.radiusRange) {
-      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-        snowflakes[index + radiusOffset] = randomInRange(patch.radiusRange);
-      }
-    }
-    if (patch.alphaRange) {
-      for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-        snowflakes[index + alphaOffset] = randomInRange(patch.alphaRange);
-      }
-    }
+    if (patch.number !== undefined) field.allocate(options, width, height);
+    if (patch.velocityXRange) field.randomize('velocityX', patch.velocityXRange);
+    if (patch.velocityYRange) field.randomize('velocityY', patch.velocityYRange);
+    if (patch.radiusRange) field.randomize('radius', patch.radiusRange);
+    if (patch.alphaRange) field.randomize('alpha', patch.alphaRange);
     dirty = true;
   }
 
@@ -247,7 +157,7 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
           context = canvas.getContext('2d');
           if (!context) throw new Error('Worker 2D context is unavailable.');
           options = data.options;
-          createSnowflakes();
+          field.allocate(options, width, height);
           if (data.running) start();
           else draw();
           scope.postMessage({ type: 'ready' });
@@ -262,9 +172,7 @@ export function workerMain(inputScope?: InlineWorkerScope): void {
           height = data.height;
           canvas.width = width;
           canvas.height = height;
-          for (let index = 0; index < snowflakes.length; index += snowflakeStride) {
-            constrainStationaryPosition(index);
-          }
+          field.constrain(width, height);
           dirty = true;
           if (!running) {
             draw();
@@ -305,7 +213,8 @@ export function createInlineWorker(): InlineWorker {
     || typeof URL.createObjectURL !== 'function'
   ) throw new Error('Inline Web Workers are unavailable.');
 
-  const blob = new Blob([`(${workerMain.toString()})()`], { type: 'text/javascript' });
+  const source = `(${workerMain.toString()})(${createSnowflakeField.toString()})`;
+  const blob = new Blob([source], { type: 'text/javascript' });
   const url = URL.createObjectURL(blob);
   try {
     return { worker: new Worker(url), url };
