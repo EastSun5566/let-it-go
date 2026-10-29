@@ -411,4 +411,31 @@ describe('Worker renderer lifecycle', () => {
     expect(root.querySelectorAll('canvas')).toHaveLength(0);
     expect(root.style.position).toBe('');
   });
+
+  it('pauses and resumes the Worker when the reduced-motion setting changes', () => {
+    let listener: ((event: MediaQueryListEvent) => void) | undefined;
+    const query = {
+      matches: true,
+      addEventListener: vi.fn((_type: string, callback: (event: MediaQueryListEvent) => void) => {
+        listener = callback;
+      }),
+      removeEventListener: vi.fn(),
+    };
+    Object.defineProperty(window, 'matchMedia', { configurable: true, value: vi.fn(() => query) });
+    const snow = new LetItGo({ root: createRoot(), number: 0, renderer: 'worker' });
+    const worker = workerInstance();
+    completeProbe(worker);
+    worker.emitMessage({ type: 'ready' });
+
+    const init = worker.messages.find(({ message }) => message.type === 'init')?.message;
+    expect(init).toMatchObject({ type: 'init', running: false });
+
+    listener?.({ matches: false } as MediaQueryListEvent);
+    expect(worker.messages.at(-1)?.message).toEqual({ type: 'start' });
+    listener?.({ matches: true } as MediaQueryListEvent);
+    expect(worker.messages.at(-1)?.message).toEqual({ type: 'stop' });
+
+    snow.clear();
+    delete (window as Partial<Window>).matchMedia;
+  });
 });

@@ -21,7 +21,7 @@ export interface SnowflakeState {
 
 export interface SnowflakeField {
   readonly count: number;
-  allocate(seed: SnowflakeSeed, width: number, height: number): void;
+  allocate(seed: SnowflakeSeed, width: number, height: number, onScreen: boolean): void;
   randomize(property: SnowflakeProperty, range: Range): void;
   constrain(width: number, height: number): void;
   update(width: number, height: number): void;
@@ -73,13 +73,16 @@ export function createSnowflakeField(): SnowflakeField {
     return Math.random() * (range[1] - range[0]) + range[0];
   }
 
-  function allocate(seed: SnowflakeSeed, width: number, height: number): void {
+  // onScreen places every snowflake inside the canvas, for a canvas that is not
+  // animating yet; otherwise moving snowflakes start just outside it and drift in.
+  function allocate(seed: SnowflakeSeed, width: number, height: number, onScreen: boolean): void {
     data = new Float64Array(seed.number * stride);
     for (let index = 0; index < data.length; index += stride) {
       const velocityX = random(seed.velocityXRange);
       const velocityY = random(seed.velocityYRange);
       let y: number;
-      if (velocityY > 0) y = random([-height, 0]);
+      if (onScreen) y = random([0, height]);
+      else if (velocityY > 0) y = random([-height, 0]);
       else if (velocityY < 0) y = random([height, height * 2]);
       else y = random([0, height]);
 

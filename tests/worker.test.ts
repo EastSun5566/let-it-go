@@ -353,13 +353,33 @@ describe('inline Worker renderer', () => {
         velocityXRange: [velocity[0], velocity[0]],
         velocityYRange: [velocity[1], velocity[1]],
       },
-      running: false,
+      // Staggered starts apply to snow that is animating; paused snow is seeded on screen.
+      running: true,
     });
     scope.dispatch({ type: 'resize', width: 40, height: 40 });
-    scope.dispatch({ type: 'start' });
     scope.runAnimationFrame(0);
     scope.runAnimationFrame(34);
     expect(context.arc).toHaveBeenLastCalledWith(expected[0], expected[1], 1, 0, Math.PI * 2);
+  });
+
+  it('seeds paused snow on screen so the still frame shows snowflakes', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = { getContext: vi.fn(() => context) } as unknown as OffscreenCanvas;
+    workerMain(createSnowflakeField, scope);
+    scope.dispatch({
+      type: 'init',
+      ...frameSettings,
+      canvas,
+      width: 100,
+      height: 100,
+      options: { ...defaultOptions, velocityXRange: [0, 0], velocityYRange: [1, 1] },
+      running: false,
+    });
+
+    // A falling snowflake that starts animating would begin above the canvas, at y = -50.
+    expect(context.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
   });
 
   it('updates options and backing dimensions through typed messages', () => {

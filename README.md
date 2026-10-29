@@ -68,6 +68,8 @@ const snow = new LetItGo({
   style: { zIndex: "-999", pointerEvents: "none" },
   // opt in to best-effort OffscreenCanvas Worker rendering; defaults to `main`
   renderer: "worker",
+  // pause while the user's system asks for reduced motion; defaults to `true`
+  respectReducedMotion: true,
 });
 
 // you can use static prop `DEFAULT_OPTIONS` to get all the default options
@@ -91,8 +93,20 @@ snow.alphaRange = [0.8, 1];
 ```
 
 Range values must be finite two-item tuples. `number` must be a non-negative
-safe integer no greater than 10,000. The `root`, `style`, and `renderer`
-options are construction-only.
+safe integer no greater than 10,000. The `root`, `style`, `renderer`, and
+`respectReducedMotion` options are construction-only.
+
+#### Reduced motion
+
+By default the snow follows the user's
+[`prefers-reduced-motion`](https://developer.mozilla.org/docs/Web/CSS/@media/prefers-reduced-motion)
+setting. While reduced motion is requested, snowflakes are shown still on
+screen, and the animation pauses or resumes when the setting changes.
+
+`letItStop()` and `letItGoAgain()` still work: a stopped instance stays stopped
+when motion is allowed again, and `letItGoAgain()` only starts animating once
+motion is allowed. Pass `respectReducedMotion: false` to ignore the setting,
+for example when your site has its own motion toggle.
 
 #### Worker rendering
 
