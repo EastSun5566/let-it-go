@@ -1,5 +1,5 @@
-import type { Range, Style } from '../types';
-import { MAX_SNOWFLAKES } from '../constants';
+import type { Range, Style } from './types';
+import { MAX_SNOWFLAKES } from './constants';
 
 export function assert<TCond = unknown>(condition: TCond, message = 'internal error.'): asserts condition {
   if (!condition) throw Error(`[let-it-go] ${message}`);
