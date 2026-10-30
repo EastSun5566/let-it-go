@@ -29,6 +29,7 @@ export interface SnowflakeField {
     context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     width: number,
     height: number,
+    pixelRatio: number,
     color: CanvasFillStrokeStyles['fillStyle'],
     backgroundColor: CanvasFillStrokeStyles['fillStyle'],
   ): void;
@@ -169,11 +170,14 @@ export function createSnowflakeField(): SnowflakeField {
     context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
     width: number,
     height: number,
+    pixelRatio: number,
     color: CanvasFillStrokeStyles['fillStyle'],
     backgroundColor: CanvasFillStrokeStyles['fillStyle'],
   ): void {
     if (groupsDirty) regroup();
 
+    // width and height are CSS pixels; scale them onto the device-pixel backing store.
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     context.globalAlpha = 1;
     context.clearRect(0, 0, width, height);
     context.fillStyle = backgroundColor;

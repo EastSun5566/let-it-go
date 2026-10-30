@@ -195,6 +195,7 @@ describe('createSnowflakeField', () => {
           circles = [];
         }),
         moveTo: vi.fn(),
+        setTransform: vi.fn(),
         arc: vi.fn((x: number, y: number, radius: number) => {
           circles.push([x, y, radius]);
         }),
@@ -221,7 +222,7 @@ describe('createSnowflakeField', () => {
     const draw = (
       field: ReturnType<typeof createSnowflakeField>,
       context: ReturnType<typeof createContext>['context'],
-    ) => field.draw(context as unknown as CanvasRenderingContext2D, 100, 100, '#fff', '#000');
+    ) => field.draw(context as unknown as CanvasRenderingContext2D, 100, 100, 1, '#fff', '#000');
 
     it('draws the background, then the snowflakes in the snowflake color', () => {
       const { context } = createContext();
@@ -231,6 +232,21 @@ describe('createSnowflakeField', () => {
       expect(context.fillRect).toHaveBeenCalledWith(0, 0, 100, 100);
       expect(context.fillStyle).toBe('#fff');
       expect(context.globalAlpha).toBe(1);
+    });
+
+    it('scales drawing from CSS pixels to the pixel ratio', () => {
+      const { context } = createContext();
+      createFieldWithAlphas([1]).draw(
+        context as unknown as CanvasRenderingContext2D,
+        100,
+        100,
+        2,
+        '#fff',
+        '#000',
+      );
+
+      expect(context.setTransform).toHaveBeenCalledWith(2, 0, 0, 2, 0, 0);
+      expect(context.clearRect).toHaveBeenCalledWith(0, 0, 100, 100);
     });
 
     it('fills snowflakes that share a rounded alpha level with one path', () => {

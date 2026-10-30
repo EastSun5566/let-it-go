@@ -44,6 +44,16 @@ export class LetItGo {
 
   #reducedMotionQuery: MediaQueryList | null = null;
 
+  // Snowflake physics work in CSS pixels; the canvas backing store is that size times
+  // #pixelRatio. null means the canvas has not been sized yet.
+  #width: number | null = null;
+
+  #height: number | null = null;
+
+  #pixelRatio = 1;
+
+  #pixelRatioQuery: MediaQueryList | null = null;
+
   #isCleared = false;
 
   #number = 0;
@@ -214,6 +224,8 @@ export class LetItGo {
 
   static readonly WORKER_TIMEOUT = 2000;
 
+  static readonly MAX_PIXEL_RATIO = 2;
+
   constructor({
     root = DEFAULT_OPTIONS.root,
     number = DEFAULT_OPTIONS.number,
@@ -297,22 +309,58 @@ export class LetItGo {
     canvas.setAttribute('aria-hidden', 'true');
   }
 
+  #readPixelRatio(): number {
+    const ratio = this.root.ownerDocument.defaultView?.devicePixelRatio ?? 1;
+    if (!Number.isFinite(ratio) || ratio <= 0) return 1;
+    return Math.min(ratio, LetItGo.MAX_PIXEL_RATIO);
+  }
+
+  #setCanvasSize(canvas: HTMLCanvasElement): void {
+    canvas.width = Math.round((this.#width ?? 0) * this.#pixelRatio);
+    canvas.height = Math.round((this.#height ?? 0) * this.#pixelRatio);
+  }
+
+  // ResizeObserver misses pixel ratio changes that keep the CSS size, such as moving the
+  // window to another screen, so watch the current resolution and re-arm on each change.
+  #watchPixelRatio(): void {
+    this.#pixelRatioQuery?.removeEventListener('change', this.#handlePixelRatioChange);
+    this.#pixelRatioQuery = null;
+    const view = this.root.ownerDocument.defaultView;
+    if (!view || typeof view.matchMedia !== 'function') return;
+
+    const query = view.matchMedia(`(resolution: ${view.devicePixelRatio}dppx)`);
+    query.addEventListener('change', this.#handlePixelRatioChange);
+    this.#pixelRatioQuery = query;
+  }
+
+  #handlePixelRatioChange = (): void => {
+    if (this.#isCleared) return;
+    this.#watchPixelRatio();
+    this.#resizeCanvas();
+  };
+
   #resizeCanvas(): void {
     if (this.#isCleared) return;
 
     const width = this.root.clientWidth;
     const height = this.root.clientHeight;
+    const pixelRatio = this.#readPixelRatio();
+    if (this.#width === width && this.#height === height && this.#pixelRatio === pixelRatio) return;
+    const wasEmpty = this.#width === 0 || this.#height === 0;
+    this.#width = width;
+    this.#height = height;
+    this.#pixelRatio = pixelRatio;
+
     if (this.#canvasTransferred) {
       if (this.#workerPhase === 'initializing' || this.#workerPhase === 'ready') {
-        this.#postWorker({ type: 'resize', width, height });
+        this.#postWorker({
+          type: 'resize', width, height, pixelRatio,
+        });
       }
       return;
     }
 
-    if (this.canvas.width === width && this.canvas.height === height) return;
-    const wasEmpty = this.canvas.width === 0 || this.canvas.height === 0;
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.#setCanvasSize(this.canvas);
     // Snowflakes seeded in an empty canvas all start at (0, 0), so spread them out again
     // once the root has a real size (for example after leaving `display: none`).
     if (wasEmpty && width > 0 && height > 0 && this.#usesMainRenderer()) this.#createSnowflakes();
@@ -335,6 +383,7 @@ export class LetItGo {
       console.warn('[let-it-go] ResizeObserver is not supported.', error);
     }
 
+    this.#watchPixelRatio();
     this.#resizeCanvas();
 
     const existingRootPositionState = rootPositionStates.get(this.root);
@@ -441,8 +490,9 @@ export class LetItGo {
       this.#postWorker({
         type: 'init',
         canvas: offscreenCanvas,
-        width: this.root.clientWidth,
-        height: this.root.clientHeight,
+        width: this.#width ?? 0,
+        height: this.#height ?? 0,
+        pixelRatio: this.#pixelRatio,
         options,
         running: this.#isGo,
         frameRate: LetItGo.FRAME_RATE,
@@ -503,8 +553,7 @@ export class LetItGo {
   #replaceTransferredCanvas(): void {
     const previousCanvas = this.#canvas;
     const replacement = this.root.ownerDocument.createElement('canvas');
-    replacement.width = this.root.clientWidth;
-    replacement.height = this.root.clientHeight;
+    this.#setCanvasSize(replacement);
     this.#applyCanvasPresentation(replacement);
     previousCanvas.replaceWith(replacement);
     this.#canvas = replacement;
@@ -553,18 +602,24 @@ export class LetItGo {
       velocityYRange: this.#velocityYRange,
       radiusRange: this.#radiusRange,
       alphaRange: this.#alphaRange,
-    }, this.canvas.width, this.canvas.height, !this.#isGo);
+    }, this.#width ?? 0, this.#height ?? 0, !this.#isGo);
   }
 
   #update = (): void => {
-    this.#field.update(this.canvas.width, this.canvas.height);
+    this.#field.update(this.#width ?? 0, this.#height ?? 0);
   };
 
   #draw = (): void => {
     if (!this.#ctx) return;
 
-    const { width, height } = this.canvas;
-    this.#field.draw(this.#ctx, width, height, this.#color, this.#backgroundColor);
+    this.#field.draw(
+      this.#ctx,
+      this.#width ?? 0,
+      this.#height ?? 0,
+      this.#pixelRatio,
+      this.#color,
+      this.#backgroundColor,
+    );
   };
 
   #animate = (timestamp: number): void => {
@@ -634,6 +689,8 @@ export class LetItGo {
     this.#isRequested = false;
     this.#reducedMotionQuery?.removeEventListener('change', this.#handleReducedMotionChange);
     this.#reducedMotionQuery = null;
+    this.#pixelRatioQuery?.removeEventListener('change', this.#handlePixelRatioChange);
+    this.#pixelRatioQuery = null;
 
     if (this.#requestID !== null) cancelAnimationFrame(this.#requestID);
     this.#requestID = null;

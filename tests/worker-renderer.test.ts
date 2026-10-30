@@ -16,6 +16,7 @@ const context = {
   beginPath: vi.fn(),
   moveTo: vi.fn(),
   arc: vi.fn(),
+  setTransform: vi.fn(),
   fill: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000000',
@@ -324,7 +325,9 @@ describe('Worker renderer lifecycle', () => {
     expect(worker.messages.map(({ message }) => message).slice(-3)).toEqual([
       { type: 'options', patch: { alphaRange: [0.5, 1] } },
       { type: 'options', patch: { velocityYRange: [3, 8] } },
-      { type: 'resize', width: 320, height: 240 },
+      {
+        type: 'resize', width: 320, height: 240, pixelRatio: 1,
+      },
     ]);
     expect(snow.canvas.width).toBe(640);
     expect(snow.canvas.style.width).toBe('100%');
@@ -422,7 +425,11 @@ describe('Worker renderer lifecycle', () => {
       }),
       removeEventListener: vi.fn(),
     };
-    Object.defineProperty(window, 'matchMedia', { configurable: true, value: vi.fn(() => query) });
+    const inertQuery = { matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: vi.fn((media: string) => (media === '(prefers-reduced-motion: reduce)' ? query : inertQuery)),
+    });
     const snow = new LetItGo({ root: createRoot(), number: 0, renderer: 'worker' });
     const worker = workerInstance();
     completeProbe(worker);
@@ -437,5 +444,23 @@ describe('Worker renderer lifecycle', () => {
     expect(worker.messages.at(-1)?.message).toEqual({ type: 'stop' });
 
     snow.clear();
+  });
+
+  it('sends the capped device pixel ratio to the Worker', () => {
+    const original = Object.getOwnPropertyDescriptor(window, 'devicePixelRatio');
+    Object.defineProperty(window, 'devicePixelRatio', { configurable: true, value: 3 });
+    try {
+      const snow = new LetItGo({ root: createRoot(), number: 0, renderer: 'worker' });
+      const worker = workerInstance();
+      completeProbe(worker);
+
+      const init = worker.messages.find(({ message }) => message.type === 'init')?.message;
+      expect(init).toMatchObject({
+        type: 'init', width: 640, height: 360, pixelRatio: LetItGo.MAX_PIXEL_RATIO,
+      });
+      snow.clear();
+    } finally {
+      if (original) Object.defineProperty(window, 'devicePixelRatio', original);
+    }
   });
 });

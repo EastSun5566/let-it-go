@@ -275,6 +275,43 @@ for (const renderer of ['main', 'worker']) {
   });
 }
 
+test.describe('on a 2x display', () => {
+  test.use({ deviceScaleFactor: 2 });
+
+  test('main renders at the device pixel ratio', async ({ page }) => {
+    // Center the single snowflake so no canvas edge clips it.
+    await page.addInitScript(() => {
+      Math.random = () => 0.5;
+    });
+    await page.goto(`${fixtureURL()}/?renderer=main&stationary`);
+    await page.waitForFunction(() => window.__fixtureReady);
+
+    const backing = await page.evaluate(() => ({
+      ratio: window.devicePixelRatio,
+      width: window.snow.canvas.width,
+      height: window.snow.canvas.height,
+      clientWidth: window.snow.canvas.clientWidth,
+      clientHeight: window.snow.canvas.clientHeight,
+    }));
+    expect(backing).toEqual({
+      ratio: 2, width: 640, height: 360, clientWidth: 320, clientHeight: 180,
+    });
+
+    // The stationary fixture draws one 5px-radius snowflake; at 2x it covers roughly
+    // pi * 10^2 ≈ 314 device pixels, while a 1x drawing would light up about 78.
+    await expect.poll(() => page.evaluate(() => {
+      const { canvas } = window.snow;
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Missing canvas context.');
+      const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+      let lit = 0;
+      for (let index = 3; index < data.length; index += 4) if ((data[index] ?? 0) > 0) lit += 1;
+      return lit;
+    })).toBeGreaterThan(200);
+    await page.evaluate(() => window.snow.clear());
+  });
+});
+
 for (const fillStyle of ['gradient', 'pattern'] as const) {
   const option = fillStyle === 'gradient' ? 'color' : 'backgroundColor';
   test(`${fillStyle} falls back before transfer at construction and safely after transfer through a setter`, async ({ page }) => {

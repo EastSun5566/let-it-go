@@ -20,6 +20,7 @@ export type MainToWorkerMessage =
     canvas: OffscreenCanvas;
     width: number;
     height: number;
+    pixelRatio: number;
     options: WorkerOptions;
     running: boolean;
     frameRate: number;
@@ -27,7 +28,9 @@ export type MainToWorkerMessage =
     maxCatchUpSteps: number;
   }
   | { type: 'options'; patch: Partial<WorkerOptions> }
-  | { type: 'resize'; width: number; height: number }
+  | {
+    type: 'resize'; width: number; height: number; pixelRatio: number;
+  }
   | { type: 'start' }
   | { type: 'stop' };
 
@@ -62,8 +65,10 @@ export function workerMain(
   let canvas: OffscreenCanvas | null = null;
   let context: OffscreenCanvasRenderingContext2D | null = null;
   let options: WorkerOptions | null = null;
+  // width and height are CSS pixels; the canvas backing store is that times pixelRatio.
   let width = 0;
   let height = 0;
+  let pixelRatio = 1;
   let requestId: number | null = null;
   let lastUpdate: number | null = null;
   let running = false;
@@ -71,7 +76,7 @@ export function workerMain(
 
   function draw(): void {
     if (!context || !options) return;
-    field.draw(context, width, height, options.color, options.backgroundColor);
+    field.draw(context, width, height, pixelRatio, options.color, options.backgroundColor);
   }
 
   function animate(timestamp: number): void {
@@ -152,8 +157,9 @@ export function workerMain(
           canvas = data.canvas;
           width = data.width;
           height = data.height;
-          canvas.width = width;
-          canvas.height = height;
+          pixelRatio = data.pixelRatio;
+          canvas.width = Math.round(width * pixelRatio);
+          canvas.height = Math.round(height * pixelRatio);
           context = canvas.getContext('2d');
           if (!context) throw new Error('Worker 2D context is unavailable.');
           options = data.options;
@@ -167,12 +173,13 @@ export function workerMain(
           break;
         case 'resize': {
           if (!canvas || !options) break;
-          if (width === data.width && height === data.height) break;
+          if (width === data.width && height === data.height && pixelRatio === data.pixelRatio) break;
           const wasEmpty = width === 0 || height === 0;
           width = data.width;
           height = data.height;
-          canvas.width = width;
-          canvas.height = height;
+          pixelRatio = data.pixelRatio;
+          canvas.width = Math.round(width * pixelRatio);
+          canvas.height = Math.round(height * pixelRatio);
           // Snowflakes seeded in an empty canvas all start at (0, 0), so spread them out again.
           if (wasEmpty && width > 0 && height > 0) field.allocate(options, width, height, !running);
           else field.constrain(width, height);
