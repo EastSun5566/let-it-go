@@ -35,6 +35,32 @@ const createSizedRoot = (width: number, height: number): HTMLDivElement => {
   return root;
 };
 
+// jsdom has no matchMedia; this stands in for `(prefers-reduced-motion: reduce)`.
+const stubReducedMotion = (initial: boolean) => {
+  type Listener = (event: MediaQueryListEvent) => void;
+  const listeners = new Set<Listener>();
+  const query = {
+    matches: initial,
+    addEventListener: vi.fn((_type: string, listener: Listener) => {
+      listeners.add(listener);
+    }),
+    removeEventListener: vi.fn((_type: string, listener: Listener) => {
+      listeners.delete(listener);
+    }),
+  };
+  const matchMedia = vi.fn(() => query);
+  Object.defineProperty(window, 'matchMedia', { configurable: true, value: matchMedia });
+  return {
+    matchMedia,
+    query,
+    listeners,
+    set(matches: boolean) {
+      query.matches = matches;
+      listeners.forEach((listener) => listener({ matches } as MediaQueryListEvent));
+    },
+  };
+};
+
 let animationFrames: Map<number, FrameRequestCallback>;
 let nextAnimationFrameID: number;
 
@@ -76,6 +102,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  delete (window as Partial<Window>).matchMedia;
   document.body.innerHTML = '';
 });
 
@@ -690,5 +717,93 @@ describe('LetItGo', () => {
 
     expect(mockCanvasContext.arc).toHaveBeenCalledWith(50, expectedY, 1, 0, Math.PI * 2);
     snow.clear();
+  });
+
+  describe('reduced motion', () => {
+    it('starts paused with snowflakes on screen when the system asks for reduced motion', () => {
+      const reducedMotion = stubReducedMotion(true);
+      vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      mockCanvasContext.arc.mockClear();
+
+      const snow = new LetItGo({
+        root: createSizedRoot(100, 100),
+        ...movingFlakeOptions,
+        velocityYRange: [1, 1],
+      });
+
+      expect(reducedMotion.matchMedia).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)');
+      expect(animationFrames.size).toBe(0);
+      // A falling snowflake would normally start above the canvas, at y = -50.
+      expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
+      snow.clear();
+    });
+
+    it('pauses and resumes when the setting changes', () => {
+      const reducedMotion = stubReducedMotion(false);
+      const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
+      expect(animationFrames.size).toBe(1);
+
+      reducedMotion.set(true);
+      expect(animationFrames.size).toBe(0);
+
+      reducedMotion.set(false);
+      expect(animationFrames.size).toBe(1);
+      snow.clear();
+    });
+
+    it('keeps a stopped instance stopped when motion is allowed again', () => {
+      const reducedMotion = stubReducedMotion(true);
+      const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
+
+      snow.letItStop();
+      reducedMotion.set(false);
+      expect(animationFrames.size).toBe(0);
+
+      snow.letItGoAgain();
+      expect(animationFrames.size).toBe(1);
+      snow.clear();
+    });
+
+    it('waits for motion to be allowed before letItGoAgain starts the animation', () => {
+      const reducedMotion = stubReducedMotion(true);
+      const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
+
+      snow.letItGoAgain();
+      expect(animationFrames.size).toBe(0);
+
+      reducedMotion.set(false);
+      expect(animationFrames.size).toBe(1);
+      snow.clear();
+    });
+
+    it('ignores the setting when respectReducedMotion is false', () => {
+      const reducedMotion = stubReducedMotion(true);
+      const snow = new LetItGo({
+        root: createSizedRoot(100, 100),
+        ...movingFlakeOptions,
+        respectReducedMotion: false,
+      });
+
+      expect(reducedMotion.matchMedia).not.toHaveBeenCalled();
+      expect(animationFrames.size).toBe(1);
+      snow.clear();
+    });
+
+    it('stops listening for changes on clear', () => {
+      const reducedMotion = stubReducedMotion(false);
+      const snow = new LetItGo({ root: createSizedRoot(100, 100), ...movingFlakeOptions });
+      expect(reducedMotion.listeners.size).toBe(1);
+
+      snow.clear();
+      expect(reducedMotion.listeners.size).toBe(0);
+      reducedMotion.set(true);
+      reducedMotion.set(false);
+      expect(animationFrames.size).toBe(0);
+    });
+
+    it('rejects a non-boolean respectReducedMotion', () => {
+      expect(() => new LetItGo({ respectReducedMotion: 'yes' as never }))
+        .toThrow('respectReducedMotion must be a boolean.');
+    });
   });
 });

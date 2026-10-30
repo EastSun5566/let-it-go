@@ -13,4 +13,5 @@ export interface Options {
   backgroundColor?: CanvasFillStrokeStyles['fillStyle'];
   style?: Style;
   renderer?: RendererMode;
+  respectReducedMotion?: boolean;
 }

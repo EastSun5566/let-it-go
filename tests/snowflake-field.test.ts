@@ -15,7 +15,7 @@ const seed: SnowflakeSeed = {
 
 const createFlake = (state: Partial<SnowflakeState>) => {
   const field = createSnowflakeField();
-  field.allocate(seed, 0, 0);
+  field.allocate(seed, 0, 0, false);
   field.write(0, {
     x: 0, y: 0, velocityX: 0, velocityY: 0, radius: 0.5, alpha: 1, ...state,
   });
@@ -32,10 +32,10 @@ describe('createSnowflakeField', () => {
       const field = createSnowflakeField();
       expect(field.count).toBe(0);
 
-      field.allocate({ ...seed, number: 3 }, 100, 100);
+      field.allocate({ ...seed, number: 3 }, 100, 100, false);
       expect(field.count).toBe(3);
 
-      field.allocate({ ...seed, number: 0 }, 100, 100);
+      field.allocate({ ...seed, number: 0 }, 100, 100, false);
       expect(field.count).toBe(0);
     });
 
@@ -48,7 +48,7 @@ describe('createSnowflakeField', () => {
         velocityYRange: [0, 0],
         radiusRange: [1, 3],
         alphaRange: [0.5, 1],
-      }, 200, 100);
+      }, 200, 100, false);
 
       expect(field.read(0)).toEqual({
         x: 100, y: 50, velocityX: 0, velocityY: 0, radius: 2, alpha: 0.75,
@@ -62,16 +62,24 @@ describe('createSnowflakeField', () => {
     ])('starts a $velocityY vertical velocity snowflake on the correct side', ({ velocityY, expectedY }) => {
       vi.spyOn(Math, 'random').mockReturnValue(0.5);
       const field = createSnowflakeField();
-      field.allocate({ ...seed, velocityYRange: [velocityY, velocityY] }, 100, 100);
+      field.allocate({ ...seed, velocityYRange: [velocityY, velocityY] }, 100, 100, false);
 
       expect(field.read(0).y).toBe(expectedY);
     });
   });
 
+  it.each([1, -1, 0])('places a %d vertical velocity snowflake inside the canvas when seeded on screen', (velocityY) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.25);
+    const field = createSnowflakeField();
+    field.allocate({ ...seed, velocityYRange: [velocityY, velocityY] }, 100, 100, true);
+
+    expect(field.read(0).y).toBe(25);
+  });
+
   it('randomizes one property without touching the others', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     const field = createSnowflakeField();
-    field.allocate({ ...seed, number: 2 }, 100, 100);
+    field.allocate({ ...seed, number: 2 }, 100, 100, false);
     const before = field.read(1);
 
     field.randomize('radius', [4, 6]);
@@ -201,7 +209,7 @@ describe('createSnowflakeField', () => {
 
     const createFieldWithAlphas = (alphas: number[]) => {
       const field = createSnowflakeField();
-      field.allocate({ ...seed, number: alphas.length }, 100, 100);
+      field.allocate({ ...seed, number: alphas.length }, 100, 100, false);
       alphas.forEach((alpha, index) => {
         field.write(index, {
           x: index * 10, y: index * 20, velocityX: 0, velocityY: 0, radius: index + 1, alpha,
@@ -255,7 +263,7 @@ describe('createSnowflakeField', () => {
       draw(field, second.context);
       expect(second.fills).toEqual([{ alpha: 1, circles: [[0, 0, 1], [10, 20, 2]] }]);
 
-      field.allocate({ ...seed, number: 3, alphaRange: [0.5, 0.5] }, 100, 100);
+      field.allocate({ ...seed, number: 3, alphaRange: [0.5, 0.5] }, 100, 100, false);
       const third = createContext();
       draw(field, third.context);
       expect(third.fills).toHaveLength(1);

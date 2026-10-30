@@ -114,7 +114,7 @@ export function workerMain(
     if (!options) return;
     // Object spread would make the serialized function depend on a Babel helper outside the Worker body.
     options = Object.assign({}, options, patch); // eslint-disable-line prefer-object-spread
-    if (patch.number !== undefined) field.allocate(options, width, height);
+    if (patch.number !== undefined) field.allocate(options, width, height, !running);
     if (patch.velocityXRange) field.randomize('velocityX', patch.velocityXRange);
     if (patch.velocityYRange) field.randomize('velocityY', patch.velocityYRange);
     if (patch.radiusRange) field.randomize('radius', patch.radiusRange);
@@ -157,7 +157,7 @@ export function workerMain(
           context = canvas.getContext('2d');
           if (!context) throw new Error('Worker 2D context is unavailable.');
           options = data.options;
-          field.allocate(options, width, height);
+          field.allocate(options, width, height, !data.running);
           if (data.running) start();
           else draw();
           scope.postMessage({ type: 'ready' });
@@ -174,7 +174,7 @@ export function workerMain(
           canvas.width = width;
           canvas.height = height;
           // Snowflakes seeded in an empty canvas all start at (0, 0), so spread them out again.
-          if (wasEmpty && width > 0 && height > 0) field.allocate(options, width, height);
+          if (wasEmpty && width > 0 && height > 0) field.allocate(options, width, height, !running);
           else field.constrain(width, height);
           dirty = true;
           if (!running) {

@@ -237,6 +237,44 @@ for (const renderer of ['main', 'worker']) {
   });
 }
 
+for (const renderer of ['main', 'worker']) {
+  test(`${renderer} holds still snowflakes while reduced motion is requested`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`${fixtureURL()}/?renderer=${renderer}`);
+    await page.waitForFunction(() => window.__fixtureReady
+      && (window.__workerReady || window.__workerCreated === 0));
+    // Summarizes which pixels are lit, so two snapshots match only if nothing moved.
+    const snapshot = () => page.evaluate(() => {
+      const { canvas } = window.snow;
+      const copy = document.createElement('canvas');
+      copy.width = canvas.clientWidth;
+      copy.height = canvas.clientHeight;
+      const context = copy.getContext('2d');
+      if (!context) throw new Error('Missing copy context.');
+      context.drawImage(canvas, 0, 0);
+      const { data } = context.getImageData(0, 0, copy.width, copy.height);
+      let lit = 0;
+      let hash = 0;
+      for (let index = 3; index < data.length; index += 4) {
+        if ((data[index] ?? 0) > 0) {
+          lit += 1;
+          hash = (hash * 31 + index) % 1_000_000_007;
+        }
+      }
+      return { lit, hash };
+    });
+
+    await expect.poll(async () => (await snapshot()).lit).toBeGreaterThan(0);
+    const still = await snapshot();
+    await page.waitForTimeout(300);
+    expect(await snapshot()).toEqual(still);
+
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(async () => (await snapshot()).hash).not.toBe(still.hash);
+    await page.evaluate(() => window.snow.clear());
+  });
+}
+
 for (const fillStyle of ['gradient', 'pattern'] as const) {
   const option = fillStyle === 'gradient' ? 'color' : 'backgroundColor';
   test(`${fillStyle} falls back before transfer at construction and safely after transfer through a setter`, async ({ page }) => {

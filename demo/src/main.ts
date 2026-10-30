@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const snow = new LetItGo({
     root,
     renderer: 'worker',
+    // The demo drives reduced motion through its own snowing switch below.
+    respectReducedMotion: false,
   });
 
   setupToggle({ isShowPanel: false });

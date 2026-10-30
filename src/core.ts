@@ -34,7 +34,15 @@ const rootPositionStates = new WeakMap<HTMLElement, RootPositionState>();
 export class LetItGo {
   readonly root: HTMLElement;
 
+  // #isGo is whether snow is animating right now. It follows the caller's intent
+  // (#isRequested) unless the user's system asks for reduced motion.
   #isGo = false;
+
+  #isRequested = false;
+
+  #isMotionReduced = false;
+
+  #reducedMotionQuery: MediaQueryList | null = null;
 
   #isCleared = false;
 
@@ -217,6 +225,7 @@ export class LetItGo {
     backgroundColor = DEFAULT_OPTIONS.backgroundColor,
     style = DEFAULT_OPTIONS.style,
     renderer = DEFAULT_OPTIONS.renderer,
+    respectReducedMotion = DEFAULT_OPTIONS.respectReducedMotion,
   }: Readonly<Options> = {}) {
     assertIsRange(velocityXRange);
     assertIsRange(velocityYRange);
@@ -227,6 +236,7 @@ export class LetItGo {
       renderer === 'main' || renderer === 'worker',
       'Renderer must be either "main" or "worker".',
     );
+    assert(typeof respectReducedMotion === 'boolean', 'respectReducedMotion must be a boolean.');
 
     this.root = root;
     this.#canvas = root.ownerDocument.createElement('canvas');
@@ -247,7 +257,9 @@ export class LetItGo {
     }
 
     this.#mountCanvas();
-    this.#isGo = true;
+    if (respectReducedMotion) this.#watchReducedMotion();
+    this.#isRequested = true;
+    this.#isGo = !this.#isMotionReduced;
 
     if (renderer === 'worker') this.#startWorkerRenderer();
     else this.#startMainRenderer();
@@ -256,6 +268,22 @@ export class LetItGo {
   #usesMainRenderer(): boolean {
     return this.#ctx !== null;
   }
+
+  #watchReducedMotion(): void {
+    const view = this.root.ownerDocument.defaultView;
+    if (!view || typeof view.matchMedia !== 'function') return;
+
+    const query = view.matchMedia('(prefers-reduced-motion: reduce)');
+    this.#isMotionReduced = query.matches;
+    query.addEventListener('change', this.#handleReducedMotionChange);
+    this.#reducedMotionQuery = query;
+  }
+
+  #handleReducedMotionChange = ({ matches }: MediaQueryListEvent): void => {
+    if (this.#isCleared) return;
+    this.#isMotionReduced = matches;
+    this.#syncRunning();
+  };
 
   #applyCanvasPresentation(canvas: HTMLCanvasElement): void {
     setStyleProps(canvas, {
@@ -525,7 +553,7 @@ export class LetItGo {
       velocityYRange: this.#velocityYRange,
       radiusRange: this.#radiusRange,
       alphaRange: this.#alphaRange,
-    }, this.canvas.width, this.canvas.height);
+    }, this.canvas.width, this.canvas.height, !this.#isGo);
   }
 
   #update = (): void => {
@@ -568,36 +596,44 @@ export class LetItGo {
 
   static readonly MAX_CATCH_UP_STEPS = 5;
 
-  letItStop(): void {
-    if (this.#isCleared) return;
-    this.#isGo = false;
+  #syncRunning(): void {
+    const shouldGo = this.#isRequested && !this.#isMotionReduced;
+    if (this.#isCleared || shouldGo === this.#isGo) return;
+    this.#isGo = shouldGo;
 
     if (this.#workerPhase === 'initializing' || this.#workerPhase === 'ready') {
-      this.#postWorker({ type: 'stop' });
-    }
-    if (this.#requestID !== null) {
+      this.#postWorker({ type: shouldGo ? 'start' : 'stop' });
+    } else if (shouldGo) {
+      if (this.#usesMainRenderer() && this.#requestID === null) {
+        this.#lastUpdate = null;
+        this.#isDirty = true;
+        this.#requestID = requestAnimationFrame(this.#animate);
+      }
+    } else if (this.#requestID !== null) {
       cancelAnimationFrame(this.#requestID);
       this.#requestID = null;
     }
   }
 
-  letItGoAgain(): void {
-    if (this.#isCleared || this.#isGo) return;
-    this.#isGo = true;
+  letItStop(): void {
+    if (this.#isCleared) return;
+    this.#isRequested = false;
+    this.#syncRunning();
+  }
 
-    if (this.#workerPhase === 'initializing' || this.#workerPhase === 'ready') {
-      this.#postWorker({ type: 'start' });
-    } else if (this.#usesMainRenderer() && this.#requestID === null) {
-      this.#lastUpdate = null;
-      this.#isDirty = true;
-      this.#requestID = requestAnimationFrame(this.#animate);
-    }
+  letItGoAgain(): void {
+    if (this.#isCleared) return;
+    this.#isRequested = true;
+    this.#syncRunning();
   }
 
   clear(): void {
     if (this.#isCleared) return;
     this.#isCleared = true;
     this.#isGo = false;
+    this.#isRequested = false;
+    this.#reducedMotionQuery?.removeEventListener('change', this.#handleReducedMotionChange);
+    this.#reducedMotionQuery = null;
 
     if (this.#requestID !== null) cancelAnimationFrame(this.#requestID);
     this.#requestID = null;

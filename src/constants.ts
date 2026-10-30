@@ -36,4 +36,5 @@ export const DEFAULT_OPTIONS: Readonly<Required<Options>> = Object.freeze({
     pointerEvents: 'none',
   }),
   renderer: 'main',
+  respectReducedMotion: true,
 });
