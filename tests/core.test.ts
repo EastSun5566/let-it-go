@@ -10,6 +10,7 @@ const mockCanvasContext = {
   beginPath: vi.fn(),
   moveTo: vi.fn(),
   arc: vi.fn(),
+  setTransform: vi.fn(),
   fill: vi.fn(),
   globalAlpha: 1,
   fillStyle: '#000',
@@ -48,7 +49,11 @@ const stubReducedMotion = (initial: boolean) => {
       listeners.delete(listener);
     }),
   };
-  const matchMedia = vi.fn(() => query);
+  // Other queries (such as the pixel-ratio watcher's) get an inert list that never fires.
+  const inertQuery = { matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+  const matchMedia = vi.fn((media: string) => (
+    media === '(prefers-reduced-motion: reduce)' ? query : inertQuery
+  ));
   Object.defineProperty(window, 'matchMedia', { configurable: true, value: matchMedia });
   return {
     matchMedia,
@@ -57,6 +62,19 @@ const stubReducedMotion = (initial: boolean) => {
     set(matches: boolean) {
       query.matches = matches;
       listeners.forEach((listener) => listener({ matches } as MediaQueryListEvent));
+    },
+  };
+};
+
+// jsdom defines devicePixelRatio as an own getter on window; keep it to restore after stubbing.
+const originalPixelRatio = Object.getOwnPropertyDescriptor(window, 'devicePixelRatio');
+
+const stubPixelRatio = (initial: number) => {
+  let ratio = initial;
+  Object.defineProperty(window, 'devicePixelRatio', { configurable: true, get: () => ratio });
+  return {
+    set(next: number) {
+      ratio = next;
     },
   };
 };
@@ -103,6 +121,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   delete (window as Partial<Window>).matchMedia;
+  if (originalPixelRatio) Object.defineProperty(window, 'devicePixelRatio', originalPixelRatio);
   document.body.innerHTML = '';
 });
 
@@ -784,7 +803,7 @@ describe('LetItGo', () => {
         respectReducedMotion: false,
       });
 
-      expect(reducedMotion.matchMedia).not.toHaveBeenCalled();
+      expect(reducedMotion.matchMedia).not.toHaveBeenCalledWith('(prefers-reduced-motion: reduce)');
       expect(animationFrames.size).toBe(1);
       snow.clear();
     });
@@ -804,6 +823,59 @@ describe('LetItGo', () => {
     it('rejects a non-boolean respectReducedMotion', () => {
       expect(() => new LetItGo({ respectReducedMotion: 'yes' as never }))
         .toThrow('respectReducedMotion must be a boolean.');
+    });
+  });
+
+  describe('device pixel ratio', () => {
+    it('sizes the backing store by the pixel ratio and draws in CSS pixels', () => {
+      stubPixelRatio(2);
+      vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      mockCanvasContext.arc.mockClear();
+      mockCanvasContext.setTransform.mockClear();
+
+      const snow = new LetItGo({ root: createSizedRoot(100, 50), ...movingFlakeOptions });
+      runAnimationFrame(0);
+
+      expect([snow.canvas.width, snow.canvas.height]).toEqual([200, 100]);
+      expect(mockCanvasContext.setTransform).toHaveBeenCalledWith(2, 0, 0, 2, 0, 0);
+      expect(mockCanvasContext.setTransform).toHaveBeenLastCalledWith(1, 0, 0, 1, 0, 0);
+      expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(50, 25, 1, 0, Math.PI * 2);
+      snow.clear();
+    });
+
+    it.each([
+      { ratio: 3, expected: LetItGo.MAX_PIXEL_RATIO },
+      { ratio: Number.NaN, expected: 1 },
+      { ratio: 0, expected: 1 },
+    ])('uses a pixel ratio of $expected for a device ratio of $ratio', ({ ratio, expected }) => {
+      stubPixelRatio(ratio);
+      const snow = new LetItGo({ root: createSizedRoot(100, 50), number: 0 });
+
+      expect([snow.canvas.width, snow.canvas.height]).toEqual([100 * expected, 50 * expected]);
+      snow.clear();
+    });
+
+    it('resizes the backing store when the pixel ratio changes', () => {
+      const pixelRatio = stubPixelRatio(1);
+      const listeners = new Map<string, () => void>();
+      const matchMedia = vi.fn((media: string) => ({
+        matches: false,
+        addEventListener: (_type: string, listener: () => void) => listeners.set(media, listener),
+        removeEventListener: () => listeners.delete(media),
+      }));
+      Object.defineProperty(window, 'matchMedia', { configurable: true, value: matchMedia });
+      const snow = new LetItGo({ root: createSizedRoot(100, 50), number: 0 });
+      expect(snow.canvas.width).toBe(100);
+
+      pixelRatio.set(2);
+      listeners.get('(resolution: 1dppx)')?.();
+
+      expect([snow.canvas.width, snow.canvas.height]).toEqual([200, 100]);
+      expect(listeners.has('(resolution: 1dppx)')).toBe(false);
+      expect(listeners.has('(resolution: 2dppx)')).toBe(true);
+
+      snow.clear();
+      expect(listeners.has('(resolution: 2dppx)')).toBe(false);
     });
   });
 });

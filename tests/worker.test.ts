@@ -82,7 +82,8 @@ const defaultOptions: WorkerOptions = {
   backgroundColor: 'transparent',
 };
 
-const frameSettings = {
+const initSettings = {
+  pixelRatio: 1,
   frameRate: LetItGo.FRAME_RATE,
   frameInterval: LetItGo.FRAME_INTERVAL,
   maxCatchUpSteps: LetItGo.MAX_CATCH_UP_STEPS,
@@ -98,6 +99,7 @@ const createContext = () => {
     beginPath: vi.fn(),
     moveTo: vi.fn(),
     arc: vi.fn(),
+    setTransform: vi.fn(),
     fill: vi.fn(),
     globalAlpha: 1,
     fillStyle: '#000000' as CanvasFillStrokeStyles['fillStyle'],
@@ -161,7 +163,7 @@ describe('inline Worker renderer', () => {
 
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 100,
@@ -193,6 +195,7 @@ describe('inline Worker renderer', () => {
       height: 100,
       options: defaultOptions,
       running: true,
+      pixelRatio: 1,
       frameRate: 10,
       frameInterval: 100,
       maxCatchUpSteps: 2,
@@ -219,7 +222,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 100,
@@ -244,7 +247,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 100,
@@ -258,14 +261,20 @@ describe('inline Worker renderer', () => {
     const previousArc = context.arc.mock.calls.at(-1);
     context.clearRect.mockClear();
     scope.dispatch({ type: 'options', patch: { color: '#ff0000' } });
-    scope.dispatch({ type: 'resize', width: 100, height: 100 });
+    scope.dispatch({
+      type: 'resize', width: 100, height: 100, pixelRatio: 1,
+    });
     expect(context.clearRect).not.toHaveBeenCalled();
-    scope.dispatch({ type: 'resize', width: 60, height: 60 });
+    scope.dispatch({
+      type: 'resize', width: 60, height: 60, pixelRatio: 1,
+    });
     expect(context.clearRect).toHaveBeenCalledOnce();
     expect(context.arc).toHaveBeenLastCalledWith(...(previousArc ?? []));
     expect(context.fillStyle).toBe('#ff0000');
     expect(scope.callbacks.size).toBe(0);
-    scope.dispatch({ type: 'resize', width: 60, height: 60 });
+    scope.dispatch({
+      type: 'resize', width: 60, height: 60, pixelRatio: 1,
+    });
     expect(context.clearRect).toHaveBeenCalledOnce();
     scope.dispatch({ type: 'start' });
     expect(scope.callbacks.size).toBe(1);
@@ -281,7 +290,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 100,
@@ -289,14 +298,18 @@ describe('inline Worker renderer', () => {
       running: false,
     });
     random.mockClear();
-    scope.dispatch({ type: 'resize', width: size, height: size });
+    scope.dispatch({
+      type: 'resize', width: size, height: size, pixelRatio: 1,
+    });
     expect(scope.callbacks.size).toBe(0);
     scope.dispatch({ type: 'start' });
     scope.runAnimationFrame(0);
     scope.runAnimationFrame(100);
     expect(context.arc).toHaveBeenLastCalledWith(size, size, radius, 0, Math.PI * 2);
     scope.dispatch({ type: 'stop' });
-    scope.dispatch({ type: 'resize', width: 100, height: 100 });
+    scope.dispatch({
+      type: 'resize', width: 100, height: 100, pixelRatio: 1,
+    });
     scope.dispatch({ type: 'start' });
     scope.runAnimationFrame(200);
     if (size === 0) {
@@ -319,7 +332,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width,
       height,
@@ -327,7 +340,9 @@ describe('inline Worker renderer', () => {
       running: false,
     });
 
-    scope.dispatch({ type: 'resize', width: 100, height: 100 });
+    scope.dispatch({
+      type: 'resize', width: 100, height: 100, pixelRatio: 1,
+    });
 
     expect(context.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
   });
@@ -344,7 +359,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 100,
@@ -356,7 +371,9 @@ describe('inline Worker renderer', () => {
       // Staggered starts apply to snow that is animating; paused snow is seeded on screen.
       running: true,
     });
-    scope.dispatch({ type: 'resize', width: 40, height: 40 });
+    scope.dispatch({
+      type: 'resize', width: 40, height: 40, pixelRatio: 1,
+    });
     scope.runAnimationFrame(0);
     scope.runAnimationFrame(34);
     expect(context.arc).toHaveBeenLastCalledWith(expected[0], expected[1], 1, 0, Math.PI * 2);
@@ -370,7 +387,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 100,
@@ -380,6 +397,39 @@ describe('inline Worker renderer', () => {
 
     // A falling snowflake that starts animating would begin above the canvas, at y = -50.
     expect(context.arc).toHaveBeenLastCalledWith(50, 50, 1, 0, Math.PI * 2);
+  });
+
+  it('renders at the supplied pixel ratio while keeping physics in CSS pixels', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const scope = new FakeWorkerScope();
+    const { context } = createContext();
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn(() => context),
+    } as unknown as OffscreenCanvas;
+    workerMain(createSnowflakeField, scope);
+    scope.dispatch({
+      type: 'init',
+      ...initSettings,
+      pixelRatio: 2,
+      canvas,
+      width: 100,
+      height: 50,
+      options: defaultOptions,
+      running: false,
+    });
+
+    expect([canvas.width, canvas.height]).toEqual([200, 100]);
+    expect(context.setTransform).toHaveBeenCalledWith(2, 0, 0, 2, 0, 0);
+    expect(context.arc).toHaveBeenLastCalledWith(50, 25, 1, 0, Math.PI * 2);
+
+    scope.dispatch({
+      type: 'resize', width: 100, height: 50, pixelRatio: 1,
+    });
+
+    expect([canvas.width, canvas.height]).toEqual([100, 50]);
+    expect(context.setTransform.mock.calls.slice(-2)).toEqual([[1, 0, 0, 1, 0, 0], [1, 0, 0, 1, 0, 0]]);
   });
 
   it('updates options and backing dimensions through typed messages', () => {
@@ -394,7 +444,7 @@ describe('inline Worker renderer', () => {
     workerMain(createSnowflakeField, scope);
     scope.dispatch({
       type: 'init',
-      ...frameSettings,
+      ...initSettings,
       canvas,
       width: 100,
       height: 80,
@@ -402,7 +452,9 @@ describe('inline Worker renderer', () => {
       running: false,
     });
 
-    scope.dispatch({ type: 'resize', width: 320, height: 240 });
+    scope.dispatch({
+      type: 'resize', width: 320, height: 240, pixelRatio: 1,
+    });
     scope.dispatch({ type: 'options', patch: { number: 2, color: '#123456' } });
     scope.dispatch({ type: 'start' });
     scope.runAnimationFrame(0);
