@@ -245,7 +245,7 @@ describe('createSnowflakeField', () => {
         '#000',
       );
 
-      expect(context.setTransform).toHaveBeenCalledWith(2, 0, 0, 2, 0, 0);
+      expect(context.setTransform.mock.calls).toEqual([[2, 0, 0, 2, 0, 0], [1, 0, 0, 1, 0, 0]]);
       expect(context.clearRect).toHaveBeenCalledWith(0, 0, 100, 100);
     });
 

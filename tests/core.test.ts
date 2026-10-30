@@ -837,7 +837,8 @@ describe('LetItGo', () => {
       runAnimationFrame(0);
 
       expect([snow.canvas.width, snow.canvas.height]).toEqual([200, 100]);
-      expect(mockCanvasContext.setTransform).toHaveBeenLastCalledWith(2, 0, 0, 2, 0, 0);
+      expect(mockCanvasContext.setTransform).toHaveBeenCalledWith(2, 0, 0, 2, 0, 0);
+      expect(mockCanvasContext.setTransform).toHaveBeenLastCalledWith(1, 0, 0, 1, 0, 0);
       expect(mockCanvasContext.arc).toHaveBeenLastCalledWith(50, 25, 1, 0, Math.PI * 2);
       snow.clear();
     });

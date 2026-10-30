@@ -102,7 +102,9 @@ The canvas backing store follows the screen's `devicePixelRatio`, capped at
 `LetItGo.MAX_PIXEL_RATIO` (2), so snowflakes stay sharp on high-DPI screens.
 Sizes and speeds are still in CSS pixels. `snow.canvas.width` and
 `snow.canvas.height` are device pixels; read `snow.canvas.clientWidth` /
-`clientHeight` for the displayed size.
+`clientHeight` for the displayed size. Safari 15 cannot watch for pixel ratio
+changes, so there a new ratio (for example after moving the window to another
+screen) is picked up on the next resize.
 
 #### Reduced motion
 

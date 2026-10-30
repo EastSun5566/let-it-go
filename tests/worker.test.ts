@@ -421,7 +421,7 @@ describe('inline Worker renderer', () => {
     });
 
     expect([canvas.width, canvas.height]).toEqual([200, 100]);
-    expect(context.setTransform).toHaveBeenLastCalledWith(2, 0, 0, 2, 0, 0);
+    expect(context.setTransform).toHaveBeenCalledWith(2, 0, 0, 2, 0, 0);
     expect(context.arc).toHaveBeenLastCalledWith(50, 25, 1, 0, Math.PI * 2);
 
     scope.dispatch({
@@ -429,7 +429,7 @@ describe('inline Worker renderer', () => {
     });
 
     expect([canvas.width, canvas.height]).toEqual([100, 50]);
-    expect(context.setTransform).toHaveBeenLastCalledWith(1, 0, 0, 1, 0, 0);
+    expect(context.setTransform.mock.calls.slice(-2)).toEqual([[1, 0, 0, 1, 0, 0], [1, 0, 0, 1, 0, 0]]);
   });
 
   it('updates options and backing dimensions through typed messages', () => {

@@ -204,7 +204,9 @@ export function createSnowflakeField(): SnowflakeField {
       start = end;
     }
 
+    // Leave the context as callers found it: full alpha and an identity transform.
     context.globalAlpha = 1;
+    context.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   // read/write give tests and debugging direct access to one snowflake.
