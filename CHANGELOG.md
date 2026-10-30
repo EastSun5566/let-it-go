@@ -1,6 +1,31 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [3.0.0](https://github.com/EastSun5566/let-it-go/compare/v2.1.1...v3.0.0) (2026-10-30)
+
+### ⚠ BREAKING CHANGES
+
+* `snow.canvas.width` and `snow.canvas.height` are now device pixels (CSS size times the capped devicePixelRatio). Read `snow.canvas.clientWidth` / `clientHeight` for the displayed size.
+* published bundles now target Chrome/Edge 91+, Firefox 90+ and Safari/iOS 15+, and use ES2022 syntax instead of ES5.
+* snow no longer animates by default for users whose system requests reduced motion. Pass `respectReducedMotion: false` to keep the previous behavior.
+
+### Features
+
+* render at the device pixel ratio ([#126](https://github.com/EastSun5566/let-it-go/issues/126))
+* respect prefers-reduced-motion by default ([#125](https://github.com/EastSun5566/let-it-go/issues/125))
+
+### Bug Fixes
+
+* keep default canvas styles and spread snowflakes after an empty root gets a size ([#124](https://github.com/EastSun5566/let-it-go/issues/124)) ([cded6d4](https://github.com/EastSun5566/let-it-go/commit/cded6d41c718d74cec188b4551d88521509056df)), closes [#118](https://github.com/EastSun5566/let-it-go/issues/118) [#119](https://github.com/EastSun5566/let-it-go/issues/119)
+
+### Performance Improvements
+
+* draw snowflakes in alpha groups with one fill per group ([#123](https://github.com/EastSun5566/let-it-go/issues/123)) ([7304c71](https://github.com/EastSun5566/let-it-go/commit/7304c71dd1e5369c27bb3315e7333309166a214b)), closes [#117](https://github.com/EastSun5566/let-it-go/issues/117)
+
+### Build System
+
+* target modern browsers with browserslist ([#121](https://github.com/EastSun5566/let-it-go/issues/121)), closes [#120](https://github.com/EastSun5566/let-it-go/issues/120)
 
 ### [2.1.1](https://github.com/EastSun5566/let-it-go/compare/v2.1.0...v2.1.1) (2026-10-04)
 
