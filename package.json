@@ -52,7 +52,7 @@
     "prepare": "husky install",
     "prepublishOnly": "pnpm build",
     "release:check": "node scripts/check-release-version.mjs",
-    "release": "pnpm release:check && standard-version && pnpm release:check",
+    "release": "pnpm release:check && commit-and-tag-version && pnpm release:check",
     "demo:dev": "pnpm build && pnpm -C demo dev"
   },
   "keywords": [
@@ -73,11 +73,12 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-typescript": "^7.24.7",
     "@playwright/test": "^1.63.0",
-    "@types/node": "^22.0.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@stylistic/eslint-plugin": "^3.0.0",
+    "@types/node": "^22.0.0",
+    "commit-and-tag-version": "^13.3.0",
     "eslint": "^9.39.2",
     "eslint-config-airbnb-extended": "^2.3.3",
     "eslint-import-resolver-typescript": "^4.0.0",
@@ -89,7 +90,6 @@
     "rollup": "^4.54.0",
     "rollup-plugin-dts": "^6.5.1",
     "rollup-plugin-filesize": "^9.1.2",
-    "standard-version": "^9.5.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.50.1",
     "vitest": "^4.0.0"
