@@ -1,7 +1,12 @@
 name: Deploy Demo
 
 on:
-  push:
+  # Deploy only after the Test workflow passes for a push to main.
+  workflow_run:
+    workflows:
+      - Test
+    types:
+      - completed
     branches:
       - main
   workflow_dispatch:
@@ -15,12 +20,19 @@ concurrency:
 
 jobs:
   build-demo:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (github.event.workflow_run.conclusion == 'success'
+        && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pages: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          # Build the commit that passed the tests, not whatever main points to now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: pnpm/action-setup@v4
 
